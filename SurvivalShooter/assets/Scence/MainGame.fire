@@ -232,7 +232,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "sprite",
+    "_name": "MainCharacter",
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
@@ -258,8 +258,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 30,
-      "height": 30
+      "width": 40,
+      "height": 36
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -270,8 +270,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        12,
-        -40,
+        0,
+        0,
         0,
         0,
         0,
@@ -293,7 +293,7 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
-    "_id": "fc5pECmr5AppYFWANLgRP0"
+    "_id": "02Qq4ItjdIJ7ZTfpzVKxBV"
   },
   {
     "__type__": "cc.Sprite",
@@ -314,7 +314,7 @@
       "__uuid__": "8cdb44ac-a3f6-449f-b354-7cd48cf84061"
     },
     "_type": 0,
-    "_sizeMode": 0,
+    "_sizeMode": 1,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -325,7 +325,7 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_atlas": null,
-    "_id": "641KbjZ69Cq7aYfIlwAppv"
+    "_id": "a3NEsYIJ9H5ZIfjyR8sPcN"
   },
   {
     "__type__": "cc.Animation",
@@ -344,7 +344,7 @@
       }
     ],
     "playOnLoad": true,
-    "_id": "375ScEpXdG56tV7oakvpN6"
+    "_id": "16K7LPfZJIXIivOaOK/Nm/"
   },
   {
     "__type__": "cc.Canvas",
