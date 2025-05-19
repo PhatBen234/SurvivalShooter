@@ -40,7 +40,7 @@ cc.Class({
     },
 
     onStage1Click() {
-        cc.director.loadScene("MainGame");
+        cc.director.loadScene("Stage1");
     },
 
     onSettingsClick() {
