@@ -238,17 +238,96 @@
   },
   {
     "__type__": "cc.Node",
+<<<<<<< HEAD
     "_name": "New Node",
+=======
+    "_name": "Player",
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
     },
     "_children": [
+<<<<<<< HEAD
+=======
       {
         "__id__": 6
       },
       {
+        "__id__": 9
+      }
+    ],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 12
+      }
+    ],
+    "_prefab": null,
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": "23MD0EFRJAOKWcGrkeOPtz"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "MainCharacter",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 5
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
+      {
+        "__id__": 7
+      },
+      {
         "__id__": 8
+<<<<<<< HEAD
       }
     ],
     "_active": true,
@@ -317,6 +396,8 @@
     "_components": [
       {
         "__id__": 7
+=======
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
       }
     ],
     "_prefab": null,
@@ -396,12 +477,42 @@
     "_fillStart": 0,
     "_fillRange": 0,
     "_isTrimmedMode": true,
+<<<<<<< HEAD
     "_atlas": null,
     "_id": "0bjvO+fepE5ookwTqSp9KY"
   },
   {
     "__type__": "cc.Node",
     "_name": "New Label",
+=======
+    "_atlas": {
+      "__uuid__": "06f9d512-91a2-4a1b-ad88-d9c073d8d134"
+    },
+    "_id": "a3NEsYIJ9H5ZIfjyR8sPcN"
+  },
+  {
+    "__type__": "cc.Animation",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 6
+    },
+    "_enabled": true,
+    "_defaultClip": {
+      "__uuid__": "df536c71-b2ed-47c0-bb74-dd17c464ac53"
+    },
+    "_clips": [
+      {
+        "__uuid__": "df536c71-b2ed-47c0-bb74-dd17c464ac53"
+      }
+    ],
+    "playOnLoad": true,
+    "_id": "16K7LPfZJIXIivOaOK/Nm/"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "MCAttackSword",
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
     "_objFlags": 0,
     "_parent": {
       "__id__": 5
@@ -410,6 +521,7 @@
     "_active": true,
     "_components": [
       {
+<<<<<<< HEAD
         "__id__": 9
       }
     ],
@@ -521,6 +633,12 @@
     "_components": [
       {
         "__id__": 12
+=======
+        "__id__": 10
+      },
+      {
+        "__id__": 11
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
       }
     ],
     "_prefab": null,
@@ -534,8 +652,13 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
+<<<<<<< HEAD
       "width": 0,
       "height": 0
+=======
+      "width": 35,
+      "height": 35
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -569,28 +692,94 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
+<<<<<<< HEAD
     "_id": "4aUO3Ly4dMCYnWyylv7b1e"
+=======
+    "_id": "d3c4ZWI0JOZpLe3DLd0T09"
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
   },
   {
     "__type__": "20ec6gOGXBBi5/EfpfZEgKm",
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 11
+      "__id__": 9
     },
     "_enabled": true,
+<<<<<<< HEAD
     "enemyPrefab": {
       "__uuid__": "33c90a3b-10c3-46e7-a159-08a97a0d5568"
+=======
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_spriteFrame": {
+      "__uuid__": "f39101bb-1dd2-4369-8394-a96244244528"
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
     },
     "player": {
       "__id__": 5
     },
+<<<<<<< HEAD
     "spawnArea": {
       "__id__": 2
     },
     "maxEnemies": 10,
     "spawnInterval": 3,
     "_id": "c1J+n7xhpMF65aT+a0Buaw"
+=======
+    "_fillStart": 0,
+    "_fillRange": 0,
+    "_isTrimmedMode": true,
+    "_atlas": {
+      "__uuid__": "37b44c33-8766-4bb1-b6de-dda60e4ba867"
+    },
+    "_id": "8e1oyWD1FNFo/W7tpHVNP9"
+  },
+  {
+    "__type__": "cc.Animation",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 9
+    },
+    "_enabled": true,
+    "_defaultClip": {
+      "__uuid__": "bd487408-6134-4a11-9f4e-0691ed1b9493"
+    },
+    "_clips": [
+      {
+        "__uuid__": "bd487408-6134-4a11-9f4e-0691ed1b9493"
+      }
+    ],
+    "playOnLoad": true,
+    "_id": "a0NwtMvW9B+5QsQYY4s2wG"
+  },
+  {
+    "__type__": "8253d1e1TxFNqYWAJHlrsZ5",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 5
+    },
+    "_enabled": true,
+    "anim": {
+      "__id__": 8
+    },
+    "attackAnim": {
+      "__id__": 11
+    },
+    "speed": 200,
+    "canvasNode": {
+      "__id__": 2
+    },
+    "attackInterval": 2,
+    "_id": "afQEFrNzBNepevxjgGeDAi"
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
   },
   {
     "__type__": "cc.Canvas",
@@ -605,7 +794,7 @@
       "width": 1480,
       "height": 720
     },
-    "_fitWidth": false,
+    "_fitWidth": true,
     "_fitHeight": true,
     "_id": "59Cd0ovbdF4byw5sbjJDx7"
   },
