@@ -17,7 +17,7 @@
         "__id__": 2
       }
     ],
-    "_active": true,
+    "_active": false,
     "_components": [],
     "_prefab": null,
     "_opacity": 255,
@@ -73,6 +73,9 @@
       },
       {
         "__id__": 5
+      },
+      {
+        "__id__": 11
       }
     ],
     "_active": true,
@@ -235,12 +238,18 @@
   },
   {
     "__type__": "cc.Node",
+<<<<<<< HEAD
+    "_name": "New Node",
+=======
     "_name": "Player",
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
     "_objFlags": 0,
     "_parent": {
       "__id__": 2
     },
     "_children": [
+<<<<<<< HEAD
+=======
       {
         "__id__": 6
       },
@@ -312,11 +321,83 @@
     "_children": [],
     "_active": true,
     "_components": [
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
       {
         "__id__": 7
       },
       {
         "__id__": 8
+<<<<<<< HEAD
+      }
+    ],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 10
+      }
+    ],
+    "_prefab": null,
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 30,
+      "height": 30
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        202.475,
+        121.816,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": "d32tB686hCKqgAj9SjahxX"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "New Sprite",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 5
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 7
+=======
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
       }
     ],
     "_prefab": null,
@@ -365,7 +446,7 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
-    "_id": "02Qq4ItjdIJ7ZTfpzVKxBV"
+    "_id": "5bDA2QvMxBNqX1Pyhr8IPt"
   },
   {
     "__type__": "cc.Sprite",
@@ -383,10 +464,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "6eb65e5d-83f9-4084-9c30-974acbb2a2a7"
+      "__uuid__": "1a32fc76-f0bd-4f66-980f-56929c0ca0b3"
     },
     "_type": 0,
-    "_sizeMode": 0,
+    "_sizeMode": 1,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -396,6 +477,14 @@
     "_fillStart": 0,
     "_fillRange": 0,
     "_isTrimmedMode": true,
+<<<<<<< HEAD
+    "_atlas": null,
+    "_id": "0bjvO+fepE5ookwTqSp9KY"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "New Label",
+=======
     "_atlas": {
       "__uuid__": "06f9d512-91a2-4a1b-ad88-d9c073d8d134"
     },
@@ -423,6 +512,7 @@
   {
     "__type__": "cc.Node",
     "_name": "MCAttackSword",
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
     "_objFlags": 0,
     "_parent": {
       "__id__": 5
@@ -431,10 +521,8 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 10
-      },
-      {
-        "__id__": 11
+<<<<<<< HEAD
+        "__id__": 9
       }
     ],
     "_prefab": null,
@@ -448,8 +536,129 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
+      "width": 55.57,
+      "height": 50.4
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        2.789,
+        47.421,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": "95XQ3ihGlDhIkqyyR74q1m"
+  },
+  {
+    "__type__": "cc.Label",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 8
+    },
+    "_enabled": true,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_string": "HP",
+    "_N$string": "HP",
+    "_fontSize": 40,
+    "_lineHeight": 40,
+    "_enableWrapText": true,
+    "_N$file": null,
+    "_isSystemFontUsed": true,
+    "_spacingX": 0,
+    "_batchAsBitmap": false,
+    "_styleFlags": 0,
+    "_underlineHeight": 0,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
+    "_N$fontFamily": "Arial",
+    "_N$overflow": 0,
+    "_N$cacheMode": 0,
+    "_id": "97I8KzLmxOMYD8BK1itI+I"
+  },
+  {
+    "__type__": "b518apRZmRHXpILYWtPHzjH",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 5
+    },
+    "_enabled": true,
+    "maxHp": 100,
+    "currentHp": 100,
+    "hpLabel": {
+      "__id__": 9
+    },
+    "_id": "daQa34/sRHx6FUzFF9E7tJ"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "GameControler",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 2
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 12
+=======
+        "__id__": 10
+      },
+      {
+        "__id__": 11
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
+      }
+    ],
+    "_prefab": null,
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+<<<<<<< HEAD
+      "width": 0,
+      "height": 0
+=======
       "width": 35,
       "height": 35
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -483,16 +692,24 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
+<<<<<<< HEAD
+    "_id": "4aUO3Ly4dMCYnWyylv7b1e"
+=======
     "_id": "d3c4ZWI0JOZpLe3DLd0T09"
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
   },
   {
-    "__type__": "cc.Sprite",
+    "__type__": "20ec6gOGXBBi5/EfpfZEgKm",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 9
     },
     "_enabled": true,
+<<<<<<< HEAD
+    "enemyPrefab": {
+      "__uuid__": "33c90a3b-10c3-46e7-a159-08a97a0d5568"
+=======
     "_materials": [
       {
         "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
@@ -502,15 +719,19 @@
     "_dstBlendFactor": 771,
     "_spriteFrame": {
       "__uuid__": "f39101bb-1dd2-4369-8394-a96244244528"
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
     },
-    "_type": 0,
-    "_sizeMode": 0,
-    "_fillType": 0,
-    "_fillCenter": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
+    "player": {
+      "__id__": 5
     },
+<<<<<<< HEAD
+    "spawnArea": {
+      "__id__": 2
+    },
+    "maxEnemies": 10,
+    "spawnInterval": 3,
+    "_id": "c1J+n7xhpMF65aT+a0Buaw"
+=======
     "_fillStart": 0,
     "_fillRange": 0,
     "_isTrimmedMode": true,
@@ -558,6 +779,7 @@
     },
     "attackInterval": 2,
     "_id": "afQEFrNzBNepevxjgGeDAi"
+>>>>>>> 4f25715a621754197900aca34f70102d8e632f12
   },
   {
     "__type__": "cc.Canvas",
