@@ -8,21 +8,26 @@ cc.Class({
         maxEnemies: 10,
         spawnInterval: 3,
 
-        countdownLabel: cc.Label, // Label đếm thời gian
-        resultLabel: cc.Label,    // Label hiện YOU WIN / LOSE
+        countdownLabel: cc.Label,
+        resultLabel: cc.Label,
     },
 
     onLoad () {
         this.currentEnemies = [];
         this.timer = 0;
-        this.gameDuration = 60; // 60s
+        this.gameDuration = 60;
+        this.timeUp = false;
         this.gameEnded = false;
 
         this.schedule(this.spawnEnemy, this.spawnInterval);
 
-        // Ẩn kết quả ban đầu
         if (this.resultLabel) {
             this.resultLabel.node.active = false;
+        }
+
+        // Theo dõi HP của player
+        if (this.player) {
+            this.playerScript = this.player.getComponent("Player");
         }
     },
 
@@ -31,27 +36,27 @@ cc.Class({
 
         this.timer += dt;
 
-        // Cập nhật label thời gian
         if (this.countdownLabel) {
             let timeLeft = Math.max(0, Math.floor(this.gameDuration - this.timer));
             this.countdownLabel.string = `Time: ${timeLeft}s`;
-
-            // Đổi màu khi gần hết giờ
             if (timeLeft <= 10) {
                 this.countdownLabel.node.color = cc.Color.RED;
             }
         }
 
-        // Kiểm tra điều kiện kết thúc
-        if (this.timer >= this.gameDuration) {
-            this.endGame();
+        if (!this.timeUp && this.timer >= this.gameDuration) {
+            this.timeUp = true;
+            this.unschedule(this.spawnEnemy); // Ngưng spawn
         }
+
+        // Luôn kiểm tra trạng thái win/lose
+        this.checkGameState();
     },
 
     spawnEnemy () {
         this.cleanUpEnemies();
 
-        if (this.gameEnded) return;
+        if (this.gameEnded || this.timeUp) return;
         if (this.currentEnemies.length >= this.maxEnemies) return;
 
         let areaSize = this.spawnArea.getContentSize();
@@ -74,33 +79,33 @@ cc.Class({
         this.currentEnemies = this.currentEnemies.filter(e => e && e.isValid);
     },
 
-    endGame() {
-    this.gameEnded = true;
+    checkGameState() {
+        this.cleanUpEnemies();
 
-    // Dừng mọi schedule (bao gồm spawnEnemy)
-    this.unscheduleAllCallbacks();
-
-    // Xoá hoặc ẩn toàn bộ enemy còn lại
-    this.cleanUpEnemies();
-    this.currentEnemies.forEach(enemy => {
-        if (enemy && enemy.isValid) {
-            enemy.destroy(); // hoặc enemy.active = false;
+        // Nếu player chết
+        if (this.playerScript && this.playerScript.currentHp <= 0) {
+            this.endGame(false); // YOU LOSE
+            return;
         }
-    });
 
-    // Ẩn player (nếu muốn dừng hoàn toàn game)
-    if (this.player && this.player.isValid) {
-        this.player.active = false;
-    }
+        // Nếu hết giờ và tiêu diệt hết enemy → thắng
+        if (this.timeUp && this.currentEnemies.length === 0) {
+            this.endGame(true); // YOU WIN
+        }
+    },
 
-    // Hiện kết quả cuối
-    if (this.currentEnemies.length === 0) {
-        this.showResult(true);  // YOU WIN
-    } else {
-        this.showResult(false); // YOU LOSE
-    }
-},
+    endGame(isWin) {
+        this.gameEnded = true;
+        this.unscheduleAllCallbacks();
 
+        // Ẩn player
+        if (this.player && this.player.isValid) {
+            this.player.active = false;
+        }
+
+        // Hiện kết quả cuối
+        this.showResult(isWin);
+    },
 
     showResult(isWin) {
         if (this.resultLabel) {

@@ -31,7 +31,7 @@
       }
     ],
     "_prefab": {
-      "__id__": 12
+      "__id__": 11
     },
     "_opacity": 255,
     "_color": {
@@ -345,11 +345,6 @@
     "_enabled": true,
     "speed": 100,
     "damage": 1,
-    "enemyTypes": [
-      {
-        "__id__": 11
-      }
-    ],
     "spriteNode": {
       "__id__": 2
     },
@@ -358,15 +353,6 @@
     },
     "maxHp": 10,
     "_id": ""
-  },
-  {
-    "__type__": "EnemyType",
-    "spriteFrame": {
-      "__uuid__": "964e8d4f-9fda-4257-8daa-7be8e00950cf"
-    },
-    "animation": {
-      "__uuid__": "f5d76d8e-f38f-4df2-b079-abe6dd32c8cc"
-    }
   },
   {
     "__type__": "cc.PrefabInfo",
