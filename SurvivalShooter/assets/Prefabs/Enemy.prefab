@@ -31,7 +31,7 @@
       }
     ],
     "_prefab": {
-      "__id__": 14
+      "__id__": 12
     },
     "_opacity": 255,
     "_color": {
@@ -82,7 +82,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Enemy Sprite",
+    "_name": "Enemy Sprite Minion",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -185,9 +185,13 @@
       "__id__": 2
     },
     "_enabled": true,
-    "_defaultClip": null,
+    "_defaultClip": {
+      "__uuid__": "f5d76d8e-f38f-4df2-b079-abe6dd32c8cc"
+    },
     "_clips": [
-      null
+      {
+        "__uuid__": "f5d76d8e-f38f-4df2-b079-abe6dd32c8cc"
+      }
     ],
     "playOnLoad": true,
     "_id": ""
@@ -205,13 +209,13 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Exp Sprite",
+    "_name": "hpLabel",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
     },
     "_children": [],
-    "_active": false,
+    "_active": true,
     "_components": [
       {
         "__id__": 7
@@ -233,8 +237,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 45,
-      "height": 50
+      "width": 13.89,
+      "height": 12.6
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -245,8 +249,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
-        0,
+        -1,
+        36,
         0,
         0,
         0,
@@ -271,7 +275,7 @@
     "_id": ""
   },
   {
-    "__type__": "cc.Sprite",
+    "__type__": "cc.Label",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -285,23 +289,22 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_spriteFrame": {
-      "__uuid__": "6a641b37-b474-44e8-85d7-2d77cc18ac2d"
-    },
-    "_type": 0,
-    "_sizeMode": 0,
-    "_fillType": 0,
-    "_fillCenter": {
-      "__type__": "cc.Vec2",
-      "x": 0,
-      "y": 0
-    },
-    "_fillStart": 0,
-    "_fillRange": 0,
-    "_isTrimmedMode": true,
-    "_atlas": {
-      "__uuid__": "b365b8e8-854c-4526-964d-22aa8e22d4ec"
-    },
+    "_string": "HP",
+    "_N$string": "HP",
+    "_fontSize": 10,
+    "_lineHeight": 10,
+    "_enableWrapText": true,
+    "_N$file": null,
+    "_isSystemFontUsed": true,
+    "_spacingX": 0,
+    "_batchAsBitmap": false,
+    "_styleFlags": 0,
+    "_underlineHeight": 0,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
+    "_N$fontFamily": "Arial",
+    "_N$overflow": 0,
+    "_N$cacheMode": 0,
     "_id": ""
   },
   {
@@ -312,15 +315,9 @@
       "__id__": 6
     },
     "_enabled": true,
-    "_defaultClip": {
-      "__uuid__": "7c3c3eb4-5337-4f3f-84f3-0e9f8b7a7293"
-    },
-    "_clips": [
-      {
-        "__uuid__": "7c3c3eb4-5337-4f3f-84f3-0e9f8b7a7293"
-      }
-    ],
-    "playOnLoad": true,
+    "_defaultClip": null,
+    "_clips": [],
+    "playOnLoad": false,
     "_id": ""
   },
   {
@@ -331,7 +328,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "f6/9CeIMVCSLMUOXn5gsCO",
+    "fileId": "19WUIwD9tIXKIxisTKIqB7",
     "sync": false
   },
   {
@@ -347,17 +344,15 @@
     "enemyTypes": [
       {
         "__id__": 11
-      },
-      {
-        "__id__": 12
-      },
-      {
-        "__id__": 13
       }
     ],
     "spriteNode": {
       "__id__": 2
     },
+    "hpLabel": {
+      "__id__": 7
+    },
+    "maxHp": 10,
     "_id": ""
   },
   {
@@ -367,24 +362,6 @@
     },
     "animation": {
       "__uuid__": "f5d76d8e-f38f-4df2-b079-abe6dd32c8cc"
-    }
-  },
-  {
-    "__type__": "EnemyType",
-    "spriteFrame": {
-      "__uuid__": "88b04f0e-a15c-4628-9d48-9fcd3e080fd8"
-    },
-    "animation": {
-      "__uuid__": "8ff69411-c757-4e34-9664-3575b15142a4"
-    }
-  },
-  {
-    "__type__": "EnemyType",
-    "spriteFrame": {
-      "__uuid__": "ac45ddf6-5b6a-4dcd-9a6a-395aa1a60dfa"
-    },
-    "animation": {
-      "__uuid__": "21e4193d-b8b2-4f4f-bbbb-d5f142a232e6"
     }
   },
   {

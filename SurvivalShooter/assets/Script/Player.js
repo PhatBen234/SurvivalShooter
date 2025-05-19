@@ -4,20 +4,18 @@ cc.Class({
     properties: {
         maxHp: 100,
         currentHp: 100,
-        hpLabel: cc.Label,          // Label để hiển thị máu
-        anim: cc.Animation,         // animation walk, idle
-        attackAnim: cc.Animation,   // animation attack riêng
+        hpLabel: cc.Label,
+        anim: cc.Animation,
+        attackAnim: cc.Animation,
         speed: 200,
         canvasNode: cc.Node,
         attackInterval: 2
     },
 
     onLoad () {
-        // Khởi tạo HP
         this.currentHp = this.maxHp;
         this.updateHpLabel();
 
-        // Di chuyển và tấn công
         this.keyPressed = {};
         this.lastDir = cc.v2(0, 0);
         this.attackTimer = 0;
@@ -26,7 +24,6 @@ cc.Class({
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
-        // Ban đầu chỉ hiện anim node, ẩn attackAnim node
         if (this.anim && this.anim.node) this.anim.node.active = true;
         if (this.attackAnim && this.attackAnim.node) this.attackAnim.node.active = false;
 
@@ -48,7 +45,6 @@ cc.Class({
         this.handleAutoAttack(dt);
     },
 
-    // --- HP ---
     takeDamage(amount) {
         this.currentHp -= amount;
         if (this.currentHp < 0) this.currentHp = 0;
@@ -61,7 +57,6 @@ cc.Class({
         }
     },
 
-    // --- Movement ---
     onKeyDown(event) {
         this.keyPressed[event.keyCode] = true;
     },
@@ -109,7 +104,6 @@ cc.Class({
         }
     },
 
-    // --- Auto Attack ---
     handleAutoAttack(dt) {
         if (!this.attackAnim) return;
 
@@ -118,7 +112,7 @@ cc.Class({
             this.attackTimer = 0;
             this.isAttacking = true;
 
-            cc.log("Start attack animation");
+            cc.log("[AutoAttack] Start attack animation");
 
             if (this.anim && this.anim.node) {
                 this.anim.node.active = false;
@@ -129,11 +123,16 @@ cc.Class({
                 this.attackAnim.node.active = true;
             }
 
-            if (this.attackAnim.getAnimationState("SoldierAttack")) {
+            const attackState = this.attackAnim.getAnimationState("SoldierAttack");
+            if (attackState) {
                 this.attackAnim.play("SoldierAttack");
 
-                this.attackAnim.once("finished", () => {
-                    cc.log("Attack animation finished");
+                attackState.once("finished", () => {
+                    cc.log("[AutoAttack] Attack animation finished");
+
+                    // Gây damage tại đây khi animation tấn công kết thúc
+                    this.attackNearbyEnemies();
+
                     this.isAttacking = false;
 
                     if (this.attackAnim.node) {
@@ -144,6 +143,7 @@ cc.Class({
                         this.anim.node.active = true;
                     }
 
+                    // Tự động chơi lại anim đi bộ nếu có phím di chuyển
                     let dir = cc.v2(0, 0);
                     if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
                     if (this.keyPressed[cc.macro.KEY.d]) dir.x += 1;
@@ -159,7 +159,7 @@ cc.Class({
                     }
                 });
             } else {
-                cc.warn("Attack clip 'SoldierAttack' not found!");
+                cc.warn("[AutoAttack] Attack clip 'SoldierAttack' not found!");
                 this.isAttacking = false;
 
                 if (this.attackAnim.node) {
@@ -172,10 +172,36 @@ cc.Class({
         }
     },
 
-    // --- Clamp position ---
+    attackNearbyEnemies() {
+        const ATTACK_RANGE = 100;
+        const DAMAGE = 10;
+
+        if (!this.canvasNode) {
+            cc.warn("[attackNearbyEnemies] canvasNode chưa được gán");
+            return;
+        }
+
+        const enemies = this.canvasNode.children.filter(node => 
+            node.name === "Enemy" || node.group === "enemy"
+        );
+
+        enemies.forEach(enemy => {
+            if (!enemy || !enemy.isValid) return;
+
+            const dist = this.node.getPosition().sub(enemy.getPosition()).mag();
+            if (dist <= ATTACK_RANGE) {
+                const enemyScript = enemy.getComponent("Enemy");
+                if (enemyScript && typeof enemyScript.takeDamage === "function") {
+                    enemyScript.takeDamage(DAMAGE);
+                    cc.log(`[attackNearbyEnemies] Damaged enemy at distance ${dist.toFixed(2)}`);
+                }
+            }
+        });
+    },
+
     clampPositionToCanvas(pos) {
         if (!this.canvasNode) {
-            cc.warn("Canvas node is not assigned!");
+            cc.warn("[clampPositionToCanvas] canvasNode is not assigned!");
             return pos;
         }
 

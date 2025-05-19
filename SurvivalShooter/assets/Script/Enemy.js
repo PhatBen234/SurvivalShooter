@@ -12,31 +12,33 @@ cc.Class({
         },
 
         spriteNode: cc.Node, // trỏ tới node con Sprite
+        hpLabel: cc.Label,   // node Label hiển thị máu
+        maxHp: 10,           // máu tối đa
     },
 
     onLoad () {
+        // Random loại enemy và gán sprite + animation
         if (this.enemyTypes.length > 0 && this.spriteNode) {
-            // Random 1 loại enemy
             const randIndex = Math.floor(Math.random() * this.enemyTypes.length);
             const selectedType = this.enemyTypes[randIndex];
 
-            // Gán sprite
             const sprite = this.spriteNode.getComponent(cc.Sprite);
             if (sprite && selectedType.spriteFrame) {
                 sprite.spriteFrame = selectedType.spriteFrame;
             }
 
-            // Gán & play animation clip
             const anim = this.spriteNode.getComponent(cc.Animation);
             if (anim && selectedType.animationClip) {
-                // Nếu clip chưa tồn tại thì add vào
                 if (!anim.getClips().includes(selectedType.animationClip)) {
                     anim.addClip(selectedType.animationClip);
                 }
-
                 anim.play(selectedType.animationClip.name);
             }
         }
+
+        // Gán máu ban đầu và cập nhật label
+        this.hp = this.maxHp;
+        this.updateHpLabel();
     },
 
     update(dt) {
@@ -45,9 +47,10 @@ cc.Class({
         let dir = this.player.position.sub(this.node.position);
         let distance = dir.mag();
 
-        // ✅ Lật sprite theo hướng x
+        // Lật enemy theo hướng di chuyển
         this.node.scaleX = dir.x > 0 ? 1 : -1;
 
+        // Di chuyển hoặc tấn công
         if (distance > 5) {
             let move = dir.normalize().mul(this.speed * dt);
             this.node.position = this.node.position.add(move);
@@ -56,11 +59,29 @@ cc.Class({
             if (playerScript) {
                 playerScript.takeDamage(this.damage);
             }
-            //this.node.destroy();
+            // Có thể destroy enemy nếu là kiểu kamikaze
+            // this.node.destroy();
         }
     },
 
     init(playerNode) {
         this.player = playerNode;
-    }
+    },
+
+    takeDamage(amount) {
+        this.hp -= amount;
+        if (this.hp <= 0) {
+            this.hp = 0;
+            this.updateHpLabel();
+            this.node.destroy(); // Enemy chết
+        } else {
+            this.updateHpLabel();
+        }
+    },
+
+    updateHpLabel() {
+        if (this.hpLabel) {
+            this.hpLabel.string = this.hp.toString();
+        }
+    },
 });

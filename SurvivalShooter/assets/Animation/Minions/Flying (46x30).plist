@@ -4,244 +4,6 @@
 	<dict>
 		<key>frames</key>
 		<dict>
-			<key>Run (32x34)0.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{28,29}</string>
-				<key>spriteSize</key>
-				<string>{28,29}</string>
-				<key>textureRect</key>
-				<string>{{0,0},{28,29}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.5,0}</string>
-			</dict>
-			<key>Run (32x34)1.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{29,28}</string>
-				<key>spriteSize</key>
-				<string>{29,28}</string>
-				<key>textureRect</key>
-				<string>{{29,0},{29,28}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.4827586206896552,0}</string>
-			</dict>
-			<key>Run (32x34)2.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{29,28}</string>
-				<key>spriteSize</key>
-				<string>{29,28}</string>
-				<key>textureRect</key>
-				<string>{{59,0},{29,28}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.4827586206896552,0}</string>
-			</dict>
-			<key>Run (32x34)3.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{29,29}</string>
-				<key>spriteSize</key>
-				<string>{29,29}</string>
-				<key>textureRect</key>
-				<string>{{89,0},{29,29}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.4827586206896552,0}</string>
-			</dict>
-			<key>Run (32x34)4.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{29,32}</string>
-				<key>spriteSize</key>
-				<string>{29,32}</string>
-				<key>textureRect</key>
-				<string>{{119,0},{29,32}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.4827586206896552,0}</string>
-			</dict>
-			<key>Run (32x34)5.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{30,27}</string>
-				<key>spriteSize</key>
-				<string>{30,27}</string>
-				<key>textureRect</key>
-				<string>{{149,0},{30,27}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.5333333333333333,0}</string>
-			</dict>
-			<key>Run (32x34)6.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{30,27}</string>
-				<key>spriteSize</key>
-				<string>{30,27}</string>
-				<key>textureRect</key>
-				<string>{{180,0},{30,27}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.5333333333333333,0}</string>
-			</dict>
-			<key>Run (32x34)7.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{28,29}</string>
-				<key>spriteSize</key>
-				<string>{28,29}</string>
-				<key>textureRect</key>
-				<string>{{211,0},{28,29}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.5,0}</string>
-			</dict>
-			<key>Run (32x34)8.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{29,28}</string>
-				<key>spriteSize</key>
-				<string>{29,28}</string>
-				<key>textureRect</key>
-				<string>{{240,0},{29,28}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.4827586206896552,0}</string>
-			</dict>
-			<key>Run (32x34)9.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{29,28}</string>
-				<key>spriteSize</key>
-				<string>{29,28}</string>
-				<key>textureRect</key>
-				<string>{{270,0},{29,28}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.4827586206896552,0}</string>
-			</dict>
-			<key>Run (32x34)10.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{29,29}</string>
-				<key>spriteSize</key>
-				<string>{29,29}</string>
-				<key>textureRect</key>
-				<string>{{300,0},{29,29}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.4827586206896552,0}</string>
-			</dict>
-			<key>Run (32x34)11.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{29,32}</string>
-				<key>spriteSize</key>
-				<string>{29,32}</string>
-				<key>textureRect</key>
-				<string>{{330,0},{29,32}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.4827586206896552,0}</string>
-			</dict>
-			<key>Run (32x34)12.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{30,27}</string>
-				<key>spriteSize</key>
-				<string>{30,27}</string>
-				<key>textureRect</key>
-				<string>{{360,0},{30,27}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.5333333333333333,0}</string>
-			</dict>
-			<key>Run (32x34)13.png</key>
-			<dict>
-				<key>aliases</key>
-				<array />
-				<key>spriteOffset</key>
-				<string>{0,0}</string>
-				<key>spriteSourceSize</key>
-				<string>{30,27}</string>
-				<key>spriteSize</key>
-				<string>{30,27}</string>
-				<key>textureRect</key>
-				<string>{{391,0},{30,27}}</string>
-				<key>textureRotated</key>
-				<false />
-				<key>anchor</key>
-				<string>{0.5333333333333333,0}</string>
-			</dict>
 			<key>Flying (46x30)0.png</key>
 			<dict>
 				<key>aliases</key>
@@ -253,7 +15,7 @@
 				<key>spriteSize</key>
 				<string>{92,25}</string>
 				<key>textureRect</key>
-				<string>{{422,0},{92,25}}</string>
+				<string>{{0,0},{92,25}}</string>
 				<key>textureRotated</key>
 				<false />
 				<key>anchor</key>
@@ -270,7 +32,7 @@
 				<key>spriteSize</key>
 				<string>{44,23}</string>
 				<key>textureRect</key>
-				<string>{{515,0},{44,23}}</string>
+				<string>{{93,0},{44,23}}</string>
 				<key>textureRotated</key>
 				<false />
 				<key>anchor</key>
@@ -287,7 +49,7 @@
 				<key>spriteSize</key>
 				<string>{22,23}</string>
 				<key>textureRect</key>
-				<string>{{560,0},{22,23}}</string>
+				<string>{{138,0},{22,23}}</string>
 				<key>textureRotated</key>
 				<false />
 				<key>anchor</key>
@@ -304,7 +66,7 @@
 				<key>spriteSize</key>
 				<string>{22,23}</string>
 				<key>textureRect</key>
-				<string>{{583,0},{22,23}}</string>
+				<string>{{161,0},{22,23}}</string>
 				<key>textureRotated</key>
 				<false />
 				<key>anchor</key>
@@ -321,7 +83,7 @@
 				<key>spriteSize</key>
 				<string>{24,24}</string>
 				<key>textureRect</key>
-				<string>{{606,0},{24,24}}</string>
+				<string>{{184,0},{24,24}}</string>
 				<key>textureRotated</key>
 				<false />
 				<key>anchor</key>
@@ -338,7 +100,7 @@
 				<key>spriteSize</key>
 				<string>{44,23}</string>
 				<key>textureRect</key>
-				<string>{{631,0},{44,23}}</string>
+				<string>{{209,0},{44,23}}</string>
 				<key>textureRotated</key>
 				<false />
 				<key>anchor</key>
@@ -354,7 +116,7 @@
 			<key>textureFileName</key>
 			<string>Flying (46x30).png</string>
 			<key>size</key>
-			<string>{676,32}</string>
+			<string>{254,26}</string>
 		</dict>
 	</dict>
 </plist>
