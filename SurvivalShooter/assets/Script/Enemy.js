@@ -49,6 +49,10 @@ cc.Class({
 
         // Lật enemy theo hướng di chuyển
         this.node.scaleX = dir.x > 0 ? 1 : -1;
+        if (this.hpLabel && this.hpLabel.node) {
+        this.hpLabel.node.scaleX = 1 / this.node.scaleX;
+        }
+
 
         // Di chuyển hoặc tấn công
         if (distance > 5) {
