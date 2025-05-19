@@ -78,9 +78,6 @@
         "__id__": 7
       },
       {
-        "__id__": 15
-      },
-      {
         "__id__": 18
       },
       {
@@ -356,12 +353,15 @@
       },
       {
         "__id__": 11
+      },
+      {
+        "__id__": 14
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 14
+        "__id__": 17
       }
     ],
     "_prefab": null,
@@ -649,50 +649,20 @@
     "_id": "a0NwtMvW9B+5QsQYY4s2wG"
   },
   {
-    "__type__": "8253d1e1TxFNqYWAJHlrsZ5",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 7
-    },
-    "_enabled": true,
-    "maxHp": 100,
-    "currentHp": 100,
-    "hpLabel": {
-      "__id__": 4
-    },
-    "anim": {
-      "__id__": 10
-    },
-    "attackAnim": {
-      "__id__": 13
-    },
-    "speed": 200,
-    "canvasNode": {
-      "__id__": 2
-    },
-    "attackInterval": 2,
-    "skillNode": {
-      "__id__": 15
-    },
-    "skillCooldown": 4,
-    "_id": "afQEFrNzBNepevxjgGeDAi"
-  },
-  {
     "__type__": "cc.Node",
     "_name": "MCSkill",
     "_objFlags": 0,
     "_parent": {
-      "__id__": 2
+      "__id__": 7
     },
     "_children": [],
     "_active": true,
     "_components": [
       {
-        "__id__": 16
+        "__id__": 15
       },
       {
-        "__id__": 17
+        "__id__": 16
       }
     ],
     "_prefab": null,
@@ -748,7 +718,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 15
+      "__id__": 14
     },
     "_enabled": true,
     "_materials": [
@@ -782,7 +752,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 15
+      "__id__": 14
     },
     "_enabled": true,
     "_defaultClip": {
@@ -795,6 +765,36 @@
     ],
     "playOnLoad": true,
     "_id": "9cUZ22E25A6YgUhyKs9PLH"
+  },
+  {
+    "__type__": "8253d1e1TxFNqYWAJHlrsZ5",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 7
+    },
+    "_enabled": true,
+    "maxHp": 100,
+    "currentHp": 100,
+    "hpLabel": {
+      "__id__": 4
+    },
+    "anim": {
+      "__id__": 10
+    },
+    "attackAnim": {
+      "__id__": 13
+    },
+    "speed": 200,
+    "canvasNode": {
+      "__id__": 2
+    },
+    "attackInterval": 2,
+    "skillNode": {
+      "__id__": 14
+    },
+    "skillCooldown": 4,
+    "_id": "afQEFrNzBNepevxjgGeDAi"
   },
   {
     "__type__": "cc.Node",

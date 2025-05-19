@@ -11,7 +11,7 @@ cc.Class({
         canvasNode: cc.Node,
         attackInterval: 2,
 
-        skillNode: cc.Node,     // Node kỹ năng chứa anim SkillSplash
+        skillNode: cc.Node,     // Đặt skillNode làm con của Player trong Hierarchy
         skillCooldown: 4,       // Thời gian hồi kỹ năng
     },
 
@@ -192,7 +192,7 @@ cc.Class({
             this.skillTimer = 0;
             this.canUseSkill = false;
 
-            this.skillNode.setPosition(this.node.getPosition());
+            this.skillNode.setPosition(cc.v2(0, 0));  // Reset về tâm Player (nếu cần)
             this.skillNode.active = true;
 
             const anim = this.skillNode.getComponent(cc.Animation);
@@ -202,7 +202,7 @@ cc.Class({
                 anim.once("finished", () => {
                     this.skillNode.active = false;
                     this.canUseSkill = true;
-                    this.skillDamageArea();
+                    this.skillDamageArea(); // Gây damage ở vị trí player
                 });
             } else {
                 this.skillNode.active = false;
@@ -212,7 +212,7 @@ cc.Class({
     },
 
     skillDamageArea() {
-        const SKILL_RANGE = 150;
+        const SKILL_RANGE = 200;
         const SKILL_DAMAGE = 20;
 
         if (!this.canvasNode) return;
