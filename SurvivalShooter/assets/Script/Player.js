@@ -4,33 +4,20 @@ cc.Class({
     properties: {
         maxHp: 100,
         currentHp: 100,
-        hpLabel: cc.Label // Label để hiển thị máu
+        hpLabel: cc.Label,          // Label để hiển thị máu
+        anim: cc.Animation,         // animation walk, idle
+        attackAnim: cc.Animation,   // animation attack riêng
+        speed: 200,
+        canvasNode: cc.Node,
+        attackInterval: 2
     },
 
     onLoad () {
+        // Khởi tạo HP
         this.currentHp = this.maxHp;
         this.updateHpLabel();
-    },
 
-    takeDamage (amount) {
-        this.currentHp -= amount;
-        if (this.currentHp < 0) this.currentHp = 0;
-        this.updateHpLabel();
-    },
-
-    updateHpLabel () {
-        if (this.hpLabel) {
-            this.hpLabel.string = "HP: " + this.currentHp;
-        }
-    }
-        anim: cc.Animation,          // animation walk, idle
-        attackAnim: cc.Animation,    // animation attack riêng
-        speed: 200,
-        canvasNode: cc.Node,
-        attackInterval: 2,
-    },
-
-    onLoad() {
+        // Di chuyển và tấn công
         this.keyPressed = {};
         this.lastDir = cc.v2(0, 0);
         this.attackTimer = 0;
@@ -40,13 +27,13 @@ cc.Class({
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
         // Ban đầu chỉ hiện anim node, ẩn attackAnim node
-        if(this.anim && this.anim.node) this.anim.node.active = true;
-        if(this.attackAnim && this.attackAnim.node) this.attackAnim.node.active = false;
+        if (this.anim && this.anim.node) this.anim.node.active = true;
+        if (this.attackAnim && this.attackAnim.node) this.attackAnim.node.active = false;
 
-        if(this.anim){
+        if (this.anim) {
             cc.log("Walk clips:", this.anim.getClips().map(c => c.name));
         }
-        if(this.attackAnim){
+        if (this.attackAnim) {
             cc.log("Attack clips:", this.attackAnim.getClips().map(c => c.name));
         }
     },
@@ -56,6 +43,25 @@ cc.Class({
         cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
     },
 
+    update(dt) {
+        this.handleMovement(dt);
+        this.handleAutoAttack(dt);
+    },
+
+    // --- HP ---
+    takeDamage(amount) {
+        this.currentHp -= amount;
+        if (this.currentHp < 0) this.currentHp = 0;
+        this.updateHpLabel();
+    },
+
+    updateHpLabel() {
+        if (this.hpLabel) {
+            this.hpLabel.string = "HP: " + this.currentHp;
+        }
+    },
+
+    // --- Movement ---
     onKeyDown(event) {
         this.keyPressed[event.keyCode] = true;
     },
@@ -64,120 +70,109 @@ cc.Class({
         this.keyPressed[event.keyCode] = false;
     },
 
-    update(dt) {
-        this.handleMovement(dt);
-        this.handleAutoAttack(dt);
-    },
-
     handleMovement(dt) {
-    if (!this.anim) return;
+        if (!this.anim) return;
 
-    let dir = cc.v2(0, 0);
-    if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
-    if (this.keyPressed[cc.macro.KEY.d]) dir.x += 1;
-    if (this.keyPressed[cc.macro.KEY.w]) dir.y += 1;
-    if (this.keyPressed[cc.macro.KEY.s]) dir.y -= 1;
+        let dir = cc.v2(0, 0);
+        if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
+        if (this.keyPressed[cc.macro.KEY.d]) dir.x += 1;
+        if (this.keyPressed[cc.macro.KEY.w]) dir.y += 1;
+        if (this.keyPressed[cc.macro.KEY.s]) dir.y -= 1;
 
-    if (!dir.equals(this.lastDir)) {
-        this.lastDir = dir.clone();
-    }
-
-    if (dir.mag() > 0) {
-        dir = dir.normalize();
-
-        if (dir.x !== 0) {
-            this.node.scaleX = dir.x > 0 ? 1 : -1;
+        if (!dir.equals(this.lastDir)) {
+            this.lastDir = dir.clone();
         }
 
-        let pos = this.node.getPosition();
-        pos.x += dir.x * this.speed * dt;
-        pos.y += dir.y * this.speed * dt;
+        if (dir.mag() > 0) {
+            dir = dir.normalize();
 
-        pos = this.clampPositionToCanvas(pos);
-        this.node.setPosition(pos);
+            if (dir.x !== 0) {
+                this.node.scaleX = dir.x > 0 ? 1 : -1;
+            }
 
-        // Nếu đang attack thì không chơi walk animation
-        if (!this.isAttacking) {
-            // Chơi walk animation nếu chưa chơi
-            if (!this.anim.getAnimationState("Soldier").isPlaying) {
-                this.anim.play("Soldier");
+            let pos = this.node.getPosition();
+            pos.x += dir.x * this.speed * dt;
+            pos.y += dir.y * this.speed * dt;
+
+            pos = this.clampPositionToCanvas(pos);
+            this.node.setPosition(pos);
+
+            if (!this.isAttacking) {
+                if (!this.anim.getAnimationState("Soldier").isPlaying) {
+                    this.anim.play("Soldier");
+                }
+            }
+        } else {
+            if (!this.isAttacking && this.anim.getAnimationState("Soldier").isPlaying) {
+                this.anim.stop("Soldier");
             }
         }
-    } else {
-        // Nếu không di chuyển và không attack thì dừng walk animation
-        if (!this.isAttacking && this.anim.getAnimationState("Soldier").isPlaying) {
-            this.anim.stop("Soldier");
-        }
-    }
-},
+    },
 
-handleAutoAttack(dt) {
-    if (!this.attackAnim) return;
+    // --- Auto Attack ---
+    handleAutoAttack(dt) {
+        if (!this.attackAnim) return;
 
-    this.attackTimer += dt;
-    if (this.attackTimer >= this.attackInterval && !this.isAttacking) {
-        this.attackTimer = 0;
-        this.isAttacking = true;
+        this.attackTimer += dt;
+        if (this.attackTimer >= this.attackInterval && !this.isAttacking) {
+            this.attackTimer = 0;
+            this.isAttacking = true;
 
-        cc.log("Start attack animation");
+            cc.log("Start attack animation");
 
-        // Ẩn node walk để tránh animation walk đè lên
-        if (this.anim && this.anim.node) {
-            this.anim.node.active = false;
-            this.anim.stop();  // dừng luôn anim walk
-        }
+            if (this.anim && this.anim.node) {
+                this.anim.node.active = false;
+                this.anim.stop();
+            }
 
-        if (this.attackAnim.node) {
-            this.attackAnim.node.active = true;
-        }
+            if (this.attackAnim.node) {
+                this.attackAnim.node.active = true;
+            }
 
-        if (this.attackAnim.getAnimationState("SoldierAttack")) {
-            this.attackAnim.play("SoldierAttack");
+            if (this.attackAnim.getAnimationState("SoldierAttack")) {
+                this.attackAnim.play("SoldierAttack");
 
-            this.attackAnim.once("finished", () => {
-                cc.log("Attack animation finished");
+                this.attackAnim.once("finished", () => {
+                    cc.log("Attack animation finished");
+                    this.isAttacking = false;
+
+                    if (this.attackAnim.node) {
+                        this.attackAnim.node.active = false;
+                    }
+
+                    if (this.anim && this.anim.node) {
+                        this.anim.node.active = true;
+                    }
+
+                    let dir = cc.v2(0, 0);
+                    if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
+                    if (this.keyPressed[cc.macro.KEY.d]) dir.x += 1;
+                    if (this.keyPressed[cc.macro.KEY.w]) dir.y += 1;
+                    if (this.keyPressed[cc.macro.KEY.s]) dir.y -= 1;
+
+                    if (dir.mag() > 0) {
+                        if (!this.anim.getAnimationState("Soldier").isPlaying) {
+                            this.anim.play("Soldier");
+                        }
+                    } else {
+                        this.anim.stop("Soldier");
+                    }
+                });
+            } else {
+                cc.warn("Attack clip 'SoldierAttack' not found!");
                 this.isAttacking = false;
 
                 if (this.attackAnim.node) {
                     this.attackAnim.node.active = false;
                 }
-
-                // Hiện lại node walk khi attack kết thúc
                 if (this.anim && this.anim.node) {
                     this.anim.node.active = true;
                 }
-
-                // Nếu đang di chuyển thì chơi lại walk animation
-                let dir = cc.v2(0, 0);
-                if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
-                if (this.keyPressed[cc.macro.KEY.d]) dir.x += 1;
-                if (this.keyPressed[cc.macro.KEY.w]) dir.y += 1;
-                if (this.keyPressed[cc.macro.KEY.s]) dir.y -= 1;
-
-                if (dir.mag() > 0) {
-                    if (!this.anim.getAnimationState("Soldier").isPlaying) {
-                        this.anim.play("Soldier");
-                    }
-                } else {
-                    this.anim.stop("Soldier");
-                }
-            });
-        } else {
-            cc.warn("Attack clip 'SoldierAttack' not found!");
-            this.isAttacking = false;
-
-            if (this.attackAnim.node) {
-                this.attackAnim.node.active = false;
-            }
-            if (this.anim && this.anim.node) {
-                this.anim.node.active = true;
             }
         }
-    }
-},
+    },
 
-
-
+    // --- Clamp position ---
     clampPositionToCanvas(pos) {
         if (!this.canvasNode) {
             cc.warn("Canvas node is not assigned!");
