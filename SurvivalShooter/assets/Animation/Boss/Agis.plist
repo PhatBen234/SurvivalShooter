@@ -1,0 +1,275 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>Agis0.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{207,224}</string>
+				<key>spriteSize</key>
+				<string>{207,224}</string>
+				<key>textureRect</key>
+				<string>{{0,0},{207,224}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5024154589371981,0}</string>
+			</dict>
+			<key>Agis1.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{210,225}</string>
+				<key>spriteSize</key>
+				<string>{210,225}</string>
+				<key>textureRect</key>
+				<string>{{208,0},{210,225}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5047619047619047,0}</string>
+			</dict>
+			<key>Agis2.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{213,226}</string>
+				<key>spriteSize</key>
+				<string>{213,226}</string>
+				<key>textureRect</key>
+				<string>{{419,0},{213,226}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.49765258215962443,0}</string>
+			</dict>
+			<key>Agis3.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{214,221}</string>
+				<key>spriteSize</key>
+				<string>{214,221}</string>
+				<key>textureRect</key>
+				<string>{{633,0},{214,221}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5046728971962616,0}</string>
+			</dict>
+			<key>Agis4.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{215,220}</string>
+				<key>spriteSize</key>
+				<string>{215,220}</string>
+				<key>textureRect</key>
+				<string>{{848,0},{215,220}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5023255813953489,0}</string>
+			</dict>
+			<key>Agis5.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{214,220}</string>
+				<key>spriteSize</key>
+				<string>{214,220}</string>
+				<key>textureRect</key>
+				<string>{{0,227},{214,220}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5046728971962616,0}</string>
+			</dict>
+			<key>Agis6.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{213,221}</string>
+				<key>spriteSize</key>
+				<string>{213,221}</string>
+				<key>textureRect</key>
+				<string>{{215,227},{213,221}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.49765258215962443,0}</string>
+			</dict>
+			<key>Agis7.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{211,222}</string>
+				<key>spriteSize</key>
+				<string>{211,222}</string>
+				<key>textureRect</key>
+				<string>{{429,227},{211,222}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5023696682464455,0}</string>
+			</dict>
+			<key>Agis8.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{210,222}</string>
+				<key>spriteSize</key>
+				<string>{210,222}</string>
+				<key>textureRect</key>
+				<string>{{641,227},{210,222}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5047619047619047,0}</string>
+			</dict>
+			<key>Agis9.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{210,222}</string>
+				<key>spriteSize</key>
+				<string>{210,222}</string>
+				<key>textureRect</key>
+				<string>{{852,227},{210,222}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5047619047619047,0}</string>
+			</dict>
+			<key>Agis10.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{206,223}</string>
+				<key>spriteSize</key>
+				<string>{206,223}</string>
+				<key>textureRect</key>
+				<string>{{0,450},{206,223}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5048543689320388,0}</string>
+			</dict>
+			<key>Agis11.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{206,224}</string>
+				<key>spriteSize</key>
+				<string>{206,224}</string>
+				<key>textureRect</key>
+				<string>{{207,450},{206,224}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5048543689320388,0}</string>
+			</dict>
+			<key>Agis12.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{203,224}</string>
+				<key>spriteSize</key>
+				<string>{203,224}</string>
+				<key>textureRect</key>
+				<string>{{414,450},{203,224}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5024630541871922,0}</string>
+			</dict>
+			<key>Agis13.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{203,225}</string>
+				<key>spriteSize</key>
+				<string>{203,225}</string>
+				<key>textureRect</key>
+				<string>{{618,450},{203,225}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5024630541871922,0}</string>
+			</dict>
+			<key>Agis14.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{205,224}</string>
+				<key>spriteSize</key>
+				<string>{205,224}</string>
+				<key>textureRect</key>
+				<string>{{822,450},{205,224}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.4975609756097561,0}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>3</integer>
+			<key>realTextureFileName</key>
+			<string>Agis.png</string>
+			<key>textureFileName</key>
+			<string>Agis.png</string>
+			<key>size</key>
+			<string>{1064,676}</string>
+		</dict>
+	</dict>
+</plist>
