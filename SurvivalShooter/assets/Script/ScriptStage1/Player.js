@@ -11,8 +11,8 @@ cc.Class({
     canvasNode: cc.Node,
     attackInterval: 2,
 
-    skillNode: cc.Node, // Đặt skillNode làm con của Player trong Hierarchy
-    skillCooldown: 4, // Thời gian hồi kỹ năng
+    skillNode: cc.Node,
+    skillCooldown: 4,
     expBar: cc.ProgressBar,
     levelLabel: cc.Label,
     attackLabel: cc.Label,
@@ -21,19 +21,20 @@ cc.Class({
 
     level: 1,
     currentExp: 0,
-    expToNextLevel: 50, // EXP cần để lên level 2
+    expToNextLevel: 50,
 
     baseAttack: 10,
-    criticalRate: 0.1, // 10%
+    criticalRate: 0.1,
     expPickupRange: 100,
   },
 
   onLoad() {
     this.currentHp = this.maxHp;
-    this.updateHpLabel();
-    this.updateStatsLabel(); // ← Thêm dòng này
+    this.updateAllUI();
+
     this.keyPressed = {};
     this.lastDir = cc.v2(0, 0);
+
     this.attackTimer = 0;
     this.isAttacking = false;
 
@@ -43,9 +44,8 @@ cc.Class({
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
-    if (this.anim && this.anim.node) this.anim.node.active = true;
-    if (this.attackAnim && this.attackAnim.node)
-      this.attackAnim.node.active = false;
+    this.setAnimationActive(this.anim, true);
+    this.setAnimationActive(this.attackAnim, false);
 
     if (this.skillNode) this.skillNode.active = false;
   },
@@ -59,33 +59,10 @@ cc.Class({
     this.handleMovement(dt);
     this.handleAutoAttack(dt);
     this.handleSkill(dt);
-    this.collectNearbyExp();
+    this.collectNearbyExp(dt);
   },
 
-  takeDamage(amount) {
-    this.currentHp -= amount;
-    if (this.currentHp < 0) this.currentHp = 0;
-    this.updateHpLabel();
-  },
-
-  updateHpLabel() {
-    if (this.hpLabel) {
-      this.hpLabel.string = "HP: " + this.currentHp;
-    }
-  },
-  updateStatsLabel() {
-    if (this.attackLabel) {
-      this.attackLabel.string = "Atk: " + this.baseAttack;
-    }
-    if (this.critLabel) {
-      this.critLabel.string =
-        "Crit: " + Math.floor(this.criticalRate * 100) + "%";
-    }
-    if (this.rangeLabel) {
-      this.rangeLabel.string = "Range: " + this.expPickupRange;
-    }
-  },
-
+  // --- INPUT HANDLING ---
   onKeyDown(event) {
     this.keyPressed[event.keyCode] = true;
   },
@@ -94,14 +71,20 @@ cc.Class({
     this.keyPressed[event.keyCode] = false;
   },
 
-  handleMovement(dt) {
-    if (!this.anim) return;
-
+  // --- MOVEMENT ---
+  getInputDirection() {
     let dir = cc.v2(0, 0);
     if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
     if (this.keyPressed[cc.macro.KEY.d]) dir.x += 1;
     if (this.keyPressed[cc.macro.KEY.w]) dir.y += 1;
     if (this.keyPressed[cc.macro.KEY.s]) dir.y -= 1;
+    return dir;
+  },
+
+  handleMovement(dt) {
+    if (!this.anim) return;
+
+    let dir = this.getInputDirection();
 
     if (!dir.equals(this.lastDir)) {
       this.lastDir = dir.clone();
@@ -110,21 +93,19 @@ cc.Class({
     if (dir.mag() > 0) {
       dir = dir.normalize();
 
-      if (dir.x !== 0) {
-        this.node.scaleX = dir.x > 0 ? 1 : -1;
-      }
+      this.node.scaleX = dir.x !== 0 ? (dir.x > 0 ? 1 : -1) : this.node.scaleX;
 
       let pos = this.node.getPosition();
-      pos.x += dir.x * this.speed * dt;
-      pos.y += dir.y * this.speed * dt;
-
+      pos = pos.add(dir.mul(this.speed * dt));
       pos = this.clampPositionToCanvas(pos);
+
       this.node.setPosition(pos);
 
-      if (!this.isAttacking) {
-        if (!this.anim.getAnimationState("Soldier").isPlaying) {
-          this.anim.play("Soldier");
-        }
+      if (
+        !this.isAttacking &&
+        !this.anim.getAnimationState("Soldier").isPlaying
+      ) {
+        this.anim.play("Soldier");
       }
     } else {
       if (
@@ -136,68 +117,50 @@ cc.Class({
     }
   },
 
+  // --- ATTACK ---
   handleAutoAttack(dt) {
     if (!this.attackAnim) return;
 
     this.attackTimer += dt;
-    if (this.attackTimer >= this.attackInterval && !this.isAttacking) {
-      this.attackTimer = 0;
-      this.isAttacking = true;
+    if (this.attackTimer < this.attackInterval || this.isAttacking) return;
 
-      if (this.anim && this.anim.node) {
-        this.anim.node.active = false;
-        this.anim.stop();
-      }
+    this.attackTimer = 0;
+    this.isAttacking = true;
 
-      if (this.attackAnim.node) {
-        this.attackAnim.node.active = true;
-      }
+    this.setAnimationActive(this.anim, false);
+    this.setAnimationActive(this.attackAnim, true);
 
-      const attackState = this.attackAnim.getAnimationState("SoldierAttack");
-      if (attackState) {
-        this.attackAnim.play("SoldierAttack");
-
-        attackState.once("finished", () => {
-          this.attackNearbyEnemies();
-          this.isAttacking = false;
-
-          if (this.attackAnim.node) {
-            this.attackAnim.node.active = false;
-          }
-          if (this.anim && this.anim.node) {
-            this.anim.node.active = true;
-          }
-
-          let dir = cc.v2(0, 0);
-          if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
-          if (this.keyPressed[cc.macro.KEY.d]) dir.x += 1;
-          if (this.keyPressed[cc.macro.KEY.w]) dir.y += 1;
-          if (this.keyPressed[cc.macro.KEY.s]) dir.y -= 1;
-
-          if (dir.mag() > 0) {
-            if (!this.anim.getAnimationState("Soldier").isPlaying) {
-              this.anim.play("Soldier");
-            }
-          } else {
-            this.anim.stop("Soldier");
-          }
-        });
-      } else {
+    const attackState = this.attackAnim.getAnimationState("SoldierAttack");
+    if (attackState) {
+      this.attackAnim.play("SoldierAttack");
+      attackState.once("finished", () => {
+        this.attackNearbyEnemies();
         this.isAttacking = false;
-        if (this.attackAnim.node) this.attackAnim.node.active = false;
-        if (this.anim && this.anim.node) this.anim.node.active = true;
-      }
+
+        this.setAnimationActive(this.attackAnim, false);
+        this.setAnimationActive(this.anim, true);
+
+        let dir = this.getInputDirection();
+        if (
+          dir.mag() > 0 &&
+          !this.anim.getAnimationState("Soldier").isPlaying
+        ) {
+          this.anim.play("Soldier");
+        } else if (dir.mag() === 0) {
+          this.anim.stop("Soldier");
+        }
+      });
+    } else {
+      this.isAttacking = false;
+      this.setAnimationActive(this.attackAnim, false);
+      this.setAnimationActive(this.anim, true);
     }
   },
 
   attackNearbyEnemies() {
     const ATTACK_RANGE = 100;
     let damage = this.baseAttack;
-
-    const isCrit = Math.random() < this.criticalRate;
-    if (isCrit) {
-      damage *= 2;
-    }
+    if (Math.random() < this.criticalRate) damage *= 2;
 
     if (!this.canvasNode) return;
 
@@ -208,41 +171,38 @@ cc.Class({
     enemies.forEach((enemy) => {
       if (!enemy || !enemy.isValid) return;
 
-      const dist = this.node.getPosition().sub(enemy.getPosition()).mag();
+      const dist = this.node.position.sub(enemy.position).mag();
       if (dist <= ATTACK_RANGE) {
         const enemyScript = enemy.getComponent("Enemy");
-        if (enemyScript && typeof enemyScript.takeDamage === "function") {
-          enemyScript.takeDamage(damage);
-        }
+        if (enemyScript?.takeDamage) enemyScript.takeDamage(damage);
       }
     });
   },
 
+  // --- SKILL ---
   handleSkill(dt) {
     if (!this.skillNode) return;
 
     this.skillTimer += dt;
+    if (this.skillTimer < this.skillCooldown || !this.canUseSkill) return;
 
-    if (this.skillTimer >= this.skillCooldown && this.canUseSkill) {
-      this.skillTimer = 0;
-      this.canUseSkill = false;
+    this.skillTimer = 0;
+    this.canUseSkill = false;
 
-      this.skillNode.setPosition(cc.v2(0, 0)); // Reset về tâm Player (nếu cần)
-      this.skillNode.active = true;
+    this.skillNode.setPosition(cc.v2(0, 0));
+    this.skillNode.active = true;
 
-      const anim = this.skillNode.getComponent(cc.Animation);
-      if (anim && anim.getAnimationState("SkillSplash")) {
-        anim.play("SkillSplash");
-
-        anim.once("finished", () => {
-          this.skillNode.active = false;
-          this.canUseSkill = true;
-          this.skillDamageArea(); // Gây damage ở vị trí player
-        });
-      } else {
+    const anim = this.skillNode.getComponent(cc.Animation);
+    if (anim && anim.getAnimationState("SkillSplash")) {
+      anim.play("SkillSplash");
+      anim.once("finished", () => {
         this.skillNode.active = false;
         this.canUseSkill = true;
-      }
+        this.skillDamageArea();
+      });
+    } else {
+      this.skillNode.active = false;
+      this.canUseSkill = true;
     }
   },
 
@@ -259,62 +219,27 @@ cc.Class({
     enemies.forEach((enemy) => {
       if (!enemy || !enemy.isValid) return;
 
-      const dist = this.node.getPosition().sub(enemy.getPosition()).mag();
+      const dist = this.node.position.sub(enemy.position).mag();
       if (dist <= SKILL_RANGE) {
         const enemyScript = enemy.getComponent("Enemy");
-        if (enemyScript && typeof enemyScript.takeDamage === "function") {
-          enemyScript.takeDamage(SKILL_DAMAGE);
-        }
+        if (enemyScript?.takeDamage) enemyScript.takeDamage(SKILL_DAMAGE);
       }
     });
   },
+
+  // --- EXP & LEVEL UP ---
   gainExp(amount) {
     this.currentExp += amount;
-    this.updateExpUI();
-
-    while (this.currentExp >= this.expToNextLevel) {
-      this.currentExp -= this.expToNextLevel;
-      this.level += 1;
-      this.applyLevelUp();
-    }
-
+    this.tryLevelUp();
     this.updateExpUI();
   },
-  collectNearbyExp() {
-    const EXP_GROUP = "exp";
-    if (!this.canvasNode) return;
 
-    const expNodes = this.canvasNode.children.filter(
-      (node) => node.group === EXP_GROUP || node.name === "Exp"
-    );
-
-    expNodes.forEach((expNode) => {
-      if (!expNode || !expNode.isValid) return;
-
-      const playerPos = this.node.getPosition();
-      const expPos = expNode.getPosition();
-      const dist = playerPos.sub(expPos).mag();
-
-      if (dist <= this.expPickupRange) {
-        // Tốc độ hút exp, ví dụ 300 pixels / giây
-        const speed = 300;
-        // Tính hướng di chuyển (vector đơn vị)
-        const direction = playerPos.sub(expPos).normalize();
-        // Di chuyển exp về player
-        const moveDist = speed * (1 / 60); // giả sử 60fps, hoặc dùng dt nếu trong update
-        const newPos = expPos.add(direction.mul(moveDist));
-        expNode.setPosition(newPos);
-
-        // Nếu exp đã gần player đủ (dưới 10 px), thì hút exp và destroy
-        if (newPos.sub(playerPos).mag() < 10) {
-          const expScript = expNode.getComponent("Exp");
-          if (expScript && typeof expScript.getAmount === "function") {
-            this.gainExp(expScript.getAmount());
-          }
-          expNode.destroy();
-        }
-      }
-    });
+  tryLevelUp() {
+    while (this.currentExp >= this.expToNextLevel) {
+      this.currentExp -= this.expToNextLevel;
+      this.level++;
+      this.applyLevelUp();
+    }
   },
 
   applyLevelUp() {
@@ -325,21 +250,83 @@ cc.Class({
     this.expPickupRange += 10;
     this.criticalRate += 0.05;
 
-    // Cứ mỗi cấp tăng 25% EXP cần
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.25);
 
+    this.updateAllUI();
+  },
+
+  collectNearbyExp(dt) {
+    if (!this.canvasNode) return;
+
+    const EXP_GROUP = "exp";
+    const expNodes = this.canvasNode.children.filter(
+      (node) => node.group === EXP_GROUP || node.name === "Exp"
+    );
+
+    const playerPos = this.node.position;
+    const speed = 300;
+
+    expNodes.forEach((expNode) => {
+      if (!expNode || !expNode.isValid) return;
+
+      const expPos = expNode.position;
+      const dist = playerPos.sub(expPos).mag();
+
+      if (dist <= this.expPickupRange) {
+        const direction = playerPos.sub(expPos).normalize();
+        const moveDist = speed * dt;
+        const newPos = expPos.add(direction.mul(moveDist));
+        expNode.setPosition(newPos);
+
+        if (newPos.sub(playerPos).mag() < 10) {
+          const expScript = expNode.getComponent("Exp");
+          if (expScript?.getAmount) {
+            this.gainExp(expScript.getAmount());
+          }
+          expNode.destroy();
+        }
+      }
+    });
+  },
+
+  // --- HP ---
+  takeDamage(amount) {
+    this.currentHp -= amount;
+    if (this.currentHp < 0) this.currentHp = 0;
     this.updateHpLabel();
-    this.updateStatsLabel(); // ← Thêm dòng này
-    this.updateExpUI();
+  },
+
+  // --- UI UPDATE HELPERS ---
+  updateHpLabel() {
+    if (this.hpLabel) {
+      this.hpLabel.string = `HP: ${this.currentHp}`;
+    }
+  },
+
+  updateStatsLabel() {
+    if (this.attackLabel) this.attackLabel.string = `Atk: ${this.baseAttack}`;
+    if (this.critLabel)
+      this.critLabel.string = `Crit: ${Math.floor(this.criticalRate * 100)}%`;
+    if (this.rangeLabel)
+      this.rangeLabel.string = `Range: ${this.expPickupRange}`;
   },
 
   updateExpUI() {
-    if (this.expBar) {
+    if (this.expBar)
       this.expBar.progress = this.currentExp / this.expToNextLevel;
-    }
-    if (this.levelLabel) {
-      this.levelLabel.string = "Lv: " + this.level;
-    }
+    if (this.levelLabel) this.levelLabel.string = `Lv: ${this.level}`;
+  },
+
+  updateAllUI() {
+    this.updateHpLabel();
+    this.updateStatsLabel();
+    this.updateExpUI();
+  },
+
+  setAnimationActive(animationComponent, isActive) {
+    if (!animationComponent || !animationComponent.node) return;
+    animationComponent.node.active = isActive;
+    if (!isActive) animationComponent.stop();
   },
 
   clampPositionToCanvas(pos) {
