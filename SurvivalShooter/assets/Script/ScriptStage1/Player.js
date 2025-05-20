@@ -15,6 +15,9 @@ cc.Class({
     skillCooldown: 4, // Thời gian hồi kỹ năng
     expBar: cc.ProgressBar,
     levelLabel: cc.Label,
+    attackLabel: cc.Label,
+    critLabel: cc.Label,
+    rangeLabel: cc.Label,
 
     level: 1,
     currentExp: 0,
@@ -28,7 +31,7 @@ cc.Class({
   onLoad() {
     this.currentHp = this.maxHp;
     this.updateHpLabel();
-
+    this.updateStatsLabel(); // ← Thêm dòng này
     this.keyPressed = {};
     this.lastDir = cc.v2(0, 0);
     this.attackTimer = 0;
@@ -56,6 +59,7 @@ cc.Class({
     this.handleMovement(dt);
     this.handleAutoAttack(dt);
     this.handleSkill(dt);
+    this.collectNearbyExp();
   },
 
   takeDamage(amount) {
@@ -67,6 +71,18 @@ cc.Class({
   updateHpLabel() {
     if (this.hpLabel) {
       this.hpLabel.string = "HP: " + this.currentHp;
+    }
+  },
+  updateStatsLabel() {
+    if (this.attackLabel) {
+      this.attackLabel.string = "Atk: " + this.baseAttack;
+    }
+    if (this.critLabel) {
+      this.critLabel.string =
+        "Crit: " + Math.floor(this.criticalRate * 100) + "%";
+    }
+    if (this.rangeLabel) {
+      this.rangeLabel.string = "Range: " + this.expPickupRange;
     }
   },
 
@@ -264,6 +280,42 @@ cc.Class({
 
     this.updateExpUI();
   },
+  collectNearbyExp() {
+    const EXP_GROUP = "exp";
+    if (!this.canvasNode) return;
+
+    const expNodes = this.canvasNode.children.filter(
+      (node) => node.group === EXP_GROUP || node.name === "Exp"
+    );
+
+    expNodes.forEach((expNode) => {
+      if (!expNode || !expNode.isValid) return;
+
+      const playerPos = this.node.getPosition();
+      const expPos = expNode.getPosition();
+      const dist = playerPos.sub(expPos).mag();
+
+      if (dist <= this.expPickupRange) {
+        // Tốc độ hút exp, ví dụ 300 pixels / giây
+        const speed = 300;
+        // Tính hướng di chuyển (vector đơn vị)
+        const direction = playerPos.sub(expPos).normalize();
+        // Di chuyển exp về player
+        const moveDist = speed * (1 / 60); // giả sử 60fps, hoặc dùng dt nếu trong update
+        const newPos = expPos.add(direction.mul(moveDist));
+        expNode.setPosition(newPos);
+
+        // Nếu exp đã gần player đủ (dưới 10 px), thì hút exp và destroy
+        if (newPos.sub(playerPos).mag() < 10) {
+          const expScript = expNode.getComponent("Exp");
+          if (expScript && typeof expScript.getAmount === "function") {
+            this.gainExp(expScript.getAmount());
+          }
+          expNode.destroy();
+        }
+      }
+    });
+  },
 
   applyLevelUp() {
     this.maxHp += 20;
@@ -277,6 +329,7 @@ cc.Class({
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.25);
 
     this.updateHpLabel();
+    this.updateStatsLabel(); // ← Thêm dòng này
     this.updateExpUI();
   },
 
