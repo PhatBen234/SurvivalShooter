@@ -1,10 +1,6 @@
 {
   "ver": "1.1.0",
-<<<<<<<< HEAD:SurvivalShooter/assets/Script/Skill/SkillData.js.meta
-  "uuid": "10f20cb4-7e9f-49f7-8aef-8a21ed9129d7",
-========
-  "uuid": "b17cee64-a06e-4093-9373-76756b017869",
->>>>>>>> dev:SurvivalShooter/assets/Script/ScriptStage1/Exp.js.meta
+  "uuid": "73983cbc-9d7c-43cb-88a6-196578aefa09",
   "importer": "javascript",
   "isPlugin": false,
   "loadPluginInWeb": true,
