@@ -36,10 +36,13 @@ cc.Class({
       let move = dir.normalize().mul(this.speed * dt);
       this.node.position = this.node.position.add(move);
     } else {
-      let playerScript = this.player.getComponent("Player");
+      let playerScript =
+        this.player.getComponent("Player") ||
+        this.player.getComponent("PlayerStage2");
       if (playerScript) {
         playerScript.takeDamage(this.damage);
       }
+
       // this.node.destroy(); // nếu là kamikaze thì bật lại dòng này
     }
   },

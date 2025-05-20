@@ -18,10 +18,14 @@ cc.Class({
     const dir = playerPos.sub(currentPos);
 
     if (dir.mag() < this.pickupRange) {
-      const playerScript = this.targetPlayer.getComponent("Player");
-      if (playerScript) {
+      const playerScript =
+        this.targetPlayer.getComponent("Player") ||
+        this.targetPlayer.getComponent("PlayerStage2"); // ✅ Thêm dòng này
+
+      if (playerScript && typeof playerScript.gainExp === "function") {
         playerScript.gainExp(this.expAmount);
       }
+
       this.node.destroy();
     }
   },
