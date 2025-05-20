@@ -36,11 +36,9 @@ cc.Class({
 
     this.keyPressed = {};
     this.lastDir = cc.v2(0, 0);
-
     this.attackTimer = 0;
-    this.isAttacking = false;
-
     this.skillTimer = 0;
+    this.isAttacking = false;
     this.canUseSkill = true;
 
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
@@ -48,10 +46,7 @@ cc.Class({
 
     this.setAnimationActive(this.anim, true);
     this.setAnimationActive(this.attackAnim, false);
-
     if (this.skillNode) this.skillNode.active = false;
-
-    console.log("Player loaded. HP:", this.currentHp, "Level:", this.level);
   },
 
   onDestroy() {
@@ -75,7 +70,6 @@ cc.Class({
     this.keyPressed[event.keyCode] = false;
   },
 
-  // --- MOVEMENT ---
   getInputDirection() {
     let dir = cc.v2(0, 0);
     if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
@@ -85,25 +79,21 @@ cc.Class({
     return dir;
   },
 
+  // --- MOVEMENT ---
   handleMovement(dt) {
     if (!this.anim) return;
 
     let dir = this.getInputDirection();
-
     if (!dir.equals(this.lastDir)) {
       this.lastDir = dir.clone();
     }
 
     if (dir.mag() > 0) {
       dir = dir.normalize();
-
       this.node.scaleX = dir.x !== 0 ? (dir.x > 0 ? 1 : -1) : this.node.scaleX;
 
-      let pos = this.node.getPosition();
-      pos = pos.add(dir.mul(this.speed * dt));
-      pos = this.clampPositionToCanvas(pos);
-
-      this.node.setPosition(pos);
+      let newPos = this.node.getPosition().add(dir.mul(this.speed * dt));
+      this.node.setPosition(this.clampPositionToCanvas(newPos));
 
       if (
         !this.isAttacking &&
@@ -142,25 +132,23 @@ cc.Class({
       this.attackAnim.play("ArrowAttack");
       attackState.once("finished", () => {
         this.spawnArrowToTarget(target);
-        this.isAttacking = false;
-
-        this.setAnimationActive(this.attackAnim, false);
-        this.setAnimationActive(this.anim, true);
-
-        let dir = this.getInputDirection();
-        if (
-          dir.mag() > 0 &&
-          !this.anim.getAnimationState("Soldier").isPlaying
-        ) {
-          this.anim.play("Soldier");
-        } else if (dir.mag() === 0) {
-          this.anim.stop("Soldier");
-        }
+        this.finishAttack();
       });
     } else {
-      this.isAttacking = false;
-      this.setAnimationActive(this.attackAnim, false);
-      this.setAnimationActive(this.anim, true);
+      this.finishAttack();
+    }
+  },
+
+  finishAttack() {
+    this.isAttacking = false;
+    this.setAnimationActive(this.attackAnim, false);
+    this.setAnimationActive(this.anim, true);
+
+    let dir = this.getInputDirection();
+    if (dir.mag() > 0 && !this.anim.getAnimationState("Soldier").isPlaying) {
+      this.anim.play("Soldier");
+    } else if (dir.mag() === 0) {
+      this.anim.stop("Soldier");
     }
   },
 
@@ -196,12 +184,7 @@ cc.Class({
     const arrowScript = arrow.getComponent("Arrow");
     if (arrowScript && arrowScript.init) {
       let damage = this.baseAttack;
-      if (Math.random() < this.criticalRate) {
-        damage *= 2;
-        console.log("Critical Hit!");
-      }
-
-      console.log("Spawned arrow. Target:", target.name, "Damage:", damage);
+      if (Math.random() < this.criticalRate) damage *= 2;
       arrowScript.init(target, damage);
     }
   },
@@ -249,17 +232,15 @@ cc.Class({
       if (dist <= SKILL_RANGE) {
         const enemyScript = enemy.getComponent("Enemy");
         if (enemyScript?.takeDamage) {
-          console.log("Skill hit:", enemy.name, "for", SKILL_DAMAGE, "damage");
           enemyScript.takeDamage(SKILL_DAMAGE);
         }
       }
     });
   },
 
-  // --- EXP ---
+  // --- EXP SYSTEM ---
   gainExp(amount) {
     this.currentExp += amount;
-    console.log("Gained EXP:", amount, "Total:", this.currentExp);
     this.tryLevelUp();
     this.updateExpUI();
   },
@@ -268,7 +249,6 @@ cc.Class({
     while (this.currentExp >= this.expToNextLevel) {
       this.currentExp -= this.expToNextLevel;
       this.level++;
-      console.log("Level Up! New level:", this.level);
       this.applyLevelUp();
     }
   },
@@ -276,22 +256,18 @@ cc.Class({
   applyLevelUp() {
     this.maxHp += 20;
     this.currentHp = this.maxHp;
-
     this.baseAttack += 5;
     this.expPickupRange += 10;
     this.criticalRate += 0.05;
-
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.25);
-
     this.updateAllUI();
   },
 
   collectNearbyExp(dt) {
     if (!this.canvasNode) return;
 
-    const EXP_GROUP = "exp";
     const expNodes = this.canvasNode.children.filter(
-      (node) => node.group === EXP_GROUP || node.name === "Exp"
+      (node) => node.group === "exp" || node.name === "Exp"
     );
 
     const playerPos = this.node.position;
@@ -304,9 +280,9 @@ cc.Class({
       const dist = playerPos.sub(expPos).mag();
 
       if (dist <= this.expPickupRange) {
-        const direction = playerPos.sub(expPos).normalize();
+        const moveDir = playerPos.sub(expPos).normalize();
         const moveDist = speed * dt;
-        const newPos = expPos.add(direction.mul(moveDist));
+        const newPos = expPos.add(moveDir.mul(moveDist));
         expNode.setPosition(newPos);
 
         if (newPos.sub(playerPos).mag() < 10) {
@@ -320,14 +296,13 @@ cc.Class({
     });
   },
 
+  // --- DAMAGE ---
   takeDamage(amount) {
-    this.currentHp -= amount;
-    if (this.currentHp < 0) this.currentHp = 0;
-    console.log("Player took damage:", amount, "Current HP:", this.currentHp);
+    this.currentHp = Math.max(this.currentHp - amount, 0);
     this.updateHpLabel();
   },
 
-  // --- UI ---
+  // --- UI UPDATES ---
   updateHpLabel() {
     if (this.hpLabel) this.hpLabel.string = `HP: ${this.currentHp}`;
   },
@@ -352,6 +327,7 @@ cc.Class({
     this.updateExpUI();
   },
 
+  // --- UTILS ---
   setAnimationActive(animationComponent, isActive) {
     if (!animationComponent || !animationComponent.node) return;
     animationComponent.node.active = isActive;
@@ -363,13 +339,12 @@ cc.Class({
 
     const canvasSize = this.canvasNode.getContentSize();
     const nodeSize = this.node.getContentSize();
-
     const limitX = canvasSize.width / 2 - nodeSize.width - 12;
     const limitY = canvasSize.height / 2 - nodeSize.height - 12;
 
-    const clampedX = Math.min(Math.max(pos.x, -limitX), limitX);
-    const clampedY = Math.min(Math.max(pos.y, -limitY), limitY);
-
-    return cc.v2(clampedX, clampedY);
+    return cc.v2(
+      Math.min(Math.max(pos.x, -limitX), limitX),
+      Math.min(Math.max(pos.y, -limitY), limitY)
+    );
   },
 });
