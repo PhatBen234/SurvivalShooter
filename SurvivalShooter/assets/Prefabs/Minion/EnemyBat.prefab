@@ -351,7 +351,11 @@
     "hpLabel": {
       "__id__": 7
     },
-    "maxHp": 10,
+    "maxHp": 100,
+    "expPrefab": {
+      "__uuid__": "e9655eec-04e0-4f14-952a-4cc9ae24fd52"
+    },
+    "expAmount": 20,
     "_id": ""
   },
   {
