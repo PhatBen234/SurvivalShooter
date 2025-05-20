@@ -1,0 +1,49 @@
+{
+  "__type__": "cc.AnimationClip",
+  "_name": "ZoomWarning",
+  "_objFlags": 0,
+  "_native": "",
+  "_duration": 1.1666666666666667,
+  "sample": 60,
+  "speed": 1,
+  "wrapMode": 1,
+  "curveData": {
+    "props": {
+      "width": [
+        {
+          "frame": 0,
+          "value": 0
+        },
+        {
+          "frame": 0.75,
+          "value": 100
+        }
+      ],
+      "height": [
+        {
+          "frame": 0,
+          "value": 0
+        },
+        {
+          "frame": 0.75,
+          "value": 100
+        }
+      ],
+      "opacity": [
+        {
+          "frame": 0,
+          "value": 255
+        },
+        {
+          "frame": 0.75,
+          "value": 255
+        },
+        {
+          "frame": 1.1666666666666667,
+          "value": 0
+        }
+      ]
+    }
+  },
+  "events": []
+}
