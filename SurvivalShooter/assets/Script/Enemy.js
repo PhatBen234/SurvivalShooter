@@ -1,15 +1,9 @@
-const EnemyType = require("EnemyType");
-
 cc.Class({
     extends: cc.Component,
 
     properties: {
         speed: 100,
         damage: 1,
-        enemyTypes: {
-            default: [],
-            type: [EnemyType],
-        },
 
         spriteNode: cc.Node, // trỏ tới node con Sprite
         hpLabel: cc.Label,   // node Label hiển thị máu
@@ -17,26 +11,6 @@ cc.Class({
     },
 
     onLoad () {
-        // Random loại enemy và gán sprite + animation
-        if (this.enemyTypes.length > 0 && this.spriteNode) {
-            const randIndex = Math.floor(Math.random() * this.enemyTypes.length);
-            const selectedType = this.enemyTypes[randIndex];
-
-            const sprite = this.spriteNode.getComponent(cc.Sprite);
-            if (sprite && selectedType.spriteFrame) {
-                sprite.spriteFrame = selectedType.spriteFrame;
-            }
-
-            const anim = this.spriteNode.getComponent(cc.Animation);
-            if (anim && selectedType.animationClip) {
-                if (!anim.getClips().includes(selectedType.animationClip)) {
-                    anim.addClip(selectedType.animationClip);
-                }
-                anim.play(selectedType.animationClip.name);
-            }
-        }
-
-        // Gán máu ban đầu và cập nhật label
         this.hp = this.maxHp;
         this.updateHpLabel();
     },
@@ -50,7 +24,11 @@ cc.Class({
         // Lật enemy theo hướng di chuyển
         this.node.scaleX = dir.x > 0 ? 1 : -1;
 
-        // Di chuyển hoặc tấn công
+        // Giữ label không bị lật
+        if (this.hpLabel && this.hpLabel.node) {
+            this.hpLabel.node.scaleX = 1 / this.node.scaleX;
+        }
+
         if (distance > 5) {
             let move = dir.normalize().mul(this.speed * dt);
             this.node.position = this.node.position.add(move);
@@ -59,8 +37,7 @@ cc.Class({
             if (playerScript) {
                 playerScript.takeDamage(this.damage);
             }
-            // Có thể destroy enemy nếu là kiểu kamikaze
-            // this.node.destroy();
+            // this.node.destroy(); // nếu là kamikaze thì bật lại dòng này
         }
     },
 
@@ -73,7 +50,7 @@ cc.Class({
         if (this.hp <= 0) {
             this.hp = 0;
             this.updateHpLabel();
-            this.node.destroy(); // Enemy chết
+            this.node.destroy();
         } else {
             this.updateHpLabel();
         }

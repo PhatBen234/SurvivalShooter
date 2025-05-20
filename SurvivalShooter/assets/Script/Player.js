@@ -9,7 +9,10 @@ cc.Class({
         attackAnim: cc.Animation,
         speed: 200,
         canvasNode: cc.Node,
-        attackInterval: 2
+        attackInterval: 2,
+
+        skillNode: cc.Node,     // Đặt skillNode làm con của Player trong Hierarchy
+        skillCooldown: 4,       // Thời gian hồi kỹ năng
     },
 
     onLoad () {
@@ -21,18 +24,16 @@ cc.Class({
         this.attackTimer = 0;
         this.isAttacking = false;
 
+        this.skillTimer = 0;
+        this.canUseSkill = true;
+
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
         cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
         if (this.anim && this.anim.node) this.anim.node.active = true;
         if (this.attackAnim && this.attackAnim.node) this.attackAnim.node.active = false;
 
-        if (this.anim) {
-            cc.log("Walk clips:", this.anim.getClips().map(c => c.name));
-        }
-        if (this.attackAnim) {
-            cc.log("Attack clips:", this.attackAnim.getClips().map(c => c.name));
-        }
+        if (this.skillNode) this.skillNode.active = false;
     },
 
     onDestroy() {
@@ -43,6 +44,7 @@ cc.Class({
     update(dt) {
         this.handleMovement(dt);
         this.handleAutoAttack(dt);
+        this.handleSkill(dt);
     },
 
     takeDamage(amount) {
@@ -112,8 +114,6 @@ cc.Class({
             this.attackTimer = 0;
             this.isAttacking = true;
 
-            cc.log("[AutoAttack] Start attack animation");
-
             if (this.anim && this.anim.node) {
                 this.anim.node.active = false;
                 this.anim.stop();
@@ -128,22 +128,16 @@ cc.Class({
                 this.attackAnim.play("SoldierAttack");
 
                 attackState.once("finished", () => {
-                    cc.log("[AutoAttack] Attack animation finished");
-
-                    // Gây damage tại đây khi animation tấn công kết thúc
                     this.attackNearbyEnemies();
-
                     this.isAttacking = false;
 
                     if (this.attackAnim.node) {
                         this.attackAnim.node.active = false;
                     }
-
                     if (this.anim && this.anim.node) {
                         this.anim.node.active = true;
                     }
 
-                    // Tự động chơi lại anim đi bộ nếu có phím di chuyển
                     let dir = cc.v2(0, 0);
                     if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
                     if (this.keyPressed[cc.macro.KEY.d]) dir.x += 1;
@@ -159,15 +153,9 @@ cc.Class({
                     }
                 });
             } else {
-                cc.warn("[AutoAttack] Attack clip 'SoldierAttack' not found!");
                 this.isAttacking = false;
-
-                if (this.attackAnim.node) {
-                    this.attackAnim.node.active = false;
-                }
-                if (this.anim && this.anim.node) {
-                    this.anim.node.active = true;
-                }
+                if (this.attackAnim.node) this.attackAnim.node.active = false;
+                if (this.anim && this.anim.node) this.anim.node.active = true;
             }
         }
     },
@@ -176,10 +164,7 @@ cc.Class({
         const ATTACK_RANGE = 100;
         const DAMAGE = 10;
 
-        if (!this.canvasNode) {
-            cc.warn("[attackNearbyEnemies] canvasNode chưa được gán");
-            return;
-        }
+        if (!this.canvasNode) return;
 
         const enemies = this.canvasNode.children.filter(node => 
             node.name === "Enemy" || node.group === "enemy"
@@ -193,17 +178,64 @@ cc.Class({
                 const enemyScript = enemy.getComponent("Enemy");
                 if (enemyScript && typeof enemyScript.takeDamage === "function") {
                     enemyScript.takeDamage(DAMAGE);
-                    cc.log(`[attackNearbyEnemies] Damaged enemy at distance ${dist.toFixed(2)}`);
+                }
+            }
+        });
+    },
+
+    handleSkill(dt) {
+        if (!this.skillNode) return;
+
+        this.skillTimer += dt;
+
+        if (this.skillTimer >= this.skillCooldown && this.canUseSkill) {
+            this.skillTimer = 0;
+            this.canUseSkill = false;
+
+            this.skillNode.setPosition(cc.v2(0, 0));  // Reset về tâm Player (nếu cần)
+            this.skillNode.active = true;
+
+            const anim = this.skillNode.getComponent(cc.Animation);
+            if (anim && anim.getAnimationState("SkillSplash")) {
+                anim.play("SkillSplash");
+
+                anim.once("finished", () => {
+                    this.skillNode.active = false;
+                    this.canUseSkill = true;
+                    this.skillDamageArea(); // Gây damage ở vị trí player
+                });
+            } else {
+                this.skillNode.active = false;
+                this.canUseSkill = true;
+            }
+        }
+    },
+
+    skillDamageArea() {
+        const SKILL_RANGE = 200;
+        const SKILL_DAMAGE = 20;
+
+        if (!this.canvasNode) return;
+
+        const enemies = this.canvasNode.children.filter(node =>
+            node.name === "Enemy" || node.group === "enemy"
+        );
+
+        enemies.forEach(enemy => {
+            if (!enemy || !enemy.isValid) return;
+
+            const dist = this.node.getPosition().sub(enemy.getPosition()).mag();
+            if (dist <= SKILL_RANGE) {
+                const enemyScript = enemy.getComponent("Enemy");
+                if (enemyScript && typeof enemyScript.takeDamage === "function") {
+                    enemyScript.takeDamage(SKILL_DAMAGE);
                 }
             }
         });
     },
 
     clampPositionToCanvas(pos) {
-        if (!this.canvasNode) {
-            cc.warn("[clampPositionToCanvas] canvasNode is not assigned!");
-            return pos;
-        }
+        if (!this.canvasNode) return pos;
 
         const canvasSize = this.canvasNode.getContentSize();
         const nodeSize = this.node.getContentSize();

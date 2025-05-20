@@ -82,7 +82,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Enemy Sprite Minion",
+    "_name": "Bat",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -110,8 +110,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 45,
-      "height": 35
+      "width": 44,
+      "height": 23
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -163,10 +163,10 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "964e8d4f-9fda-4257-8daa-7be8e00950cf"
+      "__uuid__": "ef164bdc-4c42-48a9-8d70-c6bf957abea9"
     },
     "_type": 0,
-    "_sizeMode": 0,
+    "_sizeMode": 1,
     "_fillType": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
@@ -177,7 +177,7 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_atlas": {
-      "__uuid__": "f3b815f0-bc05-411c-b4f1-df7021df7f5d"
+      "__uuid__": "56aa3ab1-9087-4c0f-83cb-0e1b27b77e3d"
     },
     "_id": ""
   },
@@ -190,11 +190,11 @@
     },
     "_enabled": true,
     "_defaultClip": {
-      "__uuid__": "f5d76d8e-f38f-4df2-b079-abe6dd32c8cc"
+      "__uuid__": "daf838a9-4d8b-434b-b52e-68cf39b78486"
     },
     "_clips": [
       {
-        "__uuid__": "f5d76d8e-f38f-4df2-b079-abe6dd32c8cc"
+        "__uuid__": "daf838a9-4d8b-434b-b52e-68cf39b78486"
       }
     ],
     "playOnLoad": true,
@@ -208,7 +208,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "a2vHdwSAVHBausAF704lup",
+    "fileId": "a1Yvq7CP1CppBmpwx9Xyou",
     "sync": false
   },
   {
@@ -253,7 +253,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -8.526,
+        -0.526,
         24.627,
         0,
         0,
