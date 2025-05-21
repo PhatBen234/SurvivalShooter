@@ -18,7 +18,7 @@ cc.Class({
     attackLabel: cc.Label,
     critLabel: cc.Label,
     rangeLabel: cc.Label,
-
+    skillManager: cc.Node,
     level: 1,
     currentExp: 0,
     expToNextLevel: 50,
@@ -40,7 +40,14 @@ cc.Class({
 
     this.skillTimer = 0;
     this.canUseSkill = true;
+    this.baseAttackDefault = this.baseAttack;
+    this.criticalRateDefault = this.criticalRate;
+    this.expPickupRangeDefault = this.expPickupRange;
+    this.attackIntervalDefault = this.attackInterval;
 
+    // Có thể thêm default maxHp, speed nếu skill có buff
+    this.maxHpDefault = this.maxHp;
+    this.speedDefault = this.speed;
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
@@ -253,6 +260,14 @@ cc.Class({
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.25);
 
     this.updateAllUI();
+
+    // Gọi SkillManager hiển thị bảng chọn kỹ năng
+    if (this.skillManager) {
+      let skillMgrScript = this.skillManager.getComponent("SkillManager");
+      if (skillMgrScript) {
+        skillMgrScript.onLevelUp(); // Gọi trực tiếp hàm hiển thị kỹ năng
+      }
+    }
   },
 
   collectNearbyExp(dt) {
