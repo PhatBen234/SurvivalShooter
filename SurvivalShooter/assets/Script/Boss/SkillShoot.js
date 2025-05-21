@@ -3,7 +3,7 @@ cc.Class({
 
     properties: {
         bulletPrefab: cc.Prefab,
-        shootCount: 12
+        shootCount: 36
     },
 
     shoot() {
