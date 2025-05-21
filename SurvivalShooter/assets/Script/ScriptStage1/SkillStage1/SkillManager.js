@@ -4,7 +4,7 @@ cc.Class({
   extends: cc.Component,
 
   properties: {
-    player: cc.Node, // node player, hoặc bạn truyền object player vào
+    player: cc.Node,
     skillPanel: cc.Node,
     skillOptionPrefab: cc.Prefab,
     ownedSkillsLabel: cc.Label,
@@ -18,19 +18,15 @@ cc.Class({
   },
 
   onLevelUp() {
-    // Lấy random skill chưa max level
     const choices = this.getRandomSkills(this.maxSkillsToShow);
     this.showSkillPanel(choices);
   },
 
   getRandomSkills(count) {
-    // Lọc ra skill còn có thể nâng cấp
     const available = defaultSkills.filter((skill) => {
       const level = this.playerSkills[skill.id] || 0;
       return level < skill.maxLevel;
     });
-
-    // Trộn mảng và lấy count phần tử
     const shuffled = available.sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count);
   },
@@ -49,9 +45,43 @@ cc.Class({
 
   selectSkill(skill) {
     const currentLevel = this.playerSkills[skill.id] || 0;
+    if (currentLevel >= skill.maxLevel) {
+      cc.warn(`[SkillManager] Skill ${skill.name} đã đạt max level`);
+      return;
+    }
+
     this.playerSkills[skill.id] = currentLevel + 1;
 
-    this.applyAllSkills(); // <-- Gọi thay vì apply từng skill riêng lẻ
+    // Cộng trực tiếp buff vào player
+    const playerComp = this.player.getComponent("Player");
+    if (!playerComp) {
+      cc.warn("[SkillManager] Player không có component Player");
+      return;
+    }
+
+    switch (skill.id) {
+      case 1: // Power Boost
+        playerComp.baseAttack += 5;
+        break;
+      case 2: // Range Boost
+        // Nếu player chưa có attackRange thì bạn phải thêm vào Player.js properties
+        if (playerComp.attackRange === undefined) {
+          playerComp.attackRange = 100; // ví dụ giá trị mặc định
+        }
+        playerComp.attackRange += 20;
+        break;
+      case 3: // Pickup Magnet
+        playerComp.expPickupRange += 15;
+        break;
+      case 4: // Crit Up
+        playerComp.criticalRate += 0.05;
+        break;
+    }
+
+    // Update lại UI cho player
+    if (playerComp.updateStatsLabel) {
+      playerComp.updateStatsLabel();
+    }
 
     this.skillPanel.active = false;
     this.updateOwnedSkillsLabel();
@@ -66,38 +96,5 @@ cc.Class({
       .join("\n");
 
     this.ownedSkillsLabel.string = "Skills Owned:\n" + text;
-  },
-  applyAllSkills() {
-    if (!this.player) {
-      cc.warn("[SkillManager] Không tìm thấy player để apply skill");
-      return;
-    }
-
-    const playerComp = this.player.getComponent("Player");
-    if (!playerComp) {
-      cc.warn("[SkillManager] Player không có component Player");
-      return;
-    }
-
-    // Reset chỉ số về mặc định (phải đảm bảo playerComp có các biến này)
-    playerComp.baseAttack = playerComp.baseAttackDefault || 0;
-    playerComp.attackRange = playerComp.attackRangeDefault || 0;
-    playerComp.expPickupRange = playerComp.expPickupRangeDefault || 0;
-    playerComp.attackInterval = playerComp.attackIntervalDefault || 1;
-    playerComp.criticalRate = playerComp.criticalRateDefault || 0;
-    playerComp.lifeRegenAmount = 0;
-    playerComp.enableLifeRegen = false;
-
-    // Apply skill 1 lần theo level
-    Object.entries(this.playerSkills).forEach(([id, level]) => {
-      const skill = defaultSkills.find((s) => s.id === Number(id));
-      if (skill) {
-        skill.apply(playerComp, level);
-      }
-    });
-
-    cc.log(
-      "[SkillManager] applyAllSkills - Đã cập nhật lại toàn bộ buff kỹ năng"
-    );
   },
 });

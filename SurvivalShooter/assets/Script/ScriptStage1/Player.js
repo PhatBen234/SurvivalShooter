@@ -2,30 +2,43 @@ cc.Class({
   extends: cc.Component,
 
   properties: {
+    // HP & di chuyển
     maxHp: 100,
     currentHp: 100,
-    hpLabel: cc.Label,
-    anim: cc.Animation,
-    attackAnim: cc.Animation,
     speed: 200,
     canvasNode: cc.Node,
-    attackInterval: 2,
 
-    skillNode: cc.Node,
-    skillCooldown: 4,
-    expBar: cc.ProgressBar,
-    levelLabel: cc.Label,
-    attackLabel: cc.Label,
-    critLabel: cc.Label,
-    rangeLabel: cc.Label,
-    skillManager: cc.Node,
+    // Animation
+    anim: cc.Animation,
+    attackAnim: cc.Animation,
+
+    // Attack stats
+    baseAttack: 10, // Tấn công cơ bản
+    criticalRate: 0.1, // Tỉ lệ chí mạng (10%)
+    attackRange: 100, // Tầm tấn công
+
+    // EXP & Level
     level: 1,
     currentExp: 0,
     expToNextLevel: 50,
+    expPickupRange: 100, // Tầm hút exp
+    expBar: cc.ProgressBar,
+    levelLabel: cc.Label,
 
-    baseAttack: 10,
-    criticalRate: 0.1,
-    expPickupRange: 100,
+    // UI Label
+    hpLabel: cc.Label,
+    attackLabel: cc.Label,
+    critLabel: cc.Label,
+    expRangeLabel: cc.Label,
+    attackRangeLabel: cc.Label,
+
+    // Kỹ năng
+    skillNode: cc.Node,
+    skillCooldown: 4,
+    skillManager: cc.Node,
+
+    // Auto attack
+    attackInterval: 2,
   },
 
   onLoad() {
@@ -40,14 +53,7 @@ cc.Class({
 
     this.skillTimer = 0;
     this.canUseSkill = true;
-    this.baseAttackDefault = this.baseAttack;
-    this.criticalRateDefault = this.criticalRate;
-    this.expPickupRangeDefault = this.expPickupRange;
-    this.attackIntervalDefault = this.attackInterval;
 
-    // Có thể thêm default maxHp, speed nếu skill có buff
-    this.maxHpDefault = this.maxHp;
-    this.speedDefault = this.speed;
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
@@ -165,7 +171,6 @@ cc.Class({
   },
 
   attackNearbyEnemies() {
-    const ATTACK_RANGE = 100;
     let damage = this.baseAttack;
     if (Math.random() < this.criticalRate) damage *= 2;
 
@@ -179,7 +184,7 @@ cc.Class({
       if (!enemy || !enemy.isValid) return;
 
       const dist = this.node.position.sub(enemy.position).mag();
-      if (dist <= ATTACK_RANGE) {
+      if (dist <= this.attackRange) {
         const enemyScript = enemy.getComponent("Enemy");
         if (enemyScript?.takeDamage) enemyScript.takeDamage(damage);
       }
@@ -256,7 +261,7 @@ cc.Class({
     this.baseAttack += 5;
     this.expPickupRange += 10;
     this.criticalRate += 0.05;
-
+    this.attackRange += 10;
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.25);
 
     this.updateAllUI();
@@ -265,7 +270,7 @@ cc.Class({
     if (this.skillManager) {
       let skillMgrScript = this.skillManager.getComponent("SkillManager");
       if (skillMgrScript) {
-        skillMgrScript.onLevelUp(); // Gọi trực tiếp hàm hiển thị kỹ năng
+        skillMgrScript.onLevelUp();
       }
     }
   },
@@ -322,8 +327,10 @@ cc.Class({
     if (this.attackLabel) this.attackLabel.string = `Atk: ${this.baseAttack}`;
     if (this.critLabel)
       this.critLabel.string = `Crit: ${Math.floor(this.criticalRate * 100)}%`;
-    if (this.rangeLabel)
-      this.rangeLabel.string = `Range: ${this.expPickupRange}`;
+    if (this.expRangeLabel)
+      this.expRangeLabel.string = `EXP Range: ${this.expPickupRange}`;
+    if (this.attackRangeLabel)
+      this.attackRangeLabel.string = `Attack Range: ${this.attackRange}`;
   },
 
   updateExpUI() {
@@ -342,6 +349,23 @@ cc.Class({
     if (!animationComponent || !animationComponent.node) return;
     animationComponent.node.active = isActive;
     if (!isActive) animationComponent.stop();
+  },
+  applyBuffsFromSkill(buffData) {
+    // buffData có thể có dạng { maxHp, speed, baseAttack, critRate, expPickupRange, attackInterval }
+    if (buffData.maxHp !== undefined) {
+      this.maxHp = buffData.maxHp;
+      this.currentHp = this.maxHp; // reset HP full khi buff maxHp
+    }
+    if (buffData.speed !== undefined) this.speed = buffData.speed;
+    if (buffData.baseAttack !== undefined)
+      this.baseAttack = buffData.baseAttack;
+    if (buffData.critRate !== undefined) this.criticalRate = buffData.critRate;
+    if (buffData.expPickupRange !== undefined)
+      this.expPickupRange = buffData.expPickupRange;
+    if (buffData.attackInterval !== undefined)
+      this.attackInterval = buffData.attackInterval;
+
+    this.updateAllUI();
   },
 
   clampPositionToCanvas(pos) {
