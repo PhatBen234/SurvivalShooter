@@ -28,7 +28,7 @@ cc.Class({
     }
 
     if (this.player) {
-      this.playerScript = this.player.getComponent("PlayerStage2");
+      this.playerScript = this.player.getComponent("PlayerStage3");
     }
   },
 
