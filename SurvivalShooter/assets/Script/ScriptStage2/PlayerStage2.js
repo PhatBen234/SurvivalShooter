@@ -326,6 +326,12 @@ cc.Class({
     this.currentHp -= amount;
     if (this.currentHp < 0) this.currentHp = 0;
     this.updateHpLabel();
+    this.node.runAction(
+      cc.sequence(
+        cc.fadeTo(0.1, 100),
+        cc.fadeTo(0.1, 255)
+      )
+    );
   },
 
   // --- UI UPDATE HELPERS ---

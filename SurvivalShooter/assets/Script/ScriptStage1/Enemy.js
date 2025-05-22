@@ -31,7 +31,8 @@ cc.Class({
   },
 
   update(dt) {
-    if (!this.player || !this.player.isValid) return;
+    if (!this.player || !this.player.isValid) 
+      return;
 
     let dir = this.player.position.sub(this.node.position);
     let distance = dir.mag();
