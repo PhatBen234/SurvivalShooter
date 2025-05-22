@@ -41,6 +41,8 @@ cc.Class({
       skillComp.init(skill, () => this.selectSkill(skill));
       this.skillPanel.addChild(node);
     });
+    //Pause Game
+    cc.director.pause();
   },
 
   selectSkill(skill) {
@@ -90,6 +92,9 @@ cc.Class({
 
     this.skillPanel.active = false;
     this.updateOwnedSkillsLabel();
+
+    // Resume Game
+    cc.director.resume();
   },
 
   updateOwnedSkillsLabel() {
