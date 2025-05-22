@@ -493,7 +493,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 150,
+      "width": 30,
       "height": 15
     },
     "_anchorPoint": {
@@ -618,7 +618,7 @@
       "__id__": 14
     },
     "_N$mode": 0,
-    "_N$progress": 0.5,
+    "_N$progress": 0.1,
     "_N$reverse": false,
     "_id": ""
   },
@@ -641,20 +641,17 @@
       "__id__": 1
     },
     "_enabled": true,
-    "anim": {
-      "__id__": 4
+    "hp": 200,
+    "moveSpeed": 100,
+    "damage": 10,
+    "hpBar": {
+      "__id__": 17
     },
     "skillShoot": {
       "__id__": 10
     },
     "skillDash": {
       "__id__": 7
-    },
-    "player": null,
-    "hp": 500,
-    "moveSpeed": 100,
-    "hpBar": {
-      "__id__": 17
     },
     "_id": ""
   },
