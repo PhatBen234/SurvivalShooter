@@ -26,6 +26,8 @@ cc.Class({
   },
 
   onLoad() {
+    console.log("MenuScript onLoad started");
+    
     this.menuBtnLayout.active = true;
     this.stageChose.active = false;
     this.homeBtn.active = false;
@@ -37,16 +39,87 @@ cc.Class({
     //Result Menu
     this.resultMenu.active = false;
 
-    // Phát nhạc lặp lại và lưu lại ID để điều chỉnh âm lượng
-    this.audioID = cc.audioEngine.play(this.music, true, 1);
+    // Thiết lập volume slider trước
+    this.setupVolumeSlider();
+    
+    // Thử phát nhạc ngay lập tức
+    this.playBackgroundMusic();
+    
+    // Backup: Thử phát nhạc sau khi user tương tác (do browser policy)
+    this.setupUserInteractionListener();
+  },
 
-    // Đặt max của thanh slider là 1 (max volume = 1)
+  setupVolumeSlider() {
     if (this.volumeSlider) {
-      this.volumeSlider.progress = 1;
+      // Đặt âm lượng mặc định là 100%
+      this.volumeSlider.progress = 1.0;
+      
+      // Lắng nghe sự kiện slide
       this.volumeSlider.node.on("slide", this.onVolumeChanged, this);
+      console.log("Volume slider setup complete, default volume: 1.0");
+    } else {
+      console.warn("Volume slider not assigned!");
     }
   },
 
+  playBackgroundMusic() {
+    console.log("Attempting to play background music...");
+    
+    if (!this.music) {
+      console.error("❌ Music asset not assigned to MenuScript!");
+      return;
+    }
+
+    console.log("Music asset found:", this.music.name);
+    
+    // Dừng nhạc cũ nếu có
+    if (this.currentAudioID !== undefined && this.currentAudioID !== -1) {
+      cc.audioEngine.stop(this.currentAudioID);
+    }
+
+    // Phát nhạc nền (loop = true, volume = 1.0)
+    this.currentAudioID = cc.audioEngine.play(this.music, true, 1.0);
+    
+    if (this.currentAudioID === -1) {
+      console.error("❌ Failed to play background music");
+      this.musicPlayFailed = true;
+    } else {
+      console.log("✅ Background music playing with ID:", this.currentAudioID);
+      this.musicPlayFailed = false;
+    }
+  },
+
+  setupUserInteractionListener() {
+    // Lắng nghe click đầu tiên để phát nhạc (browser policy)
+    this.node.once(cc.Node.EventType.TOUCH_START, () => {
+      if (this.musicPlayFailed || this.currentAudioID === -1 || this.currentAudioID === undefined) {
+        console.log("Retrying music playback after user interaction...");
+        this.playBackgroundMusic();
+      }
+    }, this);
+  },
+
+  onVolumeChanged() {
+    if (!this.volumeSlider) return;
+    
+    const volume = this.volumeSlider.progress;
+    console.log("Volume changed to:", volume);
+    
+    // Điều chỉnh âm lượng nếu nhạc đang phát
+    if (this.currentAudioID !== undefined && this.currentAudioID !== -1) {
+      cc.audioEngine.setVolume(this.currentAudioID, volume);
+      console.log("Applied volume to audio ID:", this.currentAudioID);
+    } else {
+      console.warn("No valid audio ID to adjust volume");
+      // Thử phát nhạc lại nếu chưa có
+      this.playBackgroundMusic();
+      if (this.currentAudioID !== undefined && this.currentAudioID !== -1) {
+        cc.audioEngine.setVolume(this.currentAudioID, volume);
+      }
+    }
+  },
+
+  // === MENU NAVIGATION ===
   onPlayClick() {
     this.menuBtnLayout.active = false;
     this.stageChose.active = true;
@@ -56,12 +129,15 @@ cc.Class({
   onStage1Click() {
     cc.director.loadScene("Stage1");
   },
+
   onStage2Click() {
     cc.director.loadScene("Stage2");
   },
+
   onStage3Click() {
     cc.director.loadScene("BossStage");
   },
+
   onSettingsClick() {
     this.settingLayout.active = true;
   },
@@ -78,16 +154,11 @@ cc.Class({
     if (cc.sys.isNative) {
       cc.game.end();
     } else {
-      cc.log("Trình duyệt không thể thoát qua code.");
+      console.log("Browser cannot exit via code");
     }
   },
 
-  onVolumeChanged() {
-    const volume = this.volumeSlider.progress;
-    cc.audioEngine.setVolume(this.audioID, volume);
-  },
-
-  //Pause Menu
+  // === PAUSE MENU ===
   onPauseClick() {
     this.pauseMenu.active = true;
     cc.director.pause();
@@ -102,29 +173,25 @@ cc.Class({
     this.pauseMenu.active = false;
     this.resultMenu.active = false;
     const currentScene = cc.director.getScene().name;
+    
+    cc.director.resume();
+    
     if (currentScene === "Stage1") {
-      cc.director.resume();
       cc.director.loadScene("Stage1");
     }
     else if (currentScene === "Stage2") {
-      cc.director.resume();
       cc.director.loadScene("Stage2");
     }
     else {
-      cc.director.resume();
       cc.director.loadScene("BossStage");
     }
   },
-  
-  //Result Menu
+
+  // === RESULT MENU ===
   showResultPanel(isWin) {
-    // Hiển thị result menu
     this.resultMenu.active = true;
-    
-    // Tạm dừng game
     cc.director.pause();
-    
-    // Cập nhật label kết quả
+
     if (this.resultLabel) {
       if (isWin) {
         this.resultLabel.string = "🎉 VICTORY! 🎉";
@@ -134,17 +201,14 @@ cc.Class({
         this.resultLabel.node.color = cc.Color.RED;
       }
     }
-    
-    // Hiển thị/ẩn nút Next Stage dựa trên kết quả
+
     if (this.nextStageBtn) {
-      this.nextStageBtn.active = isWin; // Chỉ hiện khi thắng
+      this.nextStageBtn.active = isWin;
     }
   },
 
   onClickNextStage() {
     const currentScene = cc.director.getScene().name;
-    
-    // Resume game trước khi chuyển scene
     cc.director.resume();
 
     if (currentScene === "Stage1") {
@@ -154,14 +218,21 @@ cc.Class({
       cc.director.loadScene("BossStage");
     }
     else if (currentScene === "BossStage") {
-      // Nếu đã hoàn thành boss stage, về main menu
       cc.director.loadScene("MainMenu");
     }
   },
 
-  // Hàm để đóng result panel và về main menu (khi thua)
   onResultHomeClick() {
     cc.director.resume();
     cc.director.loadScene("MainMenu");
+  },
+
+  // === CLEANUP ===
+  onDestroy() {
+    // Dừng nhạc khi component bị hủy
+    if (this.currentAudioID !== undefined && this.currentAudioID !== -1) {
+      cc.audioEngine.stop(this.currentAudioID);
+      console.log("Stopped background music on destroy");
+    }
   },
 });

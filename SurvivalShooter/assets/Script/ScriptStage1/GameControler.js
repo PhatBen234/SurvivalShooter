@@ -42,7 +42,6 @@ cc.Class({
       }
     }
   },
-
   update(dt) {
     if (this.gameEnded) return;
 
