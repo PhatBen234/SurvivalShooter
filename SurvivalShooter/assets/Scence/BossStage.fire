@@ -930,7 +930,7 @@
     "baseAttack": 10,
     "criticalRate": 0.1,
     "meleeAttackRange": 100,
-    "rangedAttackRange": 300,
+    "attackRange": 300,
     "meleeToRangedThreshold": 120,
     "level": 1,
     "currentExp": 0,
