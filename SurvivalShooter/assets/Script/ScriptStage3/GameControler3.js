@@ -3,7 +3,8 @@ cc.Class({
 
   properties: {
     enemyPrefab: cc.Prefab,
-    enemyBatPrefab: cc.Prefab, // THÊM prefab thứ 2
+    enemyBatPrefab: cc.Prefab,
+    finalBossPrefab: cc.Prefab, // ✅ Thêm Final Boss
 
     player: cc.Node,
     spawnArea: cc.Node,
@@ -20,6 +21,8 @@ cc.Class({
     this.gameDuration = 60;
     this.timeUp = false;
     this.gameEnded = false;
+    this.bossSpawned = false;
+    this.bossNode = null;
 
     this.schedule(this.spawnEnemy, this.spawnInterval);
 
@@ -28,7 +31,7 @@ cc.Class({
     }
 
     if (this.player) {
-      this.playerScript = this.player.getComponent("PlayerStage2");
+      this.playerScript = this.player.getComponent("PlayerStage3");
     }
   },
 
@@ -37,14 +40,22 @@ cc.Class({
 
     this.timer += dt;
 
+    const timeLeft = Math.max(0, Math.floor(this.gameDuration - this.timer));
+
+    // Cập nhật đồng hồ
     if (this.countdownLabel) {
-      let timeLeft = Math.max(0, Math.floor(this.gameDuration - this.timer));
       this.countdownLabel.string = `Time: ${timeLeft}s`;
       if (timeLeft <= 10) {
         this.countdownLabel.node.color = cc.Color.RED;
       }
     }
 
+    // Spawn boss nếu còn 10s và chưa gọi
+    if (!this.bossSpawned && timeLeft <= 10) {
+      this.spawnBoss();
+    }
+
+    // Đánh dấu hết giờ, ngưng spawn thường
     if (!this.timeUp && this.timer >= this.gameDuration) {
       this.timeUp = true;
       this.unschedule(this.spawnEnemy);
@@ -59,34 +70,42 @@ cc.Class({
     if (this.gameEnded || this.timeUp) return;
     if (this.currentEnemies.length >= this.maxEnemies) return;
 
-    // Spawn Enemy thường
-    if (this.currentEnemies.length < this.maxEnemies) {
-      this.spawnOneEnemy(this.enemyPrefab);
-    }
-
-    // Spawn EnemyBat
+    this.spawnOneEnemy(this.enemyPrefab);
     if (this.currentEnemies.length < this.maxEnemies) {
       this.spawnOneEnemy(this.enemyBatPrefab);
     }
   },
 
   spawnOneEnemy(prefab) {
-    let areaSize = this.spawnArea.getContentSize();
-    let randomX = (Math.random() - 0.5) * areaSize.width;
-    let randomY = (Math.random() - 0.5) * areaSize.height;
+    const areaSize = this.spawnArea.getContentSize();
+    const randomX = (Math.random() - 0.5) * areaSize.width;
+    const randomY = (Math.random() - 0.5) * areaSize.height;
 
-    let newEnemy = cc.instantiate(prefab);
+    const newEnemy = cc.instantiate(prefab);
     newEnemy.setPosition(cc.v2(randomX, randomY));
     this.spawnArea.addChild(newEnemy);
 
-    // Gọi init đúng component Enemy hoặc EnemyBat
-    let enemyScript =
-      newEnemy.getComponent("Enemy") || newEnemy.getComponent("EnemyBat");
-    if (enemyScript && typeof enemyScript.init === "function") {
-      enemyScript.init(this.player);
+    const script =
+      newEnemy.getComponent("Enemy") ||
+      newEnemy.getComponent("EnemyBat") ||
+      newEnemy.getComponent("FinalBoss"); // ✅ Boss cũng có init
+
+    if (script && typeof script.init === "function") {
+      script.init(this.player);
     }
 
     this.currentEnemies.push(newEnemy);
+
+    // Ghi lại boss node để kiểm tra sau này
+    if (prefab === this.finalBossPrefab) {
+      this.bossNode = newEnemy;
+    }
+  },
+
+  spawnBoss() {
+    this.bossSpawned = true;
+    this.spawnOneEnemy(this.finalBossPrefab);
+    cc.log("[GameController] Final Boss has appeared!");
   },
 
   cleanUpEnemies() {
@@ -101,7 +120,14 @@ cc.Class({
       return;
     }
 
-    if (this.timeUp && this.currentEnemies.length === 0) {
+    // Nếu boss đã spawn và đã chết => win
+    if (this.bossSpawned && (!this.bossNode || !this.bossNode.isValid)) {
+      this.endGame(true);
+      return;
+    }
+
+    // Nếu chưa có boss, thì game chỉ thắng nếu hết giờ và không còn enemy
+    if (!this.bossSpawned && this.timeUp && this.currentEnemies.length === 0) {
       this.endGame(true);
     }
   },

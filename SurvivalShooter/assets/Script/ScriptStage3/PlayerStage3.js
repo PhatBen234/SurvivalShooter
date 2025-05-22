@@ -18,7 +18,7 @@ cc.Class({
     baseAttack: 10, // Tấn công cơ bản
     criticalRate: 0.1, // Tỉ lệ chí mạng (10%)
     meleeAttackRange: 100, // Tầm tấn công cận chiến
-    rangedAttackRange: 300, // Tầm tấn công tầm xa
+    attackRange: 300, // Tầm tấn công tầm xa (đồng bộ với SkillManager)
 
     // Khoảng cách tối thiểu để ưu tiên ranged attack
     meleeToRangedThreshold: 120, // Nếu > 120 thì ưu tiên bắn cung
@@ -144,7 +144,7 @@ cc.Class({
     if (this.attackTimer < this.attackInterval || this.isAttacking) return;
 
     // Tìm kẻ địch gần nhất trong toàn bộ tầm tấn công
-    const closestEnemy = this.findClosestEnemy(this.rangedAttackRange);
+    const closestEnemy = this.findClosestEnemy(this.attackRange);
     if (!closestEnemy) return;
 
     const distanceToEnemy = this.node.position.sub(closestEnemy.position).mag();
@@ -374,7 +374,7 @@ cc.Class({
     this.expPickupRange += 10;
     this.criticalRate += 0.05;
     this.meleeAttackRange += 10;
-    this.rangedAttackRange += 15;
+    this.attackRange += 15;
     this.meleeToRangedThreshold += 10; // Tăng ngưỡng chuyển đổi
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.25);
 
@@ -427,6 +427,7 @@ cc.Class({
     this.currentHp -= amount;
     if (this.currentHp < 0) this.currentHp = 0;
     this.updateHpLabel();
+    this.node.runAction(cc.sequence(cc.fadeTo(0.1, 100), cc.fadeTo(0.1, 255)));
   },
 
   // --- UI UPDATE HELPERS ---
@@ -443,7 +444,7 @@ cc.Class({
     if (this.expRangeLabel)
       this.expRangeLabel.string = `EXP Range: ${this.expPickupRange}`;
     if (this.attackRangeLabel)
-      this.attackRangeLabel.string = `Melee Range: ${this.meleeAttackRange} | Ranged: ${this.rangedAttackRange}`;
+      this.attackRangeLabel.string = `Melee: ${this.meleeAttackRange} | Archer: ${this.attackRange}`;
   },
 
   updateExpUI() {
@@ -464,30 +465,30 @@ cc.Class({
     if (!isActive) animationComponent.stop();
   },
 
-  applyBuffsFromSkill(buffData) {
-    if (buffData.maxHp !== undefined) {
-      this.maxHp += buffData.maxHp;
-      this.currentHp = this.maxHp;
-    }
-    if (buffData.speed !== undefined) this.speed += buffData.speed;
-    if (buffData.baseAttack !== undefined)
-      this.baseAttack += buffData.baseAttack;
-    if (buffData.critRate !== undefined) this.criticalRate += buffData.critRate;
-    if (buffData.expPickupRange !== undefined)
-      this.expPickupRange += buffData.expPickupRange;
-    if (buffData.attackInterval !== undefined)
-      this.attackInterval += buffData.attackInterval;
+  // applyBuffsFromSkill(buffData) {
+  //   if (buffData.maxHp !== undefined) {
+  //     this.maxHp += buffData.maxHp;
+  //     this.currentHp = this.maxHp;
+  //   }
+  //   if (buffData.speed !== undefined) this.speed += buffData.speed;
+  //   if (buffData.baseAttack !== undefined)
+  //     this.baseAttack += buffData.baseAttack;
+  //   if (buffData.critRate !== undefined) this.criticalRate += buffData.critRate;
+  //   if (buffData.expPickupRange !== undefined)
+  //     this.expPickupRange += buffData.expPickupRange;
+  //   if (buffData.attackInterval !== undefined)
+  //     this.attackInterval += buffData.attackInterval;
 
-    // Range boost - cộng trực tiếp vào tầm cung (ranged attack range)
-    if (buffData.attackRange !== undefined) {
-      this.rangedAttackRange += buffData.attackRange;
-    }
-    if (buffData.rangedAttackRange !== undefined) {
-      this.rangedAttackRange += buffData.rangedAttackRange;
-    }
+  //   // Range boost - cộng trực tiếp vào tầm cung (ranged attack range)
+  //   if (buffData.attackRange !== undefined) {
+  //     this.rangedAttackRange += buffData.attackRange;
+  //   }
+  //   if (buffData.rangedAttackRange !== undefined) {
+  //     this.rangedAttackRange += buffData.rangedAttackRange;
+  //   }
 
-    this.updateAllUI();
-  },
+  //   this.updateAllUI();
+  // },
 
   clampPositionToCanvas(pos) {
     if (!this.canvasNode) return pos;

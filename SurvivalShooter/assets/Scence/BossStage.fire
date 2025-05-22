@@ -924,7 +924,7 @@
     "baseAttack": 10,
     "criticalRate": 0.1,
     "meleeAttackRange": 100,
-    "rangedAttackRange": 300,
+    "attackRange": 300,
     "meleeToRangedThreshold": 120,
     "level": 1,
     "currentExp": 0,
@@ -1710,8 +1710,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -640.141,
-        195.064,
+        -604.941,
+        151.864,
         0,
         0,
         0,
@@ -2436,6 +2436,9 @@
     },
     "enemyBatPrefab": {
       "__uuid__": "c3a527af-611e-44dd-b152-5d3ebe46dd4d"
+    },
+    "finalBossPrefab": {
+      "__uuid__": "f3412291-da3f-4080-9203-0ef5fc0b4cbb"
     },
     "player": {
       "__id__": 7
