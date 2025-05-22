@@ -1334,8 +1334,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 40.02,
-      "height": 25.2
+      "width": 30.01,
+      "height": 18.9
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -1346,7 +1346,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        1157.91,
+        1152.9050000000002,
         0,
         0,
         0,
@@ -1386,10 +1386,10 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "XXX",
-    "_N$string": "XXX",
-    "_fontSize": 20,
-    "_lineHeight": 20,
+    "_string": "",
+    "_N$string": "",
+    "_fontSize": 15,
+    "_lineHeight": 15,
     "_enableWrapText": true,
     "_N$file": null,
     "_isSystemFontUsed": true,
