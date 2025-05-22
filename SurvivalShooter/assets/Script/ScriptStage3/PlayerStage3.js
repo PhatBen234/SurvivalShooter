@@ -10,12 +10,18 @@ cc.Class({
 
     // Animation
     anim: cc.Animation,
-    attackAnim: cc.Animation,
+    meleeAttackAnim: cc.Animation, // animation cận chiến
+    rangedAttackAnim: cc.Animation, // animation tầm xa
+    arrowPrefab: cc.Prefab,
 
     // Attack stats
     baseAttack: 10, // Tấn công cơ bản
     criticalRate: 0.1, // Tỉ lệ chí mạng (10%)
-    attackRange: 100, // Tầm tấn công
+    meleeAttackRange: 100, // Tầm tấn công cận chiến
+    rangedAttackRange: 300, // Tầm tấn công tầm xa
+
+    // Khoảng cách tối thiểu để ưu tiên ranged attack
+    meleeToRangedThreshold: 120, // Nếu > 120 thì ưu tiên bắn cung
 
     // EXP & Level
     level: 1,
@@ -36,7 +42,6 @@ cc.Class({
     skillNode: cc.Node,
     skillCooldown: 4,
     skillManager: cc.Node,
-    arrowPrefab: cc.Prefab,
 
     // Auto attack
     attackInterval: 2,
@@ -51,6 +56,7 @@ cc.Class({
 
     this.attackTimer = 0;
     this.isAttacking = false;
+    this.currentAttackType = null; // 'melee' hoặc 'ranged'
 
     this.skillTimer = 0;
     this.canUseSkill = true;
@@ -59,14 +65,17 @@ cc.Class({
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
 
     this.setAnimationActive(this.anim, true);
-    this.setAnimationActive(this.attackAnim, false);
+    this.setAnimationActive(this.meleeAttackAnim, false);
+    this.setAnimationActive(this.rangedAttackAnim, false);
 
     if (this.skillNode) this.skillNode.active = false;
   },
+
   onDestroy() {
     cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
   },
+
   update(dt) {
     this.handleMovement(dt);
     this.handleAutoAttack(dt);
@@ -74,7 +83,7 @@ cc.Class({
     this.collectNearbyExp(dt);
   },
 
-  // --- INPUT ---
+  // --- INPUT HANDLING ---
   onKeyDown(event) {
     this.keyPressed[event.keyCode] = true;
   },
@@ -83,6 +92,7 @@ cc.Class({
     this.keyPressed[event.keyCode] = false;
   },
 
+  // --- MOVEMENT ---
   getInputDirection() {
     let dir = cc.v2(0, 0);
     if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
@@ -92,21 +102,25 @@ cc.Class({
     return dir;
   },
 
-  // --- MOVEMENT ---
   handleMovement(dt) {
     if (!this.anim) return;
 
     let dir = this.getInputDirection();
+
     if (!dir.equals(this.lastDir)) {
       this.lastDir = dir.clone();
     }
 
     if (dir.mag() > 0) {
       dir = dir.normalize();
+
       this.node.scaleX = dir.x !== 0 ? (dir.x > 0 ? 1 : -1) : this.node.scaleX;
 
-      let newPos = this.node.getPosition().add(dir.mul(this.speed * dt));
-      this.node.setPosition(this.clampPositionToCanvas(newPos));
+      let pos = this.node.getPosition();
+      pos = pos.add(dir.mul(this.speed * dt));
+      pos = this.clampPositionToCanvas(pos);
+
+      this.node.setPosition(pos);
 
       if (
         !this.isAttacking &&
@@ -126,37 +140,111 @@ cc.Class({
 
   // --- ATTACK ---
   handleAutoAttack(dt) {
-    if (!this.attackAnim) return;
-
     this.attackTimer += dt;
     if (this.attackTimer < this.attackInterval || this.isAttacking) return;
 
-    const target = this.findClosestEnemy(300);
-    if (!target) return;
+    // Tìm kẻ địch gần nhất trong toàn bộ tầm tấn công
+    const closestEnemy = this.findClosestEnemy(this.rangedAttackRange);
+    if (!closestEnemy) return;
 
+    const distanceToEnemy = this.node.position.sub(closestEnemy.position).mag();
+
+    // Quyết định loại tấn công dựa trên khoảng cách
+    let attackType = "ranged"; // Mặc định là ranged
+
+    if (distanceToEnemy <= this.meleeAttackRange) {
+      // Kiểm tra xem có nhiều enemy gần không để quyết định dùng melee
+      const nearbyEnemies = this.findEnemiesInRange(this.meleeAttackRange);
+      if (nearbyEnemies.length >= 2) {
+        attackType = "melee"; // Nếu có >= 2 enemy gần thì dùng melee
+      } else if (distanceToEnemy <= this.meleeToRangedThreshold) {
+        attackType = "melee"; // Nếu chỉ có 1 enemy nhưng đủ gần thì vẫn melee
+      }
+    }
+
+    this.performAttack(attackType, closestEnemy);
+  },
+
+  performAttack(attackType, target) {
     this.attackTimer = 0;
     this.isAttacking = true;
+    this.currentAttackType = attackType;
 
+    // Tắt tất cả animation trước
     this.setAnimationActive(this.anim, false);
-    this.setAnimationActive(this.attackAnim, true);
+    this.setAnimationActive(this.meleeAttackAnim, false);
+    this.setAnimationActive(this.rangedAttackAnim, false);
 
-    const attackState = this.attackAnim.getAnimationState("ArrowAttack");
+    if (attackType === "melee") {
+      this.performMeleeAttack();
+    } else {
+      this.performRangedAttack(target);
+    }
+  },
+
+  performMeleeAttack() {
+    this.setAnimationActive(this.meleeAttackAnim, true);
+
+    const attackState = this.meleeAttackAnim.getAnimationState("SoldierAttack");
     if (attackState) {
-      this.attackAnim.play("ArrowAttack");
+      this.meleeAttackAnim.play("SoldierAttack");
       attackState.once("finished", () => {
-        this.spawnArrowToTarget(target);
+        this.executeMeleeDamage();
         this.finishAttack();
       });
     } else {
+      this.executeMeleeDamage();
       this.finishAttack();
     }
   },
 
+  performRangedAttack(target) {
+    this.setAnimationActive(this.rangedAttackAnim, true);
+
+    const rangedAttackState =
+      this.rangedAttackAnim.getAnimationState("ArrowAttack");
+    if (rangedAttackState) {
+      this.rangedAttackAnim.play("ArrowAttack");
+      rangedAttackState.once("finished", () => {
+        this.executeRangedDamage(target);
+        this.finishAttack();
+      });
+    } else {
+      this.executeRangedDamage(target);
+      this.finishAttack();
+    }
+  },
+
+  executeMeleeDamage() {
+    let damage = this.baseAttack;
+    if (Math.random() < this.criticalRate) damage *= 2;
+
+    const enemies = this.findEnemiesInRange(this.meleeAttackRange);
+    enemies.forEach((enemy) => {
+      const enemyScript = enemy.getComponent("Enemy");
+      if (enemyScript?.takeDamage) {
+        enemyScript.takeDamage(damage);
+      }
+    });
+  },
+
+  executeRangedDamage(target) {
+    if (!target || !target.isValid) return;
+    this.spawnArrowToTarget(target);
+  },
+
   finishAttack() {
     this.isAttacking = false;
-    this.setAnimationActive(this.attackAnim, false);
+    this.currentAttackType = null;
+
+    // Tắt tất cả animation tấn công
+    this.setAnimationActive(this.meleeAttackAnim, false);
+    this.setAnimationActive(this.rangedAttackAnim, false);
+
+    // Bật lại animation đi bộ
     this.setAnimationActive(this.anim, true);
 
+    // Kiểm tra xem có đang di chuyển không để play animation phù hợp
     let dir = this.getInputDirection();
     if (dir.mag() > 0 && !this.anim.getAnimationState("Soldier").isPlaying) {
       this.anim.play("Soldier");
@@ -165,26 +253,18 @@ cc.Class({
     }
   },
 
-  findClosestEnemy(maxRange = 300) {
-    if (!this.canvasNode) return null;
+  findEnemiesInRange(range) {
+    if (!this.canvasNode) return [];
 
     const enemies = this.canvasNode.children.filter(
-      (node) => node.name === "Enemy" || node.group === "enemy"
+      (node) =>
+        (node.name === "Enemy" || node.group === "enemy") && node.isValid
     );
 
-    let closest = null;
-    let minDist = Infinity;
-
-    enemies.forEach((enemy) => {
-      if (!enemy || !enemy.isValid) return;
+    return enemies.filter((enemy) => {
       const dist = this.node.position.sub(enemy.position).mag();
-      if (dist < minDist && dist <= maxRange) {
-        closest = enemy;
-        minDist = dist;
-      }
+      return dist <= range;
     });
-
-    return closest;
   },
 
   spawnArrowToTarget(target) {
@@ -200,6 +280,28 @@ cc.Class({
       if (Math.random() < this.criticalRate) damage *= 2;
       arrowScript.init(target, damage);
     }
+  },
+
+  findClosestEnemy(maxRange = 300) {
+    if (!this.canvasNode) return null;
+
+    const enemies = this.canvasNode.children.filter(
+      (node) =>
+        (node.name === "Enemy" || node.group === "enemy") && node.isValid
+    );
+
+    let closest = null;
+    let minDist = Infinity;
+
+    enemies.forEach((enemy) => {
+      const dist = this.node.position.sub(enemy.position).mag();
+      if (dist < minDist && dist <= maxRange) {
+        closest = enemy;
+        minDist = dist;
+      }
+    });
+
+    return closest;
   },
 
   // --- SKILL ---
@@ -236,17 +338,15 @@ cc.Class({
     if (!this.canvasNode) return;
 
     const enemies = this.canvasNode.children.filter(
-      (node) => node.name === "Enemy" || node.group === "enemy"
+      (node) =>
+        (node.name === "Enemy" || node.group === "enemy") && node.isValid
     );
 
     enemies.forEach((enemy) => {
-      if (!enemy || !enemy.isValid) return;
       const dist = this.node.position.sub(enemy.position).mag();
       if (dist <= SKILL_RANGE) {
         const enemyScript = enemy.getComponent("Enemy");
-        if (enemyScript?.takeDamage) {
-          enemyScript.takeDamage(SKILL_DAMAGE);
-        }
+        if (enemyScript?.takeDamage) enemyScript.takeDamage(SKILL_DAMAGE);
       }
     });
   },
@@ -273,12 +373,13 @@ cc.Class({
     this.baseAttack += 5;
     this.expPickupRange += 10;
     this.criticalRate += 0.05;
-    this.attackRange += 10;
+    this.meleeAttackRange += 10;
+    this.rangedAttackRange += 15;
+    this.meleeToRangedThreshold += 10; // Tăng ngưỡng chuyển đổi
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.25);
 
     this.updateAllUI();
 
-    // Gọi SkillManager hiển thị bảng chọn kỹ năng
     if (this.skillManager) {
       let skillMgrScript = this.skillManager.getComponent("SkillManager");
       if (skillMgrScript) {
@@ -326,12 +427,6 @@ cc.Class({
     this.currentHp -= amount;
     if (this.currentHp < 0) this.currentHp = 0;
     this.updateHpLabel();
-    this.node.runAction(
-      cc.sequence(
-        cc.fadeTo(0.1, 100),
-        cc.fadeTo(0.1, 255)
-      )
-    );
   },
 
   // --- UI UPDATE HELPERS ---
@@ -348,7 +443,7 @@ cc.Class({
     if (this.expRangeLabel)
       this.expRangeLabel.string = `EXP Range: ${this.expPickupRange}`;
     if (this.attackRangeLabel)
-      this.attackRangeLabel.string = `Attack Range: ${this.attackRange}`;
+      this.attackRangeLabel.string = `Melee Range: ${this.meleeAttackRange} | Ranged: ${this.rangedAttackRange}`;
   },
 
   updateExpUI() {
@@ -368,20 +463,28 @@ cc.Class({
     animationComponent.node.active = isActive;
     if (!isActive) animationComponent.stop();
   },
+
   applyBuffsFromSkill(buffData) {
-    // buffData có thể có dạng { maxHp, speed, baseAttack, critRate, expPickupRange, attackInterval }
     if (buffData.maxHp !== undefined) {
-      this.maxHp = buffData.maxHp;
-      this.currentHp = this.maxHp; // reset HP full khi buff maxHp
+      this.maxHp += buffData.maxHp;
+      this.currentHp = this.maxHp;
     }
-    if (buffData.speed !== undefined) this.speed = buffData.speed;
+    if (buffData.speed !== undefined) this.speed += buffData.speed;
     if (buffData.baseAttack !== undefined)
-      this.baseAttack = buffData.baseAttack;
-    if (buffData.critRate !== undefined) this.criticalRate = buffData.critRate;
+      this.baseAttack += buffData.baseAttack;
+    if (buffData.critRate !== undefined) this.criticalRate += buffData.critRate;
     if (buffData.expPickupRange !== undefined)
-      this.expPickupRange = buffData.expPickupRange;
+      this.expPickupRange += buffData.expPickupRange;
     if (buffData.attackInterval !== undefined)
-      this.attackInterval = buffData.attackInterval;
+      this.attackInterval += buffData.attackInterval;
+
+    // Range boost - cộng trực tiếp vào tầm cung (ranged attack range)
+    if (buffData.attackRange !== undefined) {
+      this.rangedAttackRange += buffData.attackRange;
+    }
+    if (buffData.rangedAttackRange !== undefined) {
+      this.rangedAttackRange += buffData.rangedAttackRange;
+    }
 
     this.updateAllUI();
   },

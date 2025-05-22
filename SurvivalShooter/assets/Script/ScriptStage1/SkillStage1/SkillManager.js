@@ -53,9 +53,15 @@ cc.Class({
     this.playerSkills[skill.id] = currentLevel + 1;
 
     // Cộng trực tiếp buff vào player
-    const playerComp = this.player.getComponent("Player");
+    let playerComp =
+      this.player.getComponent("Player") ||
+      this.player.getComponent("PlayerStage2") ||
+      this.player.getComponent("PlayerStage3"); // ✅ thêm dòng này
+
     if (!playerComp) {
-      cc.warn("[SkillManager] Player không có component Player");
+      cc.warn(
+        "[SkillManager] Player không có component Player, PlayerStage2 hoặc PlayerStage3"
+      );
       return;
     }
 
@@ -64,9 +70,8 @@ cc.Class({
         playerComp.baseAttack += 5;
         break;
       case 2: // Range Boost
-        // Nếu player chưa có attackRange thì bạn phải thêm vào Player.js properties
         if (playerComp.attackRange === undefined) {
-          playerComp.attackRange = 100; // ví dụ giá trị mặc định
+          playerComp.attackRange = 100;
         }
         playerComp.attackRange += 20;
         break;

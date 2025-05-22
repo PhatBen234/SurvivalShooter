@@ -5,17 +5,29 @@ cc.Class({
     speed: 100,
     damage: 1,
 
-    spriteNode: cc.Node, // trỏ tới node con Sprite
-    hpLabel: cc.Label, // node Label hiển thị máu
-    maxHp: 10, // máu tối đa
+    spriteNode: cc.Node,
+    hpLabel: cc.Label,
+    maxHp: 10,
 
-    expPrefab: cc.Prefab, // Prefab EXP cần spawn
-    expAmount: 20, // Lượng EXP rơi ra
+    expPrefab: cc.Prefab,
+    expAmount: 20,
   },
 
   onLoad() {
     this.hp = this.maxHp;
     this.updateHpLabel();
+
+    // Tự tìm player nếu chưa có
+    this.player =
+      cc.find("Canvas").getComponentInChildren("Player") ||
+      cc.find("Canvas").getComponentInChildren("PlayerStage2") ||
+      cc.find("Canvas").getComponentInChildren("PlayerStage3");
+
+    if (this.player) {
+      this.player = this.player.node;
+    } else {
+      cc.warn("Enemy: Không tìm thấy Player!");
+    }
   },
 
   update(dt) {
@@ -25,7 +37,7 @@ cc.Class({
     let dir = this.player.position.sub(this.node.position);
     let distance = dir.mag();
 
-    // Lật enemy theo hướng di chuyển
+    // Lật enemy
     this.node.scaleX = dir.x > 0 ? 1 : -1;
 
     // Giữ label không bị lật
@@ -36,30 +48,31 @@ cc.Class({
     if (distance > 5) {
       let move = dir.normalize().mul(this.speed * dt);
       this.node.position = this.node.position.add(move);
-    } 
-    else {
-      let playerScript =
+    } else {
+      const playerScript =
         this.player.getComponent("Player") ||
-        this.player.getComponent("PlayerStage2");
-      if (playerScript) {
+        this.player.getComponent("PlayerStage2") ||
+        this.player.getComponent("PlayerStage3");
+
+      if (playerScript && playerScript.takeDamage) {
         playerScript.takeDamage(this.damage);
       }
-      // this.node.destroy(); // nếu là kamikaze thì bật lại dòng này
+      // Nếu enemy là kamikaze thì bật dòng dưới:
+      // this.node.destroy();
     }
   },
 
+  // Nếu bạn vẫn muốn hỗ trợ truyền player từ ngoài thì giữ lại
   init(playerNode) {
     this.player = playerNode;
   },
 
   takeDamage(amount) {
     this.hp -= amount;
+    this.updateHpLabel();
+
     if (this.hp <= 0) {
-      this.hp = 0;
-      this.updateHpLabel();
-      this.onDeath(); // ✅ GỌI onDeath để spawn EXP
-    } else {
-      this.updateHpLabel();
+      this.onDeath();
     }
   },
 
@@ -75,12 +88,9 @@ cc.Class({
       exp.setPosition(this.node.getPosition());
       this.node.parent.addChild(exp);
 
-      // Gán lượng exp nếu có script
       const expScript = exp.getComponent("Exp");
       if (expScript) {
         expScript.expAmount = this.expAmount;
-
-        // Gán player hút exp (nếu cần)
         expScript.targetPlayer = this.player;
       }
     }
