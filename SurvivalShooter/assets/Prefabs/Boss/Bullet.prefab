@@ -205,13 +205,16 @@
     "_id": ""
   },
   {
-    "__type__": "d6685mvkoZG9YY0JcZQbNNK",
+    "__type__": "21a5dsOK4tF9J3RJnE0/r3B",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 1
     },
     "_enabled": true,
+    "speed": 200,
+    "direction": 0,
+    "damage": 20,
     "_id": ""
   },
   {

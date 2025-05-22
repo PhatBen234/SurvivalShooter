@@ -28,6 +28,9 @@ cc.Class({
     expPickupRange: 100,
 
     arrowPrefab: cc.Prefab,
+
+    isInvincible: false,
+    invincibleTime: 1,
   },
 
   onLoad() {
@@ -298,8 +301,21 @@ cc.Class({
 
   // --- DAMAGE ---
   takeDamage(amount) {
-    this.currentHp = Math.max(this.currentHp - amount, 0);
+    if (!this.isInvincible) {
+      this.currentHp -= amount;
+      this.isInvincible = true;
+      this.scheduleOnce(() => {
+        this.isInvincible = false;
+      }, this.invincibleTime);
+    }
+    if (this.currentHp < 0) this.currentHp = 0;
     this.updateHpLabel();
+    this.node.runAction(
+      cc.sequence(
+        cc.fadeTo(0.1, 100),
+        cc.fadeTo(0.1, 255)
+      )
+    );
   },
 
   // --- UI UPDATES ---
