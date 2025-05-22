@@ -2,21 +2,23 @@ cc.Class({
   extends: cc.Component,
 
   properties: {
-    anim: cc.Animation,
+    hp: 500,
+    moveSpeed: 100,
+    damage: 10,
+
+    hpBar: cc.ProgressBar,
     skillShoot: cc.Component,
     skillDash: cc.Component,
-    hp: 500,
-    moveSpeed: 100, // pixels/sec
-    hpBar: cc.ProgressBar,
   },
 
   start() {
     this.canvasSize = cc.winSize;
-    this.schedule(this.castSkill, 5); // 5s dùng skill
     this.maxHP = this.hp;
     this.updateHpBar();
 
-    // Tự tìm player (Player, PlayerStage2 hoặc PlayerStage3)
+    this.schedule(this.castSkill, 5); // Dùng skill mỗi 5 giây
+
+    // Tự tìm player
     this.player =
       cc.find("Canvas").getComponentInChildren("Player") ||
       cc.find("Canvas").getComponentInChildren("PlayerStage2") ||
@@ -25,19 +27,17 @@ cc.Class({
     if (this.player) {
       this.player = this.player.node;
     } else {
-      cc.warn("Không tìm thấy Player, PlayerStage2 hoặc PlayerStage3!");
+      cc.warn("Không tìm thấy Player!");
     }
   },
 
   update(dt) {
-    if (this.player) {
+    if (this.player && this.player.isValid) {
       this.moveTowardPlayer(dt);
     }
   },
 
   moveTowardPlayer(dt) {
-    if (!this.player) return;
-
     let bossPos = this.node.position;
 
     let playerWorldPos = this.player.parent.convertToWorldSpaceAR(
@@ -64,39 +64,30 @@ cc.Class({
 
       this.node.setPosition(newPos);
     } else {
-      // Gây sát thương khi chạm
       const playerScript =
         this.player.getComponent("Player") ||
         this.player.getComponent("PlayerStage2") ||
         this.player.getComponent("PlayerStage3");
 
       if (playerScript && playerScript.takeDamage) {
-        playerScript.takeDamage(this.damage || 10);
+        playerScript.takeDamage(this.damage);
       }
     }
   },
 
   castSkill() {
-    const skillId = Math.floor(Math.random() * 2);
-    this.anim.play("FinalBossIdle");
-
-    switch (skillId) {
-      case 0:
-        this.skillShoot.shoot();
-        break;
-      case 1:
-        this.skillDash.dash();
-        break;
-    }
+    const id = Math.floor(Math.random() * 2);
+    if (id === 0 && this.skillShoot) this.skillShoot.shoot();
+    else if (id === 1 && this.skillDash) this.skillDash.dash();
   },
 
   takeDamage(amount) {
     this.hp -= amount;
-    if (this.hp <= 0) {
-      this.hp = 0;
-      this.die();
-    }
     this.updateHpBar();
+
+    if (this.hp <= 0) {
+      this.onDeath();
+    }
   },
 
   updateHpBar() {
@@ -105,7 +96,7 @@ cc.Class({
     }
   },
 
-  die() {
+  onDeath() {
     this.node.destroy();
   },
 });

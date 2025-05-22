@@ -22,7 +22,8 @@ cc.Class({
     this.node.position = this.node.position.add(dir.mul(this.speed * dt));
 
     if (this.node.position.sub(this.target.position).mag() < 20) {
-      const enemyScript = this.target.getComponent("Enemy");
+      const enemyScript =
+        this.target.getComponent("Enemy") || this.target.getComponent("Boss");
       if (enemyScript?.takeDamage) enemyScript.takeDamage(this.damage);
       this.node.destroy();
     }

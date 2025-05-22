@@ -368,23 +368,23 @@ cc.Class({
     animationComponent.node.active = isActive;
     if (!isActive) animationComponent.stop();
   },
-  applyBuffsFromSkill(buffData) {
-    // buffData có thể có dạng { maxHp, speed, baseAttack, critRate, expPickupRange, attackInterval }
-    if (buffData.maxHp !== undefined) {
-      this.maxHp = buffData.maxHp;
-      this.currentHp = this.maxHp; // reset HP full khi buff maxHp
-    }
-    if (buffData.speed !== undefined) this.speed = buffData.speed;
-    if (buffData.baseAttack !== undefined)
-      this.baseAttack = buffData.baseAttack;
-    if (buffData.critRate !== undefined) this.criticalRate = buffData.critRate;
-    if (buffData.expPickupRange !== undefined)
-      this.expPickupRange = buffData.expPickupRange;
-    if (buffData.attackInterval !== undefined)
-      this.attackInterval = buffData.attackInterval;
+  // applyBuffsFromSkill(buffData) {
+  //   // buffData có thể có dạng { maxHp, speed, baseAttack, critRate, expPickupRange, attackInterval }
+  //   if (buffData.maxHp !== undefined) {
+  //     this.maxHp = buffData.maxHp;
+  //     this.currentHp = this.maxHp; // reset HP full khi buff maxHp
+  //   }
+  //   if (buffData.speed !== undefined) this.speed = buffData.speed;
+  //   if (buffData.baseAttack !== undefined)
+  //     this.baseAttack = buffData.baseAttack;
+  //   if (buffData.critRate !== undefined) this.criticalRate = buffData.critRate;
+  //   if (buffData.expPickupRange !== undefined)
+  //     this.expPickupRange = buffData.expPickupRange;
+  //   if (buffData.attackInterval !== undefined)
+  //     this.attackInterval = buffData.attackInterval;
 
-    this.updateAllUI();
-  },
+  //   this.updateAllUI();
+  // },
 
   clampPositionToCanvas(pos) {
     if (!this.canvasNode) return pos;
