@@ -54,7 +54,7 @@ cc.Class({
     }
 
     // Spawn boss nếu còn 10s và chưa gọi
-    if (!this.bossSpawned && timeLeft <= 60) {
+    if (!this.bossSpawned && timeLeft <= 10) {
       this.spawnBoss();
     }
 
