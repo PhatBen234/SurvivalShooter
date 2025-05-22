@@ -169,7 +169,7 @@ cc.Class({
       this.setAnimationActive(this.anim, true);
     }
   },
-  // --- ATTACK ALL NEARBY ENEMIES INCLUDING BOSS ---
+
   attackNearbyEnemies() {
     let damage = this.baseAttack;
     if (Math.random() < this.criticalRate) damage *= 2;
@@ -187,34 +187,6 @@ cc.Class({
       if (dist <= this.attackRange) {
         const enemyScript = enemy.getComponent("Enemy");
         if (enemyScript?.takeDamage) enemyScript.takeDamage(damage);
-      }
-    });
-  },
-  // --- ATTACK BOSS ---
-  attackBossIfNearby() {
-    const ATTACK_RANGE = 100;
-    let damage = this.baseAttack;
-
-    // Nếu chí mạng thì nhân đôi damage
-    if (Math.random() < this.criticalRate) {
-      damage *= 2;
-    }
-
-    if (!this.canvasNode) return;
-
-    const bosses = this.canvasNode.children.filter(
-      (node) => node.name === "FinalBoss" || node.group === "boss"
-    );
-
-    bosses.forEach((boss) => {
-      if (!boss || !boss.isValid) return;
-
-      const dist = this.node.position.sub(boss.position).mag();
-      if (dist <= ATTACK_RANGE) {
-        const bossScript = boss.getComponent("Boss");
-        if (bossScript?.takeDamage) {
-          bossScript.takeDamage(damage);
-        }
       }
     });
   },
@@ -263,27 +235,6 @@ cc.Class({
       if (dist <= SKILL_RANGE) {
         const enemyScript = enemy.getComponent("Enemy");
         if (enemyScript?.takeDamage) enemyScript.takeDamage(SKILL_DAMAGE);
-      }
-    });
-    this.skillDamageBoss(SKILL_RANGE, SKILL_DAMAGE); //Gọi hàm Skill gây dmg lên boss
-  },
-
-  skillDamageBoss(range, damage) {
-    if (!this.canvasNode) return;
-
-    const bosses = this.canvasNode.children.filter(
-      (node) => node.name === "FinalBoss" || node.group === "boss"
-    );
-
-    bosses.forEach((boss) => {
-      if (!boss || !boss.isValid) return;
-
-      const dist = this.node.position.sub(boss.position).mag();
-      if (dist <= range) {
-        const bossScript = boss.getComponent("Boss");
-        if (bossScript?.takeDamage) {
-          bossScript.takeDamage(damage);
-        }
       }
     });
   },
@@ -360,21 +311,9 @@ cc.Class({
 
   // --- HP ---
   takeDamage(amount) {
-    if (!this.isInvincible) {
-      this.currentHp -= amount;
-      this.isInvincible = true;
-      this.scheduleOnce(() => {
-        this.isInvincible = false;
-      }, this.invincibleTime);
-    }
+    this.currentHp -= amount;
     if (this.currentHp < 0) this.currentHp = 0;
     this.updateHpLabel();
-    this.node.runAction(
-      cc.sequence(
-        cc.fadeTo(0.1, 100),
-        cc.fadeTo(0.1, 255)
-      )
-    );
   },
 
   // --- UI UPDATE HELPERS ---
