@@ -7,6 +7,10 @@ cc.Class({
     damage: 20,
   },
 
+  onLoad() {
+    this.hasHit = false; // cờ kiểm soát chỉ va chạm 1 lần
+  },
+
   init(pos, angle) {
     this.node.setPosition(pos);
     this.direction = angle;
@@ -14,6 +18,8 @@ cc.Class({
   },
 
   update(dt) {
+    if (this.hasHit) return; // nếu đã trúng thì không xử lý tiếp
+
     let rad = cc.misc.degreesToRadians(this.direction);
     let dx = Math.cos(rad) * this.speed * dt;
     let dy = Math.sin(rad) * this.speed * dt;
@@ -23,7 +29,7 @@ cc.Class({
     let canvas = cc.find("Canvas");
     let players = canvas.children.filter((n) => n.group === "player");
 
-    players.forEach((player) => {
+    for (let player of players) {
       let dist = this.node.position.sub(player.position).mag();
       if (dist < 30) {
         cc.log(
@@ -32,6 +38,7 @@ cc.Class({
           }, khoảng cách: ${dist.toFixed(2)}`
         );
         let playerScript = player.getComponent("PlayerStage3");
+
         if (playerScript?.takeDamage) {
           cc.log(
             `[SkillShoot] Gọi takeDamage cho player, damage = ${this.damage}`
@@ -42,8 +49,11 @@ cc.Class({
             "[SkillShoot] Không lấy được component PlayerStage3 hoặc hàm takeDamage"
           );
         }
-        this.node.destroy();
+
+        this.hasHit = true; // đánh dấu đã trúng
+        this.node.destroy(); // huỷ viên đạn
+        break; // ngắt vòng lặp
       }
-    });
+    }
   },
 });
