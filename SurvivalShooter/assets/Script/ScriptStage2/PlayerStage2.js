@@ -2,35 +2,44 @@ cc.Class({
   extends: cc.Component,
 
   properties: {
+    // HP & di chuyển
     maxHp: 100,
     currentHp: 100,
-    hpLabel: cc.Label,
-    anim: cc.Animation,
-    attackAnim: cc.Animation,
     speed: 200,
     canvasNode: cc.Node,
-    attackInterval: 2,
 
-    skillNode: cc.Node,
-    skillCooldown: 4,
-    expBar: cc.ProgressBar,
-    levelLabel: cc.Label,
-    attackLabel: cc.Label,
-    critLabel: cc.Label,
-    rangeLabel: cc.Label,
+    // Animation
+    anim: cc.Animation,
+    attackAnim: cc.Animation,
 
+    // Attack stats
+    baseAttack: 10, // Tấn công cơ bản
+    criticalRate: 0.1, // Tỉ lệ chí mạng (10%)
+    attackRange: 100, // Tầm tấn công
+
+    // EXP & Level
     level: 1,
     currentExp: 0,
     expToNextLevel: 50,
+    expPickupRange: 100, // Tầm hút exp
+    expBar: cc.ProgressBar,
+    levelLabel: cc.Label,
 
-    baseAttack: 10,
-    criticalRate: 0.1,
-    expPickupRange: 100,
+    // UI Label
+    hpLabel: cc.Label,
+    attackLabel: cc.Label,
+    critLabel: cc.Label,
+    expRangeLabel: cc.Label,
+    attackRangeLabel: cc.Label,
 
+    // Kỹ năng
+    skillNode: cc.Node,
+    skillCooldown: 4,
+    skillManager: cc.Node,
     arrowPrefab: cc.Prefab,
 
-    isInvincible: false,
-    invincibleTime: 1,
+    // Auto attack
+    attackInterval: 2,
   },
 
   onLoad() {
@@ -39,9 +48,11 @@ cc.Class({
 
     this.keyPressed = {};
     this.lastDir = cc.v2(0, 0);
+
     this.attackTimer = 0;
-    this.skillTimer = 0;
     this.isAttacking = false;
+
+    this.skillTimer = 0;
     this.canUseSkill = true;
 
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
@@ -49,14 +60,13 @@ cc.Class({
 
     this.setAnimationActive(this.anim, true);
     this.setAnimationActive(this.attackAnim, false);
+
     if (this.skillNode) this.skillNode.active = false;
   },
-
   onDestroy() {
     cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
   },
-
   update(dt) {
     this.handleMovement(dt);
     this.handleAutoAttack(dt);
@@ -259,18 +269,30 @@ cc.Class({
   applyLevelUp() {
     this.maxHp += 20;
     this.currentHp = this.maxHp;
+
     this.baseAttack += 5;
     this.expPickupRange += 10;
     this.criticalRate += 0.05;
+    this.attackRange += 10;
     this.expToNextLevel = Math.floor(this.expToNextLevel * 1.25);
+
     this.updateAllUI();
+
+    // Gọi SkillManager hiển thị bảng chọn kỹ năng
+    if (this.skillManager) {
+      let skillMgrScript = this.skillManager.getComponent("SkillManager");
+      if (skillMgrScript) {
+        skillMgrScript.onLevelUp();
+      }
+    }
   },
 
   collectNearbyExp(dt) {
     if (!this.canvasNode) return;
 
+    const EXP_GROUP = "exp";
     const expNodes = this.canvasNode.children.filter(
-      (node) => node.group === "exp" || node.name === "Exp"
+      (node) => node.group === EXP_GROUP || node.name === "Exp"
     );
 
     const playerPos = this.node.position;
@@ -283,9 +305,9 @@ cc.Class({
       const dist = playerPos.sub(expPos).mag();
 
       if (dist <= this.expPickupRange) {
-        const moveDir = playerPos.sub(expPos).normalize();
+        const direction = playerPos.sub(expPos).normalize();
         const moveDist = speed * dt;
-        const newPos = expPos.add(moveDir.mul(moveDist));
+        const newPos = expPos.add(direction.mul(moveDist));
         expNode.setPosition(newPos);
 
         if (newPos.sub(playerPos).mag() < 10) {
@@ -299,36 +321,28 @@ cc.Class({
     });
   },
 
-  // --- DAMAGE ---
+  // --- HP ---
   takeDamage(amount) {
-    if (!this.isInvincible) {
-      this.currentHp -= amount;
-      this.isInvincible = true;
-      this.scheduleOnce(() => {
-        this.isInvincible = false;
-      }, this.invincibleTime);
-    }
+    this.currentHp -= amount;
     if (this.currentHp < 0) this.currentHp = 0;
     this.updateHpLabel();
-    this.node.runAction(
-      cc.sequence(
-        cc.fadeTo(0.1, 100),
-        cc.fadeTo(0.1, 255)
-      )
-    );
   },
 
-  // --- UI UPDATES ---
+  // --- UI UPDATE HELPERS ---
   updateHpLabel() {
-    if (this.hpLabel) this.hpLabel.string = `HP: ${this.currentHp}`;
+    if (this.hpLabel) {
+      this.hpLabel.string = `HP: ${this.currentHp}`;
+    }
   },
 
   updateStatsLabel() {
     if (this.attackLabel) this.attackLabel.string = `Atk: ${this.baseAttack}`;
     if (this.critLabel)
       this.critLabel.string = `Crit: ${Math.floor(this.criticalRate * 100)}%`;
-    if (this.rangeLabel)
-      this.rangeLabel.string = `Range: ${this.expPickupRange}`;
+    if (this.expRangeLabel)
+      this.expRangeLabel.string = `EXP Range: ${this.expPickupRange}`;
+    if (this.attackRangeLabel)
+      this.attackRangeLabel.string = `Attack Range: ${this.attackRange}`;
   },
 
   updateExpUI() {
@@ -343,11 +357,27 @@ cc.Class({
     this.updateExpUI();
   },
 
-  // --- UTILS ---
   setAnimationActive(animationComponent, isActive) {
     if (!animationComponent || !animationComponent.node) return;
     animationComponent.node.active = isActive;
     if (!isActive) animationComponent.stop();
+  },
+  applyBuffsFromSkill(buffData) {
+    // buffData có thể có dạng { maxHp, speed, baseAttack, critRate, expPickupRange, attackInterval }
+    if (buffData.maxHp !== undefined) {
+      this.maxHp = buffData.maxHp;
+      this.currentHp = this.maxHp; // reset HP full khi buff maxHp
+    }
+    if (buffData.speed !== undefined) this.speed = buffData.speed;
+    if (buffData.baseAttack !== undefined)
+      this.baseAttack = buffData.baseAttack;
+    if (buffData.critRate !== undefined) this.criticalRate = buffData.critRate;
+    if (buffData.expPickupRange !== undefined)
+      this.expPickupRange = buffData.expPickupRange;
+    if (buffData.attackInterval !== undefined)
+      this.attackInterval = buffData.attackInterval;
+
+    this.updateAllUI();
   },
 
   clampPositionToCanvas(pos) {
@@ -355,12 +385,13 @@ cc.Class({
 
     const canvasSize = this.canvasNode.getContentSize();
     const nodeSize = this.node.getContentSize();
+
     const limitX = canvasSize.width / 2 - nodeSize.width - 12;
     const limitY = canvasSize.height / 2 - nodeSize.height - 12;
 
-    return cc.v2(
-      Math.min(Math.max(pos.x, -limitX), limitX),
-      Math.min(Math.max(pos.y, -limitY), limitY)
-    );
+    const clampedX = Math.min(Math.max(pos.x, -limitX), limitX);
+    const clampedY = Math.min(Math.max(pos.y, -limitY), limitY);
+
+    return cc.v2(clampedX, clampedY);
   },
 });
