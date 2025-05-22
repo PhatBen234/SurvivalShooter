@@ -191,33 +191,33 @@ cc.Class({
     });
   },
   // --- ATTACK BOSS ---
-  attackBossIfNearby() {
-    const ATTACK_RANGE = 100;
-    let damage = this.baseAttack;
+  // attackBossIfNearby() {
+  //   const ATTACK_RANGE = 100;
+  //   let damage = this.baseAttack;
 
-    // Nếu chí mạng thì nhân đôi damage
-    if (Math.random() < this.criticalRate) {
-      damage *= 2;
-    }
+  //   // Nếu chí mạng thì nhân đôi damage
+  //   if (Math.random() < this.criticalRate) {
+  //     damage *= 2;
+  //   }
 
-    if (!this.canvasNode) return;
+  //   if (!this.canvasNode) return;
 
-    const bosses = this.canvasNode.children.filter(
-      (node) => node.name === "FinalBoss" || node.group === "boss"
-    );
+  //   const bosses = this.canvasNode.children.filter(
+  //     (node) => node.name === "FinalBoss" || node.group === "boss"
+  //   );
 
-    bosses.forEach((boss) => {
-      if (!boss || !boss.isValid) return;
+  //   bosses.forEach((boss) => {
+  //     if (!boss || !boss.isValid) return;
 
-      const dist = this.node.position.sub(boss.position).mag();
-      if (dist <= ATTACK_RANGE) {
-        const bossScript = boss.getComponent("Boss");
-        if (bossScript?.takeDamage) {
-          bossScript.takeDamage(damage);
-        }
-      }
-    });
-  },
+  //     const dist = this.node.position.sub(boss.position).mag();
+  //     if (dist <= ATTACK_RANGE) {
+  //       const bossScript = boss.getComponent("Boss");
+  //       if (bossScript?.takeDamage) {
+  //         bossScript.takeDamage(damage);
+  //       }
+  //     }
+  //   });
+  // },
 
   // --- SKILL ---
   handleSkill(dt) {
@@ -268,25 +268,25 @@ cc.Class({
     this.skillDamageBoss(SKILL_RANGE, SKILL_DAMAGE); //Gọi hàm Skill gây dmg lên boss
   },
 
-  skillDamageBoss(range, damage) {
-    if (!this.canvasNode) return;
+  // skillDamageBoss(range, damage) {
+  //   if (!this.canvasNode) return;
 
-    const bosses = this.canvasNode.children.filter(
-      (node) => node.name === "FinalBoss" || node.group === "boss"
-    );
+  //   const bosses = this.canvasNode.children.filter(
+  //     (node) => node.name === "FinalBoss" || node.group === "boss"
+  //   );
 
-    bosses.forEach((boss) => {
-      if (!boss || !boss.isValid) return;
+  //   bosses.forEach((boss) => {
+  //     if (!boss || !boss.isValid) return;
 
-      const dist = this.node.position.sub(boss.position).mag();
-      if (dist <= range) {
-        const bossScript = boss.getComponent("Boss");
-        if (bossScript?.takeDamage) {
-          bossScript.takeDamage(damage);
-        }
-      }
-    });
-  },
+  //     const dist = this.node.position.sub(boss.position).mag();
+  //     if (dist <= range) {
+  //       const bossScript = boss.getComponent("Boss");
+  //       if (bossScript?.takeDamage) {
+  //         bossScript.takeDamage(damage);
+  //       }
+  //     }
+  //   });
+  // },
 
   // --- EXP & LEVEL UP ---
   gainExp(amount) {
@@ -411,23 +411,23 @@ cc.Class({
     animationComponent.node.active = isActive;
     if (!isActive) animationComponent.stop();
   },
-  applyBuffsFromSkill(buffData) {
-    // buffData có thể có dạng { maxHp, speed, baseAttack, critRate, expPickupRange, attackInterval }
-    if (buffData.maxHp !== undefined) {
-      this.maxHp = buffData.maxHp;
-      this.currentHp = this.maxHp; // reset HP full khi buff maxHp
-    }
-    if (buffData.speed !== undefined) this.speed = buffData.speed;
-    if (buffData.baseAttack !== undefined)
-      this.baseAttack = buffData.baseAttack;
-    if (buffData.critRate !== undefined) this.criticalRate = buffData.critRate;
-    if (buffData.expPickupRange !== undefined)
-      this.expPickupRange = buffData.expPickupRange;
-    if (buffData.attackInterval !== undefined)
-      this.attackInterval = buffData.attackInterval;
+  // applyBuffsFromSkill(buffData) {
+  //   // buffData có thể có dạng { maxHp, speed, baseAttack, critRate, expPickupRange, attackInterval }
+  //   if (buffData.maxHp !== undefined) {
+  //     this.maxHp = buffData.maxHp;
+  //     this.currentHp = this.maxHp; // reset HP full khi buff maxHp
+  //   }
+  //   if (buffData.speed !== undefined) this.speed = buffData.speed;
+  //   if (buffData.baseAttack !== undefined)
+  //     this.baseAttack = buffData.baseAttack;
+  //   if (buffData.critRate !== undefined) this.criticalRate = buffData.critRate;
+  //   if (buffData.expPickupRange !== undefined)
+  //     this.expPickupRange = buffData.expPickupRange;
+  //   if (buffData.attackInterval !== undefined)
+  //     this.attackInterval = buffData.attackInterval;
 
-    this.updateAllUI();
-  },
+  //   this.updateAllUI();
+  // },
 
   clampPositionToCanvas(pos) {
     if (!this.canvasNode) return pos;

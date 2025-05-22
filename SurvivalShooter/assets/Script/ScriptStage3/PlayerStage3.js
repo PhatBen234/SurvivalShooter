@@ -464,30 +464,30 @@ cc.Class({
     if (!isActive) animationComponent.stop();
   },
 
-  applyBuffsFromSkill(buffData) {
-    if (buffData.maxHp !== undefined) {
-      this.maxHp += buffData.maxHp;
-      this.currentHp = this.maxHp;
-    }
-    if (buffData.speed !== undefined) this.speed += buffData.speed;
-    if (buffData.baseAttack !== undefined)
-      this.baseAttack += buffData.baseAttack;
-    if (buffData.critRate !== undefined) this.criticalRate += buffData.critRate;
-    if (buffData.expPickupRange !== undefined)
-      this.expPickupRange += buffData.expPickupRange;
-    if (buffData.attackInterval !== undefined)
-      this.attackInterval += buffData.attackInterval;
+  // applyBuffsFromSkill(buffData) {
+  //   if (buffData.maxHp !== undefined) {
+  //     this.maxHp += buffData.maxHp;
+  //     this.currentHp = this.maxHp;
+  //   }
+  //   if (buffData.speed !== undefined) this.speed += buffData.speed;
+  //   if (buffData.baseAttack !== undefined)
+  //     this.baseAttack += buffData.baseAttack;
+  //   if (buffData.critRate !== undefined) this.criticalRate += buffData.critRate;
+  //   if (buffData.expPickupRange !== undefined)
+  //     this.expPickupRange += buffData.expPickupRange;
+  //   if (buffData.attackInterval !== undefined)
+  //     this.attackInterval += buffData.attackInterval;
 
-    // Range boost - cộng trực tiếp vào tầm cung (ranged attack range)
-    if (buffData.attackRange !== undefined) {
-      this.rangedAttackRange += buffData.attackRange;
-    }
-    if (buffData.rangedAttackRange !== undefined) {
-      this.rangedAttackRange += buffData.rangedAttackRange;
-    }
+  //   // Range boost - cộng trực tiếp vào tầm cung (ranged attack range)
+  //   if (buffData.attackRange !== undefined) {
+  //     this.rangedAttackRange += buffData.attackRange;
+  //   }
+  //   if (buffData.rangedAttackRange !== undefined) {
+  //     this.rangedAttackRange += buffData.rangedAttackRange;
+  //   }
 
-    this.updateAllUI();
-  },
+  //   this.updateAllUI();
+  // },
 
   clampPositionToCanvas(pos) {
     if (!this.canvasNode) return pos;
