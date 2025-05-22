@@ -12,6 +12,9 @@ cc.Class({
 
     countdownLabel: cc.Label,
     resultLabel: cc.Label,
+    
+    // Thêm reference đến MenuScript
+    menuScript: cc.Component,
   },
 
   onLoad() {
@@ -29,6 +32,14 @@ cc.Class({
 
     if (this.player) {
       this.playerScript = this.player.getComponent("Player");
+    }
+
+    // Tìm MenuScript trong scene nếu chưa được gán
+    if (!this.menuScript) {
+      let menuNode = cc.find("Canvas/MenuScript") || cc.find("MenuScript");
+      if (menuNode) {
+        this.menuScript = menuNode.getComponent("MenuScript");
+      }
     }
   },
 
@@ -114,7 +125,8 @@ cc.Class({
       this.player.active = false;
     }
 
-    this.showResult(isWin);
+    // Gọi result panel thay vì showResult cũ
+    this.showResultPanel(isWin);
   },
 
   showResult(isWin) {
@@ -122,6 +134,18 @@ cc.Class({
       this.resultLabel.node.active = true;
       this.resultLabel.string = isWin ? "🎉 YOU WIN!" : "😢 YOU LOSE!";
       this.resultLabel.node.color = isWin ? cc.Color.GREEN : cc.Color.RED;
+    }
+  },
+
+  showResultPanel(isWin) {
+    // Hiển thị result label cũ (nếu có)
+    this.showResult(isWin);
+    
+    // Gọi MenuScript để hiển thị result panel
+    if (this.menuScript && typeof this.menuScript.showResultPanel === "function") {
+      this.menuScript.showResultPanel(isWin);
+    } else {
+      cc.log("MenuScript không tìm thấy hoặc không có hàm showResultPanel");
     }
   },
 });
