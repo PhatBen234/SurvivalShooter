@@ -53,14 +53,14 @@ cc.Class({
     this.playerSkills[skill.id] = currentLevel + 1;
 
     // Cộng trực tiếp buff vào player
-    let playerComp = this.player.getComponent("Player");
-    if (!playerComp) {
-      playerComp = this.player.getComponent("PlayerStage2");
-    }
+    let playerComp =
+      this.player.getComponent("Player") ||
+      this.player.getComponent("PlayerStage2") ||
+      this.player.getComponent("PlayerStage3"); // ✅ thêm dòng này
 
     if (!playerComp) {
       cc.warn(
-        "[SkillManager] Player không có component Player hoặc PlayerStage2"
+        "[SkillManager] Player không có component Player, PlayerStage2 hoặc PlayerStage3"
       );
       return;
     }

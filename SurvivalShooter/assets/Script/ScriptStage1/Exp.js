@@ -2,12 +2,24 @@ cc.Class({
   extends: cc.Component,
 
   properties: {
-    expAmount: 10, // Số EXP nhận được
-    pickupRange: 50, // Khoảng cách để nhặt EXP
+    expAmount: 10,
+    pickupRange: 50,
   },
 
   onLoad() {
-    this.targetPlayer = cc.find("Canvas/Player"); // Hoặc gán từ bên ngoài tùy bạn setup
+    // Nếu chưa có targetPlayer thì tự động tìm trong Canvas
+    if (!this.targetPlayer) {
+      this.targetPlayer =
+        cc.find("Canvas").getComponentInChildren("Player") ||
+        cc.find("Canvas").getComponentInChildren("PlayerStage2") ||
+        cc.find("Canvas").getComponentInChildren("PlayerStage3");
+
+      if (this.targetPlayer) {
+        this.targetPlayer = this.targetPlayer.node;
+      } else {
+        cc.warn("EXP: Không tìm thấy Player!");
+      }
+    }
   },
 
   update(dt) {
@@ -20,7 +32,8 @@ cc.Class({
     if (dir.mag() < this.pickupRange) {
       const playerScript =
         this.targetPlayer.getComponent("Player") ||
-        this.targetPlayer.getComponent("PlayerStage2"); // ✅ Thêm dòng này
+        this.targetPlayer.getComponent("PlayerStage2") ||
+        this.targetPlayer.getComponent("PlayerStage3");
 
       if (playerScript && typeof playerScript.gainExp === "function") {
         playerScript.gainExp(this.expAmount);
