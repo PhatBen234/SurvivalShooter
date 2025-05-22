@@ -13,6 +13,9 @@ cc.Class({
 
     countdownLabel: cc.Label,
     resultLabel: cc.Label,
+
+    // Thêm reference đến MenuScript
+    menuScript: cc.Component,
   },
 
   onLoad() {
@@ -51,7 +54,7 @@ cc.Class({
     }
 
     // Spawn boss nếu còn 10s và chưa gọi
-    if (!this.bossSpawned && timeLeft <= 10) {
+    if (!this.bossSpawned && timeLeft <= 60) {
       this.spawnBoss();
     }
 
@@ -140,7 +143,7 @@ cc.Class({
       this.player.active = false;
     }
 
-    this.showResult(isWin);
+    this.showResultPanel(isWin);
   },
 
   showResult(isWin) {
@@ -148,6 +151,21 @@ cc.Class({
       this.resultLabel.node.active = true;
       this.resultLabel.string = isWin ? "🎉 YOU WIN!" : "😢 YOU LOSE!";
       this.resultLabel.node.color = isWin ? cc.Color.GREEN : cc.Color.RED;
+    }
+  },
+
+  showResultPanel(isWin) {
+    // Hiển thị result label cũ (nếu có)
+    this.showResult(isWin);
+
+    // Gọi MenuScript để hiển thị result panel
+    if (
+      this.menuScript &&
+      typeof this.menuScript.showResultPanel === "function"
+    ) {
+      this.menuScript.showResultPanel(isWin);
+    } else {
+      cc.log("MenuScript không tìm thấy hoặc không có hàm showResultPanel");
     }
   },
 });

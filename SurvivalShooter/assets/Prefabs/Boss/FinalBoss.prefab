@@ -641,17 +641,19 @@
       "__id__": 1
     },
     "_enabled": true,
-    "hp": 200,
-    "moveSpeed": 100,
-    "damage": 10,
-    "hpBar": {
-      "__id__": 17
+    "anim": {
+      "__id__": 4
     },
     "skillShoot": {
       "__id__": 10
     },
     "skillDash": {
       "__id__": 7
+    },
+    "hp": 200,
+    "moveSpeed": 100,
+    "hpBar": {
+      "__id__": 17
     },
     "_id": ""
   },

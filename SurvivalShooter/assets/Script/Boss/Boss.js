@@ -2,42 +2,39 @@ cc.Class({
   extends: cc.Component,
 
   properties: {
-    hp: 500,
-    moveSpeed: 100,
-    damage: 10,
-
-    hpBar: cc.ProgressBar,
+    anim: cc.Animation,
     skillShoot: cc.Component,
     skillDash: cc.Component,
+    hp: 500,
+    moveSpeed: 100, // pixels/sec
+    hpBar: cc.ProgressBar,
   },
 
   start() {
     this.canvasSize = cc.winSize;
+    this.schedule(this.castSkill, 5); // 5s dùng skill
     this.maxHP = this.hp;
     this.updateHpBar();
 
-    this.schedule(this.castSkill, 5); // Dùng skill mỗi 5 giây
-
-    // Tự tìm player
-    this.player =
-      cc.find("Canvas").getComponentInChildren("Player") ||
-      cc.find("Canvas").getComponentInChildren("PlayerStage2") ||
-      cc.find("Canvas").getComponentInChildren("PlayerStage3");
+    // Tự tìm player (Player, PlayerStage2 hoặc PlayerStage3)
+    this.player = cc.find("Canvas").getComponentInChildren("PlayerStage3");
 
     if (this.player) {
       this.player = this.player.node;
     } else {
-      cc.warn("Không tìm thấy Player!");
+      cc.warn("Không tìm thấy PlayerStage3!");
     }
   },
 
   update(dt) {
-    if (this.player && this.player.isValid) {
+    if (this.player) {
       this.moveTowardPlayer(dt);
     }
   },
 
   moveTowardPlayer(dt) {
+    if (!this.player) return;
+
     let bossPos = this.node.position;
 
     let playerWorldPos = this.player.parent.convertToWorldSpaceAR(
@@ -64,30 +61,36 @@ cc.Class({
 
       this.node.setPosition(newPos);
     } else {
-      const playerScript =
-        this.player.getComponent("Player") ||
-        this.player.getComponent("PlayerStage2") ||
-        this.player.getComponent("PlayerStage3");
+      // Gây sát thương khi chạm
+      const playerScript = this.player.getComponent("PlayerStage3");
 
       if (playerScript && playerScript.takeDamage) {
-        playerScript.takeDamage(this.damage);
+        playerScript.takeDamage(this.damage || 10);
       }
     }
   },
 
   castSkill() {
-    const id = Math.floor(Math.random() * 2);
-    if (id === 0 && this.skillShoot) this.skillShoot.shoot();
-    else if (id === 1 && this.skillDash) this.skillDash.dash();
+    const skillId = Math.floor(Math.random() * 2);
+    this.anim.play("FinalBossIdle");
+
+    switch (skillId) {
+      case 0:
+        this.skillShoot.shoot();
+        break;
+      case 1:
+        this.skillDash.dash();
+        break;
+    }
   },
 
   takeDamage(amount) {
     this.hp -= amount;
-    this.updateHpBar();
-
     if (this.hp <= 0) {
-      this.onDeath();
+      this.hp = 0;
+      this.die();
     }
+    this.updateHpBar();
   },
 
   updateHpBar() {
@@ -96,7 +99,7 @@ cc.Class({
     }
   },
 
-  onDeath() {
+  die() {
     this.node.destroy();
   },
 });

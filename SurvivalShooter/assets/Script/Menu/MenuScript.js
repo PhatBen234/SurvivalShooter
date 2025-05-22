@@ -27,7 +27,7 @@ cc.Class({
 
   onLoad() {
     console.log("MenuScript onLoad started");
-    
+
     this.menuBtnLayout.active = true;
     this.stageChose.active = false;
     this.homeBtn.active = false;
@@ -41,10 +41,10 @@ cc.Class({
 
     // Thiết lập volume slider trước
     this.setupVolumeSlider();
-    
+
     // Thử phát nhạc ngay lập tức
     this.playBackgroundMusic();
-    
+
     // Backup: Thử phát nhạc sau khi user tương tác (do browser policy)
     this.setupUserInteractionListener();
   },
@@ -53,7 +53,7 @@ cc.Class({
     if (this.volumeSlider) {
       // Đặt âm lượng mặc định là 100%
       this.volumeSlider.progress = 1.0;
-      
+
       // Lắng nghe sự kiện slide
       this.volumeSlider.node.on("slide", this.onVolumeChanged, this);
       console.log("Volume slider setup complete, default volume: 1.0");
@@ -64,14 +64,14 @@ cc.Class({
 
   playBackgroundMusic() {
     console.log("Attempting to play background music...");
-    
+
     if (!this.music) {
       console.error("❌ Music asset not assigned to MenuScript!");
       return;
     }
 
     console.log("Music asset found:", this.music.name);
-    
+
     // Dừng nhạc cũ nếu có
     if (this.currentAudioID !== undefined && this.currentAudioID !== -1) {
       cc.audioEngine.stop(this.currentAudioID);
@@ -79,7 +79,7 @@ cc.Class({
 
     // Phát nhạc nền (loop = true, volume = 1.0)
     this.currentAudioID = cc.audioEngine.play(this.music, true, 1.0);
-    
+
     if (this.currentAudioID === -1) {
       console.error("❌ Failed to play background music");
       this.musicPlayFailed = true;
@@ -91,20 +91,28 @@ cc.Class({
 
   setupUserInteractionListener() {
     // Lắng nghe click đầu tiên để phát nhạc (browser policy)
-    this.node.once(cc.Node.EventType.TOUCH_START, () => {
-      if (this.musicPlayFailed || this.currentAudioID === -1 || this.currentAudioID === undefined) {
-        console.log("Retrying music playback after user interaction...");
-        this.playBackgroundMusic();
-      }
-    }, this);
+    this.node.once(
+      cc.Node.EventType.TOUCH_START,
+      () => {
+        if (
+          this.musicPlayFailed ||
+          this.currentAudioID === -1 ||
+          this.currentAudioID === undefined
+        ) {
+          console.log("Retrying music playback after user interaction...");
+          this.playBackgroundMusic();
+        }
+      },
+      this
+    );
   },
 
   onVolumeChanged() {
     if (!this.volumeSlider) return;
-    
+
     const volume = this.volumeSlider.progress;
     console.log("Volume changed to:", volume);
-    
+
     // Điều chỉnh âm lượng nếu nhạc đang phát
     if (this.currentAudioID !== undefined && this.currentAudioID !== -1) {
       cc.audioEngine.setVolume(this.currentAudioID, volume);
@@ -173,16 +181,14 @@ cc.Class({
     this.pauseMenu.active = false;
     this.resultMenu.active = false;
     const currentScene = cc.director.getScene().name;
-    
+
     cc.director.resume();
-    
+
     if (currentScene === "Stage1") {
       cc.director.loadScene("Stage1");
-    }
-    else if (currentScene === "Stage2") {
+    } else if (currentScene === "Stage2") {
       cc.director.loadScene("Stage2");
-    }
-    else {
+    } else {
       cc.director.loadScene("BossStage");
     }
   },
@@ -201,7 +207,10 @@ cc.Class({
         this.resultLabel.node.color = cc.Color.RED;
       }
     }
-
+    const currentScene = cc.director.getScene().name;
+    if (currentScene === "BossStage") {
+      this.nextStageBtn.active = !isWin;
+    }
     if (this.nextStageBtn) {
       this.nextStageBtn.active = isWin;
     }
@@ -213,11 +222,9 @@ cc.Class({
 
     if (currentScene === "Stage1") {
       cc.director.loadScene("Stage2");
-    }
-    else if (currentScene === "Stage2") {
+    } else if (currentScene === "Stage2") {
       cc.director.loadScene("BossStage");
-    }
-    else if (currentScene === "BossStage") {
+    } else if (currentScene === "BossStage") {
       cc.director.loadScene("MainMenu");
     }
   },
