@@ -265,7 +265,7 @@ cc.Class({
         if (enemyScript?.takeDamage) enemyScript.takeDamage(SKILL_DAMAGE);
       }
     });
-    this.skillDamageBoss(SKILL_RANGE, SKILL_DAMAGE); //Gọi hàm Skill gây dmg lên boss
+    // this.skillDamageBoss(SKILL_RANGE, SKILL_DAMAGE); //Gọi hàm Skill gây dmg lên boss
   },
 
   // skillDamageBoss(range, damage) {
@@ -369,12 +369,7 @@ cc.Class({
     }
     if (this.currentHp < 0) this.currentHp = 0;
     this.updateHpLabel();
-    this.node.runAction(
-      cc.sequence(
-        cc.fadeTo(0.1, 100),
-        cc.fadeTo(0.1, 255)
-      )
-    );
+    this.node.runAction(cc.sequence(cc.fadeTo(0.1, 100), cc.fadeTo(0.1, 255)));
   },
 
   // --- UI UPDATE HELPERS ---
