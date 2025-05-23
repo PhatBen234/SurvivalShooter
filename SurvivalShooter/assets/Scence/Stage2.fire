@@ -332,7 +332,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "12452fbb-4c1e-4cfe-a766-56774a8c65e9"
+      "__uuid__": "1ba8ea0a-3759-45e0-8725-4f837aa976c9"
     },
     "_type": 0,
     "_sizeMode": 0,
@@ -1334,7 +1334,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 30.01,
+      "width": 0,
       "height": 18.9
     },
     "_anchorPoint": {
@@ -1346,7 +1346,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        1152.9050000000002,
+        1137.9,
         0,
         0,
         0,
