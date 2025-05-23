@@ -12,6 +12,7 @@ cc.Class({
       this.targetPlayer =
         cc.find("Canvas").getComponentInChildren("Player") ||
         cc.find("Canvas").getComponentInChildren("PlayerStage2") ||
+        cc.find("Canvas").getComponentInChildren("PlayerController") ||
         cc.find("Canvas").getComponentInChildren("PlayerStage3");
 
       if (this.targetPlayer) {
@@ -33,6 +34,7 @@ cc.Class({
       const playerScript =
         this.targetPlayer.getComponent("Player") ||
         this.targetPlayer.getComponent("PlayerStage2") ||
+        this.targetPlayer.getComponent("PlayerController") ||
         this.targetPlayer.getComponent("PlayerStage3");
 
       if (playerScript && typeof playerScript.gainExp === "function") {

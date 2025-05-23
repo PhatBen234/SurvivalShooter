@@ -21,6 +21,7 @@ cc.Class({
     this.player =
       cc.find("Canvas").getComponentInChildren("Player") ||
       cc.find("Canvas").getComponentInChildren("PlayerStage2") ||
+      cc.find("Canvas").getComponentInChildren("PlayerController") ||
       cc.find("Canvas").getComponentInChildren("PlayerStage3");
 
     if (this.player) {
@@ -31,8 +32,7 @@ cc.Class({
   },
 
   update(dt) {
-    if (!this.player || !this.player.isValid) 
-      return;
+    if (!this.player || !this.player.isValid) return;
 
     let dir = this.player.position.sub(this.node.position);
     let distance = dir.mag();
@@ -52,6 +52,7 @@ cc.Class({
       const playerScript =
         this.player.getComponent("Player") ||
         this.player.getComponent("PlayerStage2") ||
+        this.player.getComponent("PlayerController") ||
         this.player.getComponent("PlayerStage3");
 
       if (playerScript && playerScript.takeDamage) {

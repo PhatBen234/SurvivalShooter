@@ -58,7 +58,8 @@ cc.Class({
     let playerComp =
       this.player.getComponent("Player") ||
       this.player.getComponent("PlayerStage2") ||
-      this.player.getComponent("PlayerStage3"); // ✅ thêm dòng này
+      this.player.getComponent("PlayerController") ||
+      this.player.getComponent("PlayerStage3");
 
     if (!playerComp) {
       cc.warn(
