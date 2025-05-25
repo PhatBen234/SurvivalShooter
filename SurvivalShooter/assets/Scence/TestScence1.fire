@@ -2632,7 +2632,7 @@
     "_baseAttack": 10,
     "_criticalRate": 0.1,
     "_meleeAttackRange": 100,
-    "_attackRange": 300,
+    "_rangedAttackRange": 300,
     "_meleeToRangedThreshold": 120,
     "_level": 1,
     "_currentExp": 0,

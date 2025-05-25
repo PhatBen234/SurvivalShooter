@@ -126,7 +126,10 @@ cc.Class({
   handleAutoAttack(dt) {
     if (!this.canAttack(dt)) return;
 
-    const enemy = this.findClosestEnemy(this.playerModel.getAttackRange());
+    // Sử dụng ranged attack range làm tầm tìm kiếm enemy
+    const enemy = this.findClosestEnemy(
+      this.playerModel.getRangedAttackRange()
+    );
     if (!enemy) return;
 
     const attackType = this.determineAttackType(enemy);
@@ -328,14 +331,26 @@ cc.Class({
   getBaseAttack() {
     return this.playerModel?.getBaseAttack() || 0;
   },
-  getAttackRange() {
-    return this.playerModel?.getAttackRange() || 0;
+  // FIX: Đổi getAttackRange thành getRangedAttackRange
+  getRangedAttackRange() {
+    return this.playerModel?.getRangedAttackRange() || 0;
+  },
+  getMeleeAttackRange() {
+    return this.playerModel?.getMeleeAttackRange() || 0;
   },
   getExpPickupRange() {
     return this.playerModel?.getExpPickupRange() || 0;
   },
   getCriticalRate() {
     return this.playerModel?.getCriticalRate() || 0;
+  },
+
+  // Backwards compatibility - nếu có code khác vẫn gọi getAttackRange
+  getAttackRange() {
+    cc.warn(
+      "[PlayerController] getAttackRange is deprecated. Use getRangedAttackRange instead."
+    );
+    return this.getRangedAttackRange();
   },
 
   // === UTILITIES ===

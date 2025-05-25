@@ -1,4 +1,3 @@
-// PlayerModel.js - Chỉ chứa data và getter/setter
 cc.Class({
   extends: cc.Component,
 
@@ -12,7 +11,7 @@ cc.Class({
     _baseAttack: 10,
     _criticalRate: 0.1,
     _meleeAttackRange: 100,
-    _attackRange: 300,
+    _rangedAttackRange: 300,
     _meleeToRangedThreshold: 120,
 
     // EXP & Level
@@ -70,11 +69,11 @@ cc.Class({
   addMeleeAttackRange(amount) {
     this._meleeAttackRange += amount;
   },
-  getAttackRange() {
-    return this._attackRange;
+  getRangedAttackRange() {
+    return this._rangedAttackRange;
   },
-  addAttackRange(amount) {
-    this._attackRange += amount;
+  addRangedAttackRange(amount) {
+    this._rangedAttackRange += amount;
   },
   getMeleeToRangedThreshold() {
     return this._meleeToRangedThreshold;
@@ -166,8 +165,9 @@ cc.Class({
       case 1: // Power Boost
         this.addBaseAttack(amount);
         break;
-      case 2: // Range Boost
-        this.addAttackRange(amount);
+      case 2: // Range Boost - tăng cả melee và ranged
+        this.addMeleeAttackRange(amount);
+        this.addRangedAttackRange(amount);
         break;
       case 3: // Pickup Magnet
         this.addExpPickupRange(amount);
@@ -188,7 +188,7 @@ cc.Class({
     this.addExpPickupRange(10);
     this.addCriticalRate(0.05);
     this.addMeleeAttackRange(10);
-    this.addAttackRange(15);
+    this.addRangedAttackRange(15); // Đổi từ addAttackRange thành addRangedAttackRange
     this.addMeleeToRangedThreshold(10);
     this.setExpToNextLevel(Math.floor(this._expToNextLevel * 1.25));
   },

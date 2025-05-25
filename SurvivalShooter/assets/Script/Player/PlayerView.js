@@ -146,7 +146,8 @@ cc.Class({
       this.expRangeLabel.string = `EXP Range: ${this.playerModel.getExpPickupRange()}`;
     }
     if (this.attackRangeLabel) {
-      this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Archer: ${this.playerModel.getAttackRange()}`;
+      // FIX: Đổi getAttackRange() thành getRangedAttackRange()
+      this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Ranged: ${this.playerModel.getRangedAttackRange()}`;
     }
   },
 
