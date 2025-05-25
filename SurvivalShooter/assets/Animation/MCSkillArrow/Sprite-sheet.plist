@@ -1,0 +1,88 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>Sprite-sheet0.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{108,61}</string>
+				<key>spriteSize</key>
+				<string>{108,61}</string>
+				<key>textureRect</key>
+				<string>{{0,0},{108,61}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Sprite-sheet1.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{178,72}</string>
+				<key>spriteSize</key>
+				<string>{178,72}</string>
+				<key>textureRect</key>
+				<string>{{109,0},{178,72}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5056179775280899,0}</string>
+			</dict>
+			<key>Sprite-sheet2.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{164,55}</string>
+				<key>spriteSize</key>
+				<string>{164,55}</string>
+				<key>textureRect</key>
+				<string>{{0,73},{164,55}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Sprite-sheet3.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{106,44}</string>
+				<key>spriteSize</key>
+				<string>{106,44}</string>
+				<key>textureRect</key>
+				<string>{{165,73},{106,44}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5094339622641509,0}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>3</integer>
+			<key>realTextureFileName</key>
+			<string>Sprite-sheet.png</string>
+			<key>textureFileName</key>
+			<string>Sprite-sheet.png</string>
+			<key>size</key>
+			<string>{288,128}</string>
+		</dict>
+	</dict>
+</plist>

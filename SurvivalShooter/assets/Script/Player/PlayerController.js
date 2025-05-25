@@ -1,40 +1,20 @@
-// PlayerController.js - Xử lý toàn bộ game logic
+// PlayerController.js - Main Controller
 cc.Class({
   extends: cc.Component,
 
   properties: {
-    // References
     canvasNode: cc.Node,
     arrowPrefab: cc.Prefab,
     skillManager: cc.Node,
-
-    // Components
-    playerModel: null,
-    playerView: null,
   },
 
   onLoad() {
-    // Khởi tạo components
-    this.playerModel = this.getComponent("PlayerModel");
-    this.playerView = this.getComponent("PlayerView");
-
-    if (this.playerView) {
-      this.playerView.setPlayerModel(this.playerModel);
-    }
-
-    // Input handling
-    this.keyPressed = {};
-    this.attackTimer = 0;
-    this.skillTimer = 0;
-
-    // Event listeners
-    cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-    cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    this.initComponents();
+    this.initInput();
   },
 
   onDestroy() {
-    cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
-    cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+    this.destroyInput();
   },
 
   update(dt) {
@@ -44,144 +24,171 @@ cc.Class({
     this.collectNearbyExp(dt);
   },
 
-  // === INPUT HANDLING ===
+  // === INITIALIZATION ===
+  initComponents() {
+    this.playerModel = this.getComponent("PlayerModel");
+    this.playerView = this.getComponent("PlayerView");
+    this.meleeAttackHandler = this.getComponent("MeleeAttackHandler");
+    this.rangedAttackHandler = this.getComponent("RangedAttackHandler");
+
+    if (this.playerView) {
+      this.playerView.setPlayerModel(this.playerModel);
+    }
+
+    // Initialize attack handlers
+    this.meleeAttackHandler?.init(
+      this.playerModel,
+      this.playerView,
+      this.canvasNode
+    );
+    this.rangedAttackHandler?.init(
+      this.playerModel,
+      this.playerView,
+      this.canvasNode,
+      this.arrowPrefab
+    );
+  },
+
+  initInput() {
+    this.keyPressed = {};
+    this.attackTimer = 0;
+    this.skillTimer = 0;
+
+    cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+    cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+  },
+
+  destroyInput() {
+    cc.systemEvent.off(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
+    cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+  },
+
+  // === INPUT ===
   onKeyDown(event) {
     this.keyPressed[event.keyCode] = true;
   },
-
   onKeyUp(event) {
     this.keyPressed[event.keyCode] = false;
   },
 
   getInputDirection() {
+    const keys = cc.macro.KEY;
     let dir = cc.v2(0, 0);
-    if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
-    if (this.keyPressed[cc.macro.KEY.d]) dir.x += 1;
-    if (this.keyPressed[cc.macro.KEY.w]) dir.y += 1;
-    if (this.keyPressed[cc.macro.KEY.s]) dir.y -= 1;
+    if (this.keyPressed[keys.a]) dir.x -= 1;
+    if (this.keyPressed[keys.d]) dir.x += 1;
+    if (this.keyPressed[keys.w]) dir.y += 1;
+    if (this.keyPressed[keys.s]) dir.y -= 1;
     return dir;
   },
 
-  // === MOVEMENT LOGIC ===
+  // === MOVEMENT ===
   handleMovement(dt) {
     if (!this.playerModel || !this.playerView) return;
 
     const dir = this.getInputDirection();
-    const lastDir = this.playerModel.getLastDirection();
-
-    // Update direction in model
-    if (!dir.equals(lastDir)) {
-      this.playerModel.setLastDirection(dir);
-    }
+    this.updateDirection(dir);
 
     if (dir.mag() > 0) {
-      // Normalize and move
-      const normalizedDir = dir.normalize();
-
-      // Update player scale through view
-      this.playerView.updatePlayerScale(normalizedDir);
-
-      // Calculate new position
-      let pos = this.node.getPosition();
-      pos = pos.add(normalizedDir.mul(this.playerModel.getSpeed() * dt));
-      pos = this.clampPositionToCanvas(pos);
-      this.node.setPosition(pos);
-
-      // Play walk animation if not attacking
-      if (!this.playerModel.isAttacking()) {
-        this.playerView.playWalkAnimation();
-      }
+      this.movePlayer(dir.normalize(), dt);
+      this.playMovementAnimation();
     } else {
-      // Stop walk animation if not attacking
-      if (!this.playerModel.isAttacking()) {
-        this.playerView.stopWalkAnimation();
-      }
+      this.stopMovementAnimation();
     }
   },
 
-  // === ATTACK LOGIC ===
+  updateDirection(dir) {
+    if (!dir.equals(this.playerModel.getLastDirection())) {
+      this.playerModel.setLastDirection(dir);
+    }
+  },
+
+  movePlayer(normalizedDir, dt) {
+    this.playerView.updatePlayerScale(normalizedDir);
+
+    let pos = this.node.getPosition();
+    pos = pos.add(normalizedDir.mul(this.playerModel.getSpeed() * dt));
+    this.node.setPosition(this.clampPositionToCanvas(pos));
+  },
+
+  playMovementAnimation() {
+    if (!this.playerModel.isAttacking()) {
+      this.playerView.playWalkAnimation();
+    }
+  },
+
+  stopMovementAnimation() {
+    if (!this.playerModel.isAttacking()) {
+      this.playerView.stopWalkAnimation();
+    }
+  },
+
+  // === ATTACK ===
   handleAutoAttack(dt) {
-    if (!this.playerModel) return;
+    if (!this.canAttack(dt)) return;
+
+    const enemy = this.findClosestEnemy(this.playerModel.getAttackRange());
+    if (!enemy) return;
+
+    const attackType = this.determineAttackType(enemy);
+    this.performAttack(attackType, enemy);
+  },
+
+  canAttack(dt) {
+    if (!this.playerModel) return false;
 
     this.attackTimer += dt;
-
-    if (
-      this.attackTimer < this.playerModel.getAttackInterval() ||
-      this.playerModel.isAttacking()
-    ) {
-      return;
-    }
-
-    // Find closest enemy
-    const closestEnemy = this.findClosestEnemy(
-      this.playerModel.getAttackRange()
+    return (
+      this.attackTimer >= this.playerModel.getAttackInterval() &&
+      !this.playerModel.isAttacking()
     );
-    if (!closestEnemy) return;
-
-    // Determine attack type
-    const attackType = this.determineAttackType(closestEnemy);
-    this.performAttack(attackType, closestEnemy);
   },
 
   determineAttackType(enemy) {
-    const distanceToEnemy = this.node.position.sub(enemy.position).mag();
+    const both = this.meleeAttackHandler && this.rangedAttackHandler;
+    if (!both) {
+      return this.meleeAttackHandler ? "melee" : "ranged";
+    }
 
-    if (distanceToEnemy <= this.playerModel.getMeleeAttackRange()) {
-      // Check if there are multiple enemies nearby for melee
-      const nearbyEnemies = this.findEnemiesInRange(
-        this.playerModel.getMeleeAttackRange()
-      );
+    const distance = this.node.position.sub(enemy.position).mag();
+    const meleeRange = this.playerModel.getMeleeAttackRange();
 
-      if (nearbyEnemies.length >= 2) {
-        return "melee";
-      } else if (
-        distanceToEnemy <= this.playerModel.getMeleeToRangedThreshold()
+    if (distance <= meleeRange) {
+      const nearbyCount = this.findEnemiesInRange(meleeRange).length;
+      if (
+        nearbyCount >= 2 ||
+        distance <= this.playerModel.getMeleeToRangedThreshold()
       ) {
         return "melee";
       }
     }
-
     return "ranged";
   },
 
   performAttack(attackType, target) {
     if (!this.playerModel || !this.playerView) return;
 
+    this.resetAttackTimer();
+    this.setAttackState(attackType);
+
+    const handler =
+      attackType === "melee"
+        ? this.meleeAttackHandler
+        : this.rangedAttackHandler;
+    if (!handler) return;
+
+    const callback = () => this.finishAttack();
+    attackType === "melee"
+      ? handler.performAttack(callback)
+      : handler.performAttack(target, callback);
+  },
+
+  resetAttackTimer() {
     this.attackTimer = 0;
+  },
+
+  setAttackState(attackType) {
     this.playerModel.setAttacking(true);
     this.playerModel.setCurrentAttackType(attackType);
-
-    if (attackType === "melee") {
-      this.playerView.playMeleeAttackAnimation(() => {
-        this.executeMeleeDamage();
-        this.finishAttack();
-      });
-    } else {
-      this.playerView.playRangedAttackAnimation(() => {
-        this.executeRangedDamage(target);
-        this.finishAttack();
-      });
-    }
-  },
-
-  executeMeleeDamage() {
-    const damage = this.playerModel.calculateDamage();
-    const enemies = this.findEnemiesInRange(
-      this.playerModel.getMeleeAttackRange()
-    );
-
-    enemies.forEach((enemy) => {
-      const enemyScript =
-        enemy.getComponent("Enemy") || enemy.getComponent("Boss");
-      if (enemyScript?.takeDamage) {
-        enemyScript.takeDamage(damage);
-      }
-    });
-  },
-
-  executeRangedDamage(target) {
-    if (!target || !target.isValid) return;
-    this.spawnArrowToTarget(target);
   },
 
   finishAttack() {
@@ -191,7 +198,7 @@ cc.Class({
     this.playerModel.setCurrentAttackType(null);
     this.playerView.finishAttackAnimation();
 
-    // Handle movement animation after attack
+    // Resume movement animation if moving
     const dir = this.getInputDirection();
     if (dir.mag() > 0) {
       this.playerView.playWalkAnimation();
@@ -200,39 +207,40 @@ cc.Class({
     }
   },
 
-  // === SKILL LOGIC ===
+  // === SKILL ===
   handleSkill(dt) {
-    if (!this.playerModel || !this.playerView) return;
+    if (!this.canUseSkill(dt)) return;
 
-    this.skillTimer += dt;
-
-    if (
-      this.skillTimer < this.playerModel.getSkillCooldown() ||
-      !this.playerModel.canUseSkill()
-    ) {
-      return;
-    }
-
-    this.skillTimer = 0;
+    this.resetSkillTimer();
     this.playerModel.setCanUseSkill(false);
 
     this.playerView.playSkillAnimation(() => {
       this.playerModel.setCanUseSkill(true);
-      this.skillDamageArea();
+      this.executeSkillDamage();
     });
   },
 
-  skillDamageArea() {
+  canUseSkill(dt) {
+    if (!this.playerModel || !this.playerView) return false;
+
+    this.skillTimer += dt;
+    return (
+      this.skillTimer >= this.playerModel.getSkillCooldown() &&
+      this.playerModel.canUseSkill()
+    );
+  },
+
+  resetSkillTimer() {
+    this.skillTimer = 0;
+  },
+
+  executeSkillDamage() {
     const SKILL_RANGE = 200;
     const SKILL_DAMAGE = 20;
 
-    const enemies = this.findEnemiesInRange(SKILL_RANGE);
-    enemies.forEach((enemy) => {
-      const enemyScript =
-        enemy.getComponent("Enemy") || enemy.getComponent("Boss");
-      if (enemyScript?.takeDamage) {
-        enemyScript.takeDamage(SKILL_DAMAGE);
-      }
+    this.findEnemiesInRange(SKILL_RANGE).forEach((enemy) => {
+      const script = enemy.getComponent("Enemy") || enemy.getComponent("Boss");
+      script?.takeDamage?.(SKILL_DAMAGE);
     });
   },
 
@@ -259,143 +267,107 @@ cc.Class({
     this.playerModel.applyLevelUpBenefits();
     this.playerView.updateAllUI();
 
-    // Notify skill manager
-    if (this.skillManager) {
-      const skillMgrScript = this.skillManager.getComponent("SkillManager");
-      if (skillMgrScript) {
-        skillMgrScript.onLevelUp();
-      }
-    }
+    const skillMgrScript = this.skillManager?.getComponent("SkillManager");
+    skillMgrScript?.onLevelUp();
   },
 
   collectNearbyExp(dt) {
     if (!this.canvasNode || !this.playerModel) return;
 
-    const EXP_GROUP = "exp";
-    const expNodes = this.canvasNode.children.filter(
-      (node) => node.group === EXP_GROUP || node.name === "Exp"
-    );
-
+    const expNodes = this.getExpNodes();
     const playerPos = this.node.position;
     const speed = 300;
     const pickupRange = this.playerModel.getExpPickupRange();
 
     expNodes.forEach((expNode) => {
-      if (!expNode || !expNode.isValid) return;
+      if (!expNode?.isValid) return;
 
-      const expPos = expNode.position;
-      const dist = playerPos.sub(expPos).mag();
-
-      if (dist <= pickupRange) {
-        const direction = playerPos.sub(expPos).normalize();
-        const moveDist = speed * dt;
-        const newPos = expPos.add(direction.mul(moveDist));
-        expNode.setPosition(newPos);
-
-        if (newPos.sub(playerPos).mag() < 10) {
-          const expScript = expNode.getComponent("Exp");
-          if (expScript?.getAmount) {
-            this.gainExp(expScript.getAmount());
-          }
-          expNode.destroy();
-        }
+      const distance = playerPos.sub(expNode.position).mag();
+      if (distance <= pickupRange) {
+        this.moveExpToPlayer(expNode, playerPos, speed * dt);
       }
     });
   },
 
-  // === DAMAGE HANDLING ===
+  getExpNodes() {
+    return this.canvasNode.children.filter(
+      (node) => node.group === "exp" || node.name === "Exp"
+    );
+  },
+
+  moveExpToPlayer(expNode, playerPos, moveDistance) {
+    const direction = playerPos.sub(expNode.position).normalize();
+    const newPos = expNode.position.add(direction.mul(moveDistance));
+    expNode.setPosition(newPos);
+
+    if (newPos.sub(playerPos).mag() < 10) {
+      const expScript = expNode.getComponent("Exp");
+      if (expScript?.getAmount) {
+        this.gainExp(expScript.getAmount());
+      }
+      expNode.destroy();
+    }
+  },
+
+  // === DAMAGE ===
   takeDamage(amount) {
     if (!this.playerModel || !this.playerView) return;
 
-    const newHp = this.playerModel.getCurrentHp() - amount;
-    this.playerModel.setCurrentHp(newHp);
-
+    this.playerModel.setCurrentHp(this.playerModel.getCurrentHp() - amount);
     this.playerView.updateHpUI();
     this.playerView.showDamageEffect();
   },
 
-  // === PUBLIC METHODS FOR EXTERNAL ACCESS ===
+  // === PUBLIC API ===
   applySkillBuff(skillId, amount) {
     if (!this.playerModel || !this.playerView) return;
-
     this.playerModel.applySkillBuff(skillId, amount);
     this.playerView.updateAllUI();
   },
 
-  // Getter methods for external access (like SkillManager)
   getBaseAttack() {
-    return this.playerModel ? this.playerModel.getBaseAttack() : 0;
+    return this.playerModel?.getBaseAttack() || 0;
   },
-
   getAttackRange() {
-    return this.playerModel ? this.playerModel.getAttackRange() : 0;
+    return this.playerModel?.getAttackRange() || 0;
   },
-
   getExpPickupRange() {
-    return this.playerModel ? this.playerModel.getExpPickupRange() : 0;
+    return this.playerModel?.getExpPickupRange() || 0;
   },
-
   getCriticalRate() {
-    return this.playerModel ? this.playerModel.getCriticalRate() : 0;
+    return this.playerModel?.getCriticalRate() || 0;
   },
 
-  // === UTILITY METHODS ===
+  // === UTILITIES ===
   findEnemiesInRange(range) {
     if (!this.canvasNode) return [];
 
-    const enemies = this.canvasNode.children.filter(
-      (node) =>
-        (node.name === "Enemy" ||
-          node.group === "enemy" ||
-          node.name === "FinalBoss" ||
-          node.group === "finalBoss") &&
-        node.isValid
-    );
-
-    return enemies.filter((enemy) => {
-      const dist = this.node.position.sub(enemy.position).mag();
-      return dist <= range;
+    return this.canvasNode.children.filter((node) => {
+      const isEnemy =
+        ["Enemy", "FinalBoss"].includes(node.name) ||
+        ["enemy", "finalBoss"].includes(node.group);
+      const inRange = this.node.position.sub(node.position).mag() <= range;
+      return isEnemy && node.isValid && inRange;
     });
   },
 
   findClosestEnemy(maxRange = 300) {
-    if (!this.canvasNode) return null;
+    const enemies =
+      this.canvasNode?.children.filter(
+        (node) =>
+          ["Enemy", "FinalBoss"].includes(node.name) ||
+          ["enemy", "finalBoss"].includes(node.group)
+      ) || [];
 
-    const enemies = this.canvasNode.children.filter(
-      (node) =>
-        (node.name === "Enemy" ||
-          node.group === "enemy" ||
-          node.name === "FinalBoss" ||
-          node.group === "finalBoss") &&
-        node.isValid
+    return (
+      enemies
+        .map((enemy) => ({
+          enemy,
+          distance: this.node.position.sub(enemy.position).mag(),
+        }))
+        .filter(({ distance }) => distance <= maxRange && distance < Infinity)
+        .sort((a, b) => a.distance - b.distance)[0]?.enemy || null
     );
-
-    let closest = null;
-    let minDist = Infinity;
-
-    enemies.forEach((enemy) => {
-      const dist = this.node.position.sub(enemy.position).mag();
-      if (dist < minDist && dist <= maxRange) {
-        closest = enemy;
-        minDist = dist;
-      }
-    });
-
-    return closest;
-  },
-
-  spawnArrowToTarget(target) {
-    if (!this.arrowPrefab || !target || !this.canvasNode) return;
-
-    const arrow = cc.instantiate(this.arrowPrefab);
-    this.canvasNode.addChild(arrow);
-    arrow.setPosition(this.node.position);
-
-    const arrowScript = arrow.getComponent("Arrow");
-    if (arrowScript && arrowScript.init) {
-      const damage = this.playerModel.calculateDamage();
-      arrowScript.init(target, damage);
-    }
   },
 
   clampPositionToCanvas(pos) {
@@ -403,13 +375,12 @@ cc.Class({
 
     const canvasSize = this.canvasNode.getContentSize();
     const nodeSize = this.node.getContentSize();
-
     const limitX = canvasSize.width / 2 - nodeSize.width - 12;
     const limitY = canvasSize.height / 2 - nodeSize.height - 12;
 
-    const clampedX = Math.min(Math.max(pos.x, -limitX), limitX);
-    const clampedY = Math.min(Math.max(pos.y, -limitY), limitY);
-
-    return cc.v2(clampedX, clampedY);
+    return cc.v2(
+      Math.min(Math.max(pos.x, -limitX), limitX),
+      Math.min(Math.max(pos.y, -limitY), limitY)
+    );
   },
 });
