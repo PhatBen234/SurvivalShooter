@@ -997,6 +997,9 @@
     "canvasNode": {
       "__id__": 2
     },
+    "arrowPrefab": {
+      "__uuid__": "6ebe1d79-90a9-4d75-9e05-0045abec863d"
+    },
     "skillManager": {
       "__id__": 7
     },
@@ -1012,20 +1015,24 @@
       "__id__": 9
     },
     "_enabled": true,
-    "maxHp": 100,
-    "currentHp": 100,
-    "speed": 200,
-    "baseAttack": 10,
-    "criticalRate": 0.1,
-    "meleeAttackRange": 100,
-    "attackRange": 300,
-    "meleeToRangedThreshold": 120,
-    "level": 1,
-    "currentExp": 0,
-    "expToNextLevel": 50,
-    "expPickupRange": 100,
-    "attackInterval": 2,
-    "skillCooldown": 4,
+    "_maxHp": 100,
+    "_currentHp": 100,
+    "_speed": 200,
+    "_baseAttack": 10,
+    "_criticalRate": 0.1,
+    "_meleeAttackRange": 100,
+    "_attackRange": 300,
+    "_meleeToRangedThreshold": 120,
+    "_level": 1,
+    "_currentExp": 0,
+    "_expToNextLevel": 50,
+    "_expPickupRange": 100,
+    "_skillCooldown": 4,
+    "_attackInterval": 2,
+    "_isAttacking": false,
+    "_currentAttackType": null,
+    "_canUseSkill": true,
+    "_lastDirection": null,
     "_id": "ebnccaGiJH4K8dyvLqH2EP"
   },
   {
@@ -1036,7 +1043,7 @@
       "__id__": 9
     },
     "_enabled": true,
-    "anim": {
+    "walkAnim": {
       "__id__": 12
     },
     "meleeAttackAnim": {
@@ -1045,8 +1052,8 @@
     "rangedAttackAnim": {
       "__id__": 18
     },
-    "arrowPrefab": {
-      "__uuid__": "6ebe1d79-90a9-4d75-9e05-0045abec863d"
+    "skillNode": {
+      "__id__": 19
     },
     "hpLabel": {
       "__id__": 25
@@ -1069,9 +1076,7 @@
     "levelLabel": {
       "__id__": 42
     },
-    "skillNode": {
-      "__id__": 19
-    },
+    "playerModel": null,
     "_id": "523uoINZxOWo3nR0l/p0L2"
   },
   {

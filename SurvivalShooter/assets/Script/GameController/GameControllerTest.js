@@ -34,7 +34,7 @@ cc.Class({
     }
 
     if (this.player) {
-      this.playerScript = this.player.getComponent("Player");
+      this.playerScript = this.player.getComponent("PlayerModel");
     }
   },
 
@@ -118,7 +118,7 @@ cc.Class({
   checkGameState() {
     this.cleanUpEnemies();
 
-    if (this.playerScript && this.playerScript.currentHp <= 0) {
+    if (this.playerScript && this.playerScript._currentHp <= 0) {
       this.endGame(false);
       return;
     }

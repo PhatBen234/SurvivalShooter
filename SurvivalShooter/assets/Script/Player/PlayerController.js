@@ -1,22 +1,33 @@
-// PlayerController.js - Logic xử lý từ code gốc
+// PlayerController.js - Xử lý toàn bộ game logic
 cc.Class({
   extends: cc.Component,
 
   properties: {
+    // References
     canvasNode: cc.Node,
+    arrowPrefab: cc.Prefab,
     skillManager: cc.Node,
-    // Reference tới model và view
-    playerModel: null, // sẽ get component PlayerModel
-    playerView: null, // sẽ get component PlayerView
+
+    // Components
+    playerModel: null,
+    playerView: null,
   },
 
   onLoad() {
-    // Get components
+    // Khởi tạo components
     this.playerModel = this.getComponent("PlayerModel");
     this.playerView = this.getComponent("PlayerView");
 
-    this.playerView.updateAllUI(this.playerModel);
+    if (this.playerView) {
+      this.playerView.setPlayerModel(this.playerModel);
+    }
 
+    // Input handling
+    this.keyPressed = {};
+    this.attackTimer = 0;
+    this.skillTimer = 0;
+
+    // Event listeners
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_DOWN, this.onKeyDown, this);
     cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
   },
@@ -33,150 +44,132 @@ cc.Class({
     this.collectNearbyExp(dt);
   },
 
-  // --- INPUT HANDLING ---
+  // === INPUT HANDLING ===
   onKeyDown(event) {
-    this.playerModel.keyPressed[event.keyCode] = true;
+    this.keyPressed[event.keyCode] = true;
   },
 
   onKeyUp(event) {
-    this.playerModel.keyPressed[event.keyCode] = false;
+    this.keyPressed[event.keyCode] = false;
   },
 
-  // --- MOVEMENT ---
   getInputDirection() {
     let dir = cc.v2(0, 0);
-    if (this.playerModel.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
-    if (this.playerModel.keyPressed[cc.macro.KEY.d]) dir.x += 1;
-    if (this.playerModel.keyPressed[cc.macro.KEY.w]) dir.y += 1;
-    if (this.playerModel.keyPressed[cc.macro.KEY.s]) dir.y -= 1;
+    if (this.keyPressed[cc.macro.KEY.a]) dir.x -= 1;
+    if (this.keyPressed[cc.macro.KEY.d]) dir.x += 1;
+    if (this.keyPressed[cc.macro.KEY.w]) dir.y += 1;
+    if (this.keyPressed[cc.macro.KEY.s]) dir.y -= 1;
     return dir;
   },
 
+  // === MOVEMENT LOGIC ===
   handleMovement(dt) {
-    if (!this.playerView.anim) return;
+    if (!this.playerModel || !this.playerView) return;
 
-    let dir = this.getInputDirection();
+    const dir = this.getInputDirection();
+    const lastDir = this.playerModel.getLastDirection();
 
-    if (!dir.equals(this.playerModel.lastDir)) {
-      this.playerModel.lastDir = dir.clone();
+    // Update direction in model
+    if (!dir.equals(lastDir)) {
+      this.playerModel.setLastDirection(dir);
     }
 
     if (dir.mag() > 0) {
-      dir = dir.normalize();
+      // Normalize and move
+      const normalizedDir = dir.normalize();
 
-      this.node.scaleX = dir.x !== 0 ? (dir.x > 0 ? 1 : -1) : this.node.scaleX;
+      // Update player scale through view
+      this.playerView.updatePlayerScale(normalizedDir);
 
+      // Calculate new position
       let pos = this.node.getPosition();
-      pos = pos.add(dir.mul(this.playerModel.speed * dt));
-      pos = this.playerView.clampPositionToCanvas(pos, this.canvasNode);
-
+      pos = pos.add(normalizedDir.mul(this.playerModel.getSpeed() * dt));
+      pos = this.clampPositionToCanvas(pos);
       this.node.setPosition(pos);
 
-      if (
-        !this.playerModel.isAttacking &&
-        !this.playerView.anim.getAnimationState("Soldier").isPlaying
-      ) {
-        this.playerView.anim.play("Soldier");
+      // Play walk animation if not attacking
+      if (!this.playerModel.isAttacking()) {
+        this.playerView.playWalkAnimation();
       }
     } else {
-      if (
-        !this.playerModel.isAttacking &&
-        this.playerView.anim.getAnimationState("Soldier").isPlaying
-      ) {
-        this.playerView.anim.stop("Soldier");
+      // Stop walk animation if not attacking
+      if (!this.playerModel.isAttacking()) {
+        this.playerView.stopWalkAnimation();
       }
     }
   },
 
-  // --- ATTACK ---
+  // === ATTACK LOGIC ===
   handleAutoAttack(dt) {
-    this.playerModel.attackTimer += dt;
+    if (!this.playerModel) return;
+
+    this.attackTimer += dt;
+
     if (
-      this.playerModel.attackTimer < this.playerModel.attackInterval ||
-      this.playerModel.isAttacking
-    )
+      this.attackTimer < this.playerModel.getAttackInterval() ||
+      this.playerModel.isAttacking()
+    ) {
       return;
-
-    // Tìm kẻ địch gần nhất trong toàn bộ tầm tấn công
-    const closestEnemy = this.findClosestEnemy(this.playerModel.attackRange);
-    if (!closestEnemy) return;
-
-    const distanceToEnemy = this.node.position.sub(closestEnemy.position).mag();
-
-    // Quyết định loại tấn công dựa trên khoảng cách
-    let attackType = "ranged"; // Mặc định là ranged
-
-    if (distanceToEnemy <= this.playerModel.meleeAttackRange) {
-      // Kiểm tra xem có nhiều enemy gần không để quyết định dùng melee
-      const nearbyEnemies = this.findEnemiesInRange(
-        this.playerModel.meleeAttackRange
-      );
-      if (nearbyEnemies.length >= 2) {
-        attackType = "melee"; // Nếu có >= 2 enemy gần thì dùng melee
-      } else if (distanceToEnemy <= this.playerModel.meleeToRangedThreshold) {
-        attackType = "melee"; // Nếu chỉ có 1 enemy nhưng đủ gần thì vẫn melee
-      }
     }
 
+    // Find closest enemy
+    const closestEnemy = this.findClosestEnemy(
+      this.playerModel.getAttackRange()
+    );
+    if (!closestEnemy) return;
+
+    // Determine attack type
+    const attackType = this.determineAttackType(closestEnemy);
     this.performAttack(attackType, closestEnemy);
   },
 
-  performAttack(attackType, target) {
-    this.playerModel.attackTimer = 0;
-    this.playerModel.isAttacking = true;
-    this.playerModel.currentAttackType = attackType;
+  determineAttackType(enemy) {
+    const distanceToEnemy = this.node.position.sub(enemy.position).mag();
 
-    // Tắt tất cả animation trước
-    this.playerView.setAnimationActive(this.playerView.anim, false);
-    this.playerView.setAnimationActive(this.playerView.meleeAttackAnim, false);
-    this.playerView.setAnimationActive(this.playerView.rangedAttackAnim, false);
+    if (distanceToEnemy <= this.playerModel.getMeleeAttackRange()) {
+      // Check if there are multiple enemies nearby for melee
+      const nearbyEnemies = this.findEnemiesInRange(
+        this.playerModel.getMeleeAttackRange()
+      );
 
-    if (attackType === "melee") {
-      this.performMeleeAttack();
-    } else {
-      this.performRangedAttack(target);
+      if (nearbyEnemies.length >= 2) {
+        return "melee";
+      } else if (
+        distanceToEnemy <= this.playerModel.getMeleeToRangedThreshold()
+      ) {
+        return "melee";
+      }
     }
+
+    return "ranged";
   },
 
-  performMeleeAttack() {
-    this.playerView.setAnimationActive(this.playerView.meleeAttackAnim, true);
+  performAttack(attackType, target) {
+    if (!this.playerModel || !this.playerView) return;
 
-    const attackState =
-      this.playerView.meleeAttackAnim.getAnimationState("SoldierAttack");
-    if (attackState) {
-      this.playerView.meleeAttackAnim.play("SoldierAttack");
-      attackState.once("finished", () => {
+    this.attackTimer = 0;
+    this.playerModel.setAttacking(true);
+    this.playerModel.setCurrentAttackType(attackType);
+
+    if (attackType === "melee") {
+      this.playerView.playMeleeAttackAnimation(() => {
         this.executeMeleeDamage();
         this.finishAttack();
       });
     } else {
-      this.executeMeleeDamage();
-      this.finishAttack();
-    }
-  },
-
-  performRangedAttack(target) {
-    this.playerView.setAnimationActive(this.playerView.rangedAttackAnim, true);
-
-    const rangedAttackState =
-      this.playerView.rangedAttackAnim.getAnimationState("ArrowAttack");
-    if (rangedAttackState) {
-      this.playerView.rangedAttackAnim.play("ArrowAttack");
-      rangedAttackState.once("finished", () => {
+      this.playerView.playRangedAttackAnimation(() => {
         this.executeRangedDamage(target);
         this.finishAttack();
       });
-    } else {
-      this.executeRangedDamage(target);
-      this.finishAttack();
     }
   },
 
   executeMeleeDamage() {
-    let damage = this.playerModel.baseAttack;
-    if (Math.random() < this.playerModel.criticalRate) damage *= 2;
+    const damage = this.playerModel.calculateDamage();
+    const enemies = this.findEnemiesInRange(
+      this.playerModel.getMeleeAttackRange()
+    );
 
-    const enemies = this.findEnemiesInRange(this.playerModel.meleeAttackRange);
     enemies.forEach((enemy) => {
       const enemyScript =
         enemy.getComponent("Enemy") || enemy.getComponent("Boss");
@@ -188,36 +181,165 @@ cc.Class({
 
   executeRangedDamage(target) {
     if (!target || !target.isValid) return;
-    this.playerView.spawnArrowToTarget(
-      target,
-      this.canvasNode,
-      this.playerModel
-    );
+    this.spawnArrowToTarget(target);
   },
 
   finishAttack() {
-    this.playerModel.isAttacking = false;
-    this.playerModel.currentAttackType = null;
+    if (!this.playerModel || !this.playerView) return;
 
-    // Tắt tất cả animation tấn công
-    this.playerView.setAnimationActive(this.playerView.meleeAttackAnim, false);
-    this.playerView.setAnimationActive(this.playerView.rangedAttackAnim, false);
+    this.playerModel.setAttacking(false);
+    this.playerModel.setCurrentAttackType(null);
+    this.playerView.finishAttackAnimation();
 
-    // Bật lại animation đi bộ
-    this.playerView.setAnimationActive(this.playerView.anim, true);
-
-    // Kiểm tra xem có đang di chuyển không để play animation phù hợp
-    let dir = this.getInputDirection();
-    if (
-      dir.mag() > 0 &&
-      !this.playerView.anim.getAnimationState("Soldier").isPlaying
-    ) {
-      this.playerView.anim.play("Soldier");
-    } else if (dir.mag() === 0) {
-      this.playerView.anim.stop("Soldier");
+    // Handle movement animation after attack
+    const dir = this.getInputDirection();
+    if (dir.mag() > 0) {
+      this.playerView.playWalkAnimation();
+    } else {
+      this.playerView.stopWalkAnimation();
     }
   },
 
+  // === SKILL LOGIC ===
+  handleSkill(dt) {
+    if (!this.playerModel || !this.playerView) return;
+
+    this.skillTimer += dt;
+
+    if (
+      this.skillTimer < this.playerModel.getSkillCooldown() ||
+      !this.playerModel.canUseSkill()
+    ) {
+      return;
+    }
+
+    this.skillTimer = 0;
+    this.playerModel.setCanUseSkill(false);
+
+    this.playerView.playSkillAnimation(() => {
+      this.playerModel.setCanUseSkill(true);
+      this.skillDamageArea();
+    });
+  },
+
+  skillDamageArea() {
+    const SKILL_RANGE = 200;
+    const SKILL_DAMAGE = 20;
+
+    const enemies = this.findEnemiesInRange(SKILL_RANGE);
+    enemies.forEach((enemy) => {
+      const enemyScript =
+        enemy.getComponent("Enemy") || enemy.getComponent("Boss");
+      if (enemyScript?.takeDamage) {
+        enemyScript.takeDamage(SKILL_DAMAGE);
+      }
+    });
+  },
+
+  // === EXP SYSTEM ===
+  gainExp(amount) {
+    if (!this.playerModel || !this.playerView) return;
+
+    this.playerModel.addExp(amount);
+    this.tryLevelUp();
+    this.playerView.updateExpUI();
+  },
+
+  tryLevelUp() {
+    while (
+      this.playerModel.getCurrentExp() >= this.playerModel.getExpToNextLevel()
+    ) {
+      this.playerModel.subtractExp(this.playerModel.getExpToNextLevel());
+      this.playerModel.levelUp();
+      this.applyLevelUp();
+    }
+  },
+
+  applyLevelUp() {
+    this.playerModel.applyLevelUpBenefits();
+    this.playerView.updateAllUI();
+
+    // Notify skill manager
+    if (this.skillManager) {
+      const skillMgrScript = this.skillManager.getComponent("SkillManager");
+      if (skillMgrScript) {
+        skillMgrScript.onLevelUp();
+      }
+    }
+  },
+
+  collectNearbyExp(dt) {
+    if (!this.canvasNode || !this.playerModel) return;
+
+    const EXP_GROUP = "exp";
+    const expNodes = this.canvasNode.children.filter(
+      (node) => node.group === EXP_GROUP || node.name === "Exp"
+    );
+
+    const playerPos = this.node.position;
+    const speed = 300;
+    const pickupRange = this.playerModel.getExpPickupRange();
+
+    expNodes.forEach((expNode) => {
+      if (!expNode || !expNode.isValid) return;
+
+      const expPos = expNode.position;
+      const dist = playerPos.sub(expPos).mag();
+
+      if (dist <= pickupRange) {
+        const direction = playerPos.sub(expPos).normalize();
+        const moveDist = speed * dt;
+        const newPos = expPos.add(direction.mul(moveDist));
+        expNode.setPosition(newPos);
+
+        if (newPos.sub(playerPos).mag() < 10) {
+          const expScript = expNode.getComponent("Exp");
+          if (expScript?.getAmount) {
+            this.gainExp(expScript.getAmount());
+          }
+          expNode.destroy();
+        }
+      }
+    });
+  },
+
+  // === DAMAGE HANDLING ===
+  takeDamage(amount) {
+    if (!this.playerModel || !this.playerView) return;
+
+    const newHp = this.playerModel.getCurrentHp() - amount;
+    this.playerModel.setCurrentHp(newHp);
+
+    this.playerView.updateHpUI();
+    this.playerView.showDamageEffect();
+  },
+
+  // === PUBLIC METHODS FOR EXTERNAL ACCESS ===
+  applySkillBuff(skillId, amount) {
+    if (!this.playerModel || !this.playerView) return;
+
+    this.playerModel.applySkillBuff(skillId, amount);
+    this.playerView.updateAllUI();
+  },
+
+  // Getter methods for external access (like SkillManager)
+  getBaseAttack() {
+    return this.playerModel ? this.playerModel.getBaseAttack() : 0;
+  },
+
+  getAttackRange() {
+    return this.playerModel ? this.playerModel.getAttackRange() : 0;
+  },
+
+  getExpPickupRange() {
+    return this.playerModel ? this.playerModel.getExpPickupRange() : 0;
+  },
+
+  getCriticalRate() {
+    return this.playerModel ? this.playerModel.getCriticalRate() : 0;
+  },
+
+  // === UTILITY METHODS ===
   findEnemiesInRange(range) {
     if (!this.canvasNode) return [];
 
@@ -262,110 +384,32 @@ cc.Class({
     return closest;
   },
 
-  // --- SKILL ---
-  handleSkill(dt) {
-    if (!this.playerView.skillNode) return;
+  spawnArrowToTarget(target) {
+    if (!this.arrowPrefab || !target || !this.canvasNode) return;
 
-    this.playerModel.skillTimer += dt;
-    if (
-      this.playerModel.skillTimer < this.playerModel.skillCooldown ||
-      !this.playerModel.canUseSkill
-    )
-      return;
+    const arrow = cc.instantiate(this.arrowPrefab);
+    this.canvasNode.addChild(arrow);
+    arrow.setPosition(this.node.position);
 
-    this.playerModel.skillTimer = 0;
-    this.playerModel.canUseSkill = false;
-
-    this.playerView.skillNode.setPosition(cc.v2(0, 0));
-    this.playerView.skillNode.active = true;
-
-    const anim = this.playerView.skillNode.getComponent(cc.Animation);
-    if (anim && anim.getAnimationState("SkillSplash")) {
-      anim.play("SkillSplash");
-      anim.once("finished", () => {
-        this.playerView.skillNode.active = false;
-        this.playerModel.canUseSkill = true;
-        this.skillDamageArea();
-      });
-    } else {
-      this.playerView.skillNode.active = false;
-      this.playerModel.canUseSkill = true;
+    const arrowScript = arrow.getComponent("Arrow");
+    if (arrowScript && arrowScript.init) {
+      const damage = this.playerModel.calculateDamage();
+      arrowScript.init(target, damage);
     }
   },
 
-  skillDamageArea() {
-    const SKILL_RANGE = 200;
-    const SKILL_DAMAGE = 20;
+  clampPositionToCanvas(pos) {
+    if (!this.canvasNode) return pos;
 
-    if (!this.canvasNode) return;
+    const canvasSize = this.canvasNode.getContentSize();
+    const nodeSize = this.node.getContentSize();
 
-    const enemies = this.canvasNode.children.filter(
-      (node) =>
-        (node.name === "Enemy" ||
-          node.group === "enemy" ||
-          node.name === "FinalBoss" ||
-          node.group === "finalBoss") &&
-        node.isValid
-    );
+    const limitX = canvasSize.width / 2 - nodeSize.width - 12;
+    const limitY = canvasSize.height / 2 - nodeSize.height - 12;
 
-    enemies.forEach((enemy) => {
-      const dist = this.node.position.sub(enemy.position).mag();
-      if (dist <= SKILL_RANGE) {
-        const enemyScript =
-          enemy.getComponent("Enemy") || enemy.getComponent("Boss");
-        if (enemyScript?.takeDamage) enemyScript.takeDamage(SKILL_DAMAGE);
-      }
-    });
-  },
+    const clampedX = Math.min(Math.max(pos.x, -limitX), limitX);
+    const clampedY = Math.min(Math.max(pos.y, -limitY), limitY);
 
-  collectNearbyExp(dt) {
-    if (!this.canvasNode) return;
-
-    const EXP_GROUP = "exp";
-    const expNodes = this.canvasNode.children.filter(
-      (node) => node.group === EXP_GROUP || node.name === "Exp"
-    );
-
-    const playerPos = this.node.position;
-    const speed = 300;
-
-    expNodes.forEach((expNode) => {
-      if (!expNode || !expNode.isValid) return;
-
-      const expPos = expNode.position;
-      const dist = playerPos.sub(expPos).mag();
-
-      if (dist <= this.playerModel.expPickupRange) {
-        const direction = playerPos.sub(expPos).normalize();
-        const moveDist = speed * dt;
-        const newPos = expPos.add(direction.mul(moveDist));
-        expNode.setPosition(newPos);
-
-        if (newPos.sub(playerPos).mag() < 10) {
-          const expScript = expNode.getComponent("Exp");
-          if (expScript?.getAmount) {
-            this.playerModel.gainExp(expScript.getAmount());
-          }
-          expNode.destroy();
-        }
-      }
-    });
-
-    this.playerView.updateExpUI(this.playerModel);
-  },
-
-  takeDamage(amount) {
-    this.playerModel.takeDamage(amount);
-    this.playerView.updateHpLabel(this.playerModel);
-    this.node.runAction(cc.sequence(cc.fadeTo(0.1, 100), cc.fadeTo(0.1, 255)));
-
-    if (this.skillManager) {
-      let skillMgrScript = this.skillManager.getComponent("SkillManager");
-      if (skillMgrScript) {
-        skillMgrScript.onLevelUp();
-      }
-    }
-
-    this.playerView.updateAllUI(this.playerModel);
+    return cc.v2(clampedX, clampedY);
   },
 });

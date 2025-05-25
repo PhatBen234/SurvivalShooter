@@ -1,3 +1,4 @@
+// SkillManager.js - Cập nhật để tương thích với MVC
 import { defaultSkills } from "./SkillData";
 
 cc.Class({
@@ -15,6 +16,24 @@ cc.Class({
   onLoad() {
     this.playerSkills = {}; // { skillId: level }
     this.skillPanel.active = false;
+
+    // Cache player controller reference
+    this.playerController = null;
+    this.initPlayerController();
+  },
+
+  initPlayerController() {
+    if (!this.player) {
+      cc.warn("[SkillManager] Player node không được assign");
+      return;
+    }
+
+    // Tìm PlayerController component
+    this.playerController = this.player.getComponent("PlayerController");
+
+    if (!this.playerController) {
+      cc.warn("[SkillManager] Không tìm thấy PlayerController component");
+    }
   },
 
   onLevelUp() {
@@ -41,7 +60,8 @@ cc.Class({
       skillComp.init(skill, () => this.selectSkill(skill));
       this.skillPanel.addChild(node);
     });
-    //Pause Game
+
+    // Pause Game
     cc.director.pause();
   },
 
@@ -52,45 +72,22 @@ cc.Class({
       return;
     }
 
+    // Cập nhật skill level
     this.playerSkills[skill.id] = currentLevel + 1;
 
-    // Cộng trực tiếp buff vào player
-    let playerComp =
-      this.player.getComponent("Player") ||
-      this.player.getComponent("PlayerStage2") ||
-      this.player.getComponent("PlayerController") ||
-      this.player.getComponent("PlayerStage3");
-
-    if (!playerComp) {
-      cc.warn(
-        "[SkillManager] Player không có component Player, PlayerStage2 hoặc PlayerStage3"
-      );
-      return;
+    // Kiểm tra PlayerController
+    if (!this.playerController) {
+      this.initPlayerController(); // Thử init lại
+      if (!this.playerController) {
+        cc.warn("[SkillManager] PlayerController không khả dụng");
+        return;
+      }
     }
 
-    switch (skill.id) {
-      case 1: // Power Boost
-        playerComp.baseAttack += 5;
-        break;
-      case 2: // Range Boost
-        if (playerComp.attackRange === undefined) {
-          playerComp.attackRange = 100;
-        }
-        playerComp.attackRange += 20;
-        break;
-      case 3: // Pickup Magnet
-        playerComp.expPickupRange += 15;
-        break;
-      case 4: // Crit Up
-        playerComp.criticalRate += 0.05;
-        break;
-    }
+    // Apply skill buff thông qua PlayerController
+    this.applySkillEffect(skill.id);
 
-    // Update lại UI cho player
-    if (playerComp.updateStatsLabel) {
-      playerComp.updateStatsLabel();
-    }
-
+    // Đóng skill panel và cập nhật UI
     this.skillPanel.active = false;
     this.updateOwnedSkillsLabel();
 
@@ -98,14 +95,58 @@ cc.Class({
     cc.director.resume();
   },
 
+  applySkillEffect(skillId) {
+    if (!this.playerController) return;
+
+    // Định nghĩa effect của từng skill
+    const skillEffects = {
+      1: { name: "Power Boost", amount: 5 }, // +5 attack
+      2: { name: "Range Boost", amount: 20 }, // +20 range
+      3: { name: "Pickup Magnet", amount: 15 }, // +15 exp pickup range
+      4: { name: "Crit Up", amount: 0.05 }, // +5% crit rate
+    };
+
+    const effect = skillEffects[skillId];
+    if (!effect) {
+      cc.warn(`[SkillManager] Unknown skill ID: ${skillId}`);
+      return;
+    }
+
+    // Apply buff thông qua PlayerController
+    this.playerController.applySkillBuff(skillId, effect.amount);
+
+    cc.log(`[SkillManager] Applied ${effect.name}: +${effect.amount}`);
+  },
+
   updateOwnedSkillsLabel() {
+    if (!this.ownedSkillsLabel) return;
+
     const text = Object.entries(this.playerSkills)
       .map(([id, level]) => {
         const skill = defaultSkills.find((s) => s.id === Number(id));
-        return `${skill.name} Lv${level}`;
+        return skill ? `${skill.name} Lv${level}` : `Unknown Skill Lv${level}`;
       })
       .join("\n");
 
-    this.ownedSkillsLabel.string = "Skills Owned:\n" + text;
+    this.ownedSkillsLabel.string = "Skills Owned:\n" + (text || "None");
+  },
+
+  // === DEBUG METHODS ===
+  getCurrentSkills() {
+    return this.playerSkills;
+  },
+
+  debugPlayerStats() {
+    if (!this.playerController) return;
+
+    cc.log("[SkillManager] Current Player Stats:");
+    cc.log(`- Attack: ${this.playerController.getBaseAttack()}`);
+    cc.log(`- Range: ${this.playerController.getAttackRange()}`);
+    cc.log(`- EXP Range: ${this.playerController.getExpPickupRange()}`);
+    cc.log(
+      `- Crit Rate: ${Math.floor(
+        this.playerController.getCriticalRate() * 100
+      )}%`
+    );
   },
 });
