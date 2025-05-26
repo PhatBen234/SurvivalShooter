@@ -215,7 +215,7 @@ cc.Class({
 
     // Update attack ranges
     if (this.attackRangeLabel) {
-      this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Ranged: ${this.playerModel.getRangedAttackRange()}`;
+      this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Archer: ${this.playerModel.getRangedAttackRange()}`;
     }
   },
 
