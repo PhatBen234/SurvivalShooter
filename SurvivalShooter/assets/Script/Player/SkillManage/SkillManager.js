@@ -1,4 +1,4 @@
-// SkillManager.js - Cập nhật để tương thích với MVC
+// SkillManager.js - Cập nhật để tương thích với MVC và Ultimate Skill
 import { defaultSkills } from "./SkillData";
 
 cc.Class({
@@ -105,6 +105,7 @@ cc.Class({
       3: { name: "Pickup Magnet", amount: 15 }, // +15 exp pickup range
       4: { name: "Crit Up", amount: 0.05 }, // +5% crit rate
       5: { name: "Skill Damage", amount: 10 }, // +10 skill damage
+      6: { name: "Ultimate Skill", amount: 1 }, // Ultimate skill unlock
     };
 
     const effect = skillEffects[skillId];
@@ -132,6 +133,11 @@ cc.Class({
     this.ownedSkillsLabel.string = "Skills Owned:\n" + (text || "None");
   },
 
+  // === ULTIMATE SKILL METHODS ===
+  hasUltimateSkill() {
+    return (this.playerSkills[6] || 0) > 0;
+  },
+
   // === DEBUG METHODS ===
   getCurrentSkills() {
     return this.playerSkills;
@@ -150,5 +156,6 @@ cc.Class({
       )}%`
     );
     cc.log(`- Skill Damage: ${this.playerController.getSkillDamage()}`);
+    cc.log(`- Has Ultimate: ${this.hasUltimateSkill()}`);
   },
 });

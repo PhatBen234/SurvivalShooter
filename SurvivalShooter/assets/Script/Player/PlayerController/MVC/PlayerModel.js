@@ -25,6 +25,11 @@ cc.Class({
     _attackInterval: 2,
     _skillDamage: 10, // Thêm skill damage base
 
+    // Ultimate Skill Properties
+    _hasUltimateSkill: false,
+    _ultimateCooldown: 1, // 15 giây cooldown cho ultimate (fix sau)
+    _canUseUltimate: true,
+
     // State
     _isAttacking: false,
     _currentAttackType: null,
@@ -89,6 +94,23 @@ cc.Class({
   },
   addSkillDamage(amount) {
     this._skillDamage += amount;
+  },
+
+  // === ULTIMATE SKILL METHODS ===
+  hasUltimateSkill() {
+    return this._hasUltimateSkill;
+  },
+  setHasUltimateSkill(value) {
+    this._hasUltimateSkill = value;
+  },
+  getUltimateCooldown() {
+    return this._ultimateCooldown;
+  },
+  canUseUltimate() {
+    return this._canUseUltimate && this._hasUltimateSkill;
+  },
+  setCanUseUltimate(value) {
+    this._canUseUltimate = value;
   },
 
   // === MOVEMENT METHODS ===
@@ -177,6 +199,15 @@ cc.Class({
     return damage;
   },
 
+  // Tính damage cho ultimate skill - gây nhiều damage hơn
+  calculateUltimateDamage() {
+    let damage = this._skillDamage * 3; // Ultimate gây 3x skill damage
+    if (Math.random() < this._criticalRate) {
+      damage *= 2;
+    }
+    return damage;
+  },
+
   // === SKILL BUFF METHODS ===
   applySkillBuff(skillId, amount) {
     switch (skillId) {
@@ -195,6 +226,10 @@ cc.Class({
         break;
       case 5: // Skill Damage
         this.addSkillDamage(amount);
+        break;
+      case 6: // Ultimate Skill
+        this.setHasUltimateSkill(true);
+        cc.log("[PlayerModel] Ultimate Skill unlocked!");
         break;
       default:
         cc.warn(`[PlayerModel] Unknown skill ID: ${skillId}`);
