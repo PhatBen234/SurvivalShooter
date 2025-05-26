@@ -93,7 +93,16 @@ cc.Class({
       return;
     }
 
-    skillNode.setPosition(cc.v2(0, 0));
+    // Set position và scale dựa trên skill type
+    if (skillType === "melee") {
+      // Melee skill: centered on player
+      skillNode.setPosition(cc.v2(0, 0));
+      skillNode.setScale(1, 1);
+    } else {
+      // Ranged skill: horizontal line across screen
+      this.setupRangedSkillDisplay(skillNode);
+    }
+
     skillNode.active = true;
 
     const anim = skillNode.getComponent(cc.Animation);
@@ -110,6 +119,25 @@ cc.Class({
       skillNode.active = false;
       if (onFinished) onFinished();
     }
+  },
+
+  setupRangedSkillDisplay(skillNode) {
+    // Get canvas size for full screen width
+    const canvasSize = this.node.parent.getContentSize();
+    const skillNodeSize = skillNode.getContentSize();
+
+    // Position at player's Y position, centered horizontally
+    skillNode.setPosition(cc.v2(0, 0));
+
+    // Scale to cover full screen width
+    const scaleX = canvasSize.width / skillNodeSize.width;
+    const scaleY = 1; // Keep original height or adjust as needed
+
+    skillNode.setScale(scaleX, scaleY);
+
+    console.log(
+      `[PlayerView] Ranged skill scaled to: ${scaleX}x${scaleY}, Canvas: ${canvasSize.width}x${canvasSize.height}`
+    );
   },
 
   // Backward compatibility - old method

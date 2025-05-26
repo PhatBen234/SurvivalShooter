@@ -261,26 +261,47 @@ cc.Class({
   },
 
   executeSkillDamage(skillType) {
-    const SKILL_RANGE = 200;
     const SKILL_DAMAGE = 20;
 
     if (skillType === "melee") {
-      // Melee skill: damage all enemies in range
-      this.findEnemiesInRange(SKILL_RANGE).forEach((enemy) => {
+      // Melee skill: damage all enemies in circular range
+      const MELEE_SKILL_RANGE = 200;
+      this.findEnemiesInRange(MELEE_SKILL_RANGE).forEach((enemy) => {
         const script =
           enemy.getComponent("Enemy") || enemy.getComponent("Boss");
         script?.takeDamage?.(SKILL_DAMAGE);
       });
     } else {
-      // Ranged skill: create multiple arrows to different targets
-      const enemies = this.findEnemiesInRange(SKILL_RANGE);
-      const maxArrows = Math.min(5, enemies.length); // Max 5 arrows
-
-      for (let i = 0; i < maxArrows; i++) {
-        const target = enemies[i];
-        this.spawnSkillArrowToTarget(target, SKILL_DAMAGE);
-      }
+      // Ranged skill: damage all enemies in horizontal line across screen
+      this.executeHorizontalLineAttack(SKILL_DAMAGE);
     }
+  },
+
+  executeHorizontalLineAttack(damage) {
+    if (!this.canvasNode) return;
+
+    const playerY = this.node.position.y;
+    const LINE_HEIGHT = 80; // Chiều cao của vùng tấn công
+
+    // Tìm tất cả enemy trong hàng ngang
+    const enemiesInLine = this.canvasNode.children.filter((node) => {
+      const isEnemy =
+        ["Enemy", "FinalBoss"].includes(node.name) ||
+        ["enemy", "finalBoss"].includes(node.group);
+
+      if (!isEnemy || !node.isValid) return false;
+
+      const enemyY = node.position.y;
+      const yDiff = Math.abs(enemyY - playerY);
+
+      return yDiff <= LINE_HEIGHT / 2;
+    });
+
+    // Gây damage cho tất cả enemy trong hàng
+    enemiesInLine.forEach((enemy) => {
+      const script = enemy.getComponent("Enemy") || enemy.getComponent("Boss");
+      script?.takeDamage?.(damage);
+    });
   },
 
   spawnSkillArrowToTarget(target, damage) {
