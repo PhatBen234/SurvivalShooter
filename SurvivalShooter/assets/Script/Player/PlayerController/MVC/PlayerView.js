@@ -1,4 +1,4 @@
-// PlayerView.js - Refactored for better performance
+// PlayerView.js - Updated with Ultimate Skill support
 cc.Class({
   extends: cc.Component,
 
@@ -15,6 +15,7 @@ cc.Class({
     expRangeLabel: cc.Label,
     attackRangeLabel: cc.Label,
     skillDamageLabel: cc.Label,
+    ultimateLabel: cc.Label, // New label for ultimate status
     expBar: cc.ProgressBar,
     levelLabel: cc.Label,
 
@@ -22,6 +23,7 @@ cc.Class({
     playerModel: null,
     meleeSkillNode: null,
     rangedSkillNode: null,
+    ultimateSkillNode: null, // New reference for ultimate skill node
   },
 
   onLoad() {
@@ -31,6 +33,7 @@ cc.Class({
 
     if (this.meleeSkillNode) this.meleeSkillNode.active = false;
     if (this.rangedSkillNode) this.rangedSkillNode.active = false;
+    if (this.ultimateSkillNode) this.ultimateSkillNode.active = false;
   },
 
   // === ANIMATION METHODS ===
@@ -109,6 +112,36 @@ cc.Class({
     }
   },
 
+  // === ULTIMATE SKILL ANIMATION ===
+  playUltimateAnimation(onFinished) {
+    if (!this.ultimateSkillNode) {
+      cc.warn("[PlayerView] Ultimate skill node not found!");
+      if (onFinished) onFinished();
+      return;
+    }
+
+    // Position ultimate effect at player center
+    this.ultimateSkillNode.setPosition(cc.v2(0, 0));
+    this.ultimateSkillNode.setScale(1.5, 1.5); // Make it bigger for ultimate
+    this.ultimateSkillNode.active = true;
+
+    const anim = this.ultimateSkillNode.getComponent(cc.Animation);
+
+    if (anim && anim.getAnimationState("Ultimate")) {
+      cc.log("[PlayerView] Playing Ultimate animation");
+      anim.play("Ultimate");
+      anim.once("finished", () => {
+        this.ultimateSkillNode.active = false;
+        cc.log("[PlayerView] Ultimate animation finished");
+        if (onFinished) onFinished();
+      });
+    } else {
+      cc.warn("[PlayerView] Ultimate animation state not found!");
+      this.ultimateSkillNode.active = false;
+      if (onFinished) onFinished();
+    }
+  },
+
   setupRangedSkillDisplay(skillNode) {
     const canvasSize = this.node.parent.getContentSize();
     const skillNodeSize = skillNode.getContentSize();
@@ -177,6 +210,24 @@ cc.Class({
     if (this.attackRangeLabel) {
       this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Archer: ${this.playerModel.getRangedAttackRange()}`;
     }
+
+    // Update ultimate UI
+    this.updateUltimateUI();
+  },
+
+  updateUltimateUI() {
+    if (!this.ultimateLabel || !this.playerModel) return;
+
+    if (this.playerModel.hasUltimateSkill()) {
+      const canUse = this.playerModel.canUseUltimate();
+      this.ultimateLabel.string = canUse
+        ? "Ultimate: READY"
+        : "Ultimate: COOLDOWN";
+      this.ultimateLabel.node.color = canUse ? cc.Color.GREEN : cc.Color.YELLOW;
+    } else {
+      this.ultimateLabel.string = "Ultimate: LOCKED";
+      this.ultimateLabel.node.color = cc.Color.GRAY;
+    }
   },
 
   updateExpUI() {
@@ -203,11 +254,13 @@ cc.Class({
     this.updateAllUI();
   },
 
-  setSkillNodes(meleeSkillNode, rangedSkillNode) {
+  setSkillNodes(meleeSkillNode, rangedSkillNode, ultimateSkillNode = null) {
     this.meleeSkillNode = meleeSkillNode;
     this.rangedSkillNode = rangedSkillNode;
+    this.ultimateSkillNode = ultimateSkillNode;
 
     if (this.meleeSkillNode) this.meleeSkillNode.active = false;
     if (this.rangedSkillNode) this.rangedSkillNode.active = false;
+    if (this.ultimateSkillNode) this.ultimateSkillNode.active = false;
   },
 });

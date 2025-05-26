@@ -201,7 +201,7 @@ cc.Class({
 
   // Tính damage cho ultimate skill - gây nhiều damage hơn
   calculateUltimateDamage() {
-    let damage = this._skillDamage * 3; // Ultimate gây 3x skill damage
+    let damage = this._skillDamage * 4;
     if (Math.random() < this._criticalRate) {
       damage *= 2;
     }

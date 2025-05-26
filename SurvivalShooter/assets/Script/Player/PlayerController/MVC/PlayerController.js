@@ -1,4 +1,4 @@
-// PlayerController.js - Refactored main controller that coordinates all handlers
+// PlayerController.js - Updated with Ultimate Skill support
 cc.Class({
   extends: cc.Component,
 
@@ -10,6 +10,7 @@ cc.Class({
     // Skill nodes
     meleeSkillNode: cc.Node, // MCSkill node
     rangedSkillNode: cc.Node, // MCSkillArrow node
+    ultimateSkillNode: cc.Node, // MCUltimate node
   },
 
   onLoad() {
@@ -25,7 +26,11 @@ cc.Class({
     this.movementHandler?.handleMovement?.(dt);
     this.combatHandler?.handleAutoAttack?.(dt);
     this.skillHandler?.handleSkill?.(dt);
+    this.ultimateHandler?.update?.(dt); // Update ultimate cooldown
     this.expHandler?.collectNearbyExp?.(dt);
+
+    // Auto-trigger ultimate when available
+    this.handleAutoUltimate();
   },
 
   // === INITIALIZATION ===
@@ -103,6 +108,18 @@ cc.Class({
       this.rangedAttackHandler
     );
 
+    // Initialize ultimate skill handler
+    this.ultimateHandler = this.getComponent("UltimateSkillHandler");
+    if (!this.ultimateHandler) {
+      this.ultimateHandler = this.addComponent("UltimateSkillHandler");
+    }
+    this.ultimateHandler.init(
+      this.playerModel,
+      this.playerView,
+      this.canvasNode,
+      this.ultimateSkillNode
+    );
+
     // Initialize exp handler
     this.expHandler = this.getComponent("PlayerExpHandler");
     if (!this.expHandler) {
@@ -111,6 +128,19 @@ cc.Class({
     this.expHandler.canvasNode = this.canvasNode;
     this.expHandler.skillManager = this.skillManager;
     this.expHandler.init(this.playerModel, this.playerView);
+  },
+
+  // === AUTO ULTIMATE HANDLING ===
+  handleAutoUltimate() {
+    if (!this.ultimateHandler || !this.playerModel) return;
+
+    // Auto-trigger ultimate when available and enemies are nearby
+    if (this.ultimateHandler.shouldTriggerUltimate()) {
+      cc.log("[PlayerController] Auto-triggering Ultimate Skill!");
+      this.ultimateHandler.performUltimateSkill(() => {
+        cc.log("[PlayerController] Ultimate Skill completed!");
+      });
+    }
   },
 
   // === DELEGATED METHODS ===
@@ -127,6 +157,33 @@ cc.Class({
   // Skill system
   applySkillBuff(skillId, amount) {
     this.skillHandler?.applySkillBuff?.(skillId, amount);
+
+    // Special handling for Ultimate Skill unlock
+    if (skillId === 6) {
+      cc.log(
+        "[PlayerController] Ultimate Skill unlocked! Auto-trigger enabled."
+      );
+    }
+  },
+
+  // Manual ultimate trigger (for testing or special cases)
+  triggerUltimate() {
+    if (this.ultimateHandler) {
+      this.ultimateHandler.forceUltimate(() => {
+        cc.log("[PlayerController] Manual Ultimate Skill completed!");
+      });
+    }
+  },
+
+  // Get ultimate status for UI
+  getUltimateStatus() {
+    return (
+      this.ultimateHandler?.getUltimateStatus() || {
+        hasUltimate: false,
+        canUse: false,
+        cooldown: 0,
+      }
+    );
   },
 
   // === PUBLIC API ===
