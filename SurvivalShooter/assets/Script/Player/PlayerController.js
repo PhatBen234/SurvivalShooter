@@ -1,4 +1,4 @@
-// PlayerController.js - Main Controller
+// PlayerController.js - Main Controller với skill riêng biệt
 cc.Class({
   extends: cc.Component,
 
@@ -6,6 +6,10 @@ cc.Class({
     canvasNode: cc.Node,
     arrowPrefab: cc.Prefab,
     skillManager: cc.Node,
+
+    // Skill nodes
+    meleeSkillNode: cc.Node, // MCSkill node
+    rangedSkillNode: cc.Node, // MCSkillArrow node
   },
 
   onLoad() {
@@ -33,6 +37,8 @@ cc.Class({
 
     if (this.playerView) {
       this.playerView.setPlayerModel(this.playerModel);
+      // Pass skill nodes to PlayerView
+      this.playerView.setSkillNodes(this.meleeSkillNode, this.rangedSkillNode);
     }
 
     // Initialize attack handlers
@@ -126,7 +132,6 @@ cc.Class({
   handleAutoAttack(dt) {
     if (!this.canAttack(dt)) return;
 
-    // Sử dụng ranged attack range làm tầm tìm kiếm enemy
     const enemy = this.findClosestEnemy(
       this.playerModel.getRangedAttackRange()
     );
@@ -201,7 +206,6 @@ cc.Class({
     this.playerModel.setCurrentAttackType(null);
     this.playerView.finishAttackAnimation();
 
-    // Resume movement animation if moving
     const dir = this.getInputDirection();
     if (dir.mag() > 0) {
       this.playerView.playWalkAnimation();
@@ -210,17 +214,36 @@ cc.Class({
     }
   },
 
-  // === SKILL ===
+  // === SKILL SYSTEM - Updated to use different skills based on attack type ===
   handleSkill(dt) {
     if (!this.canUseSkill(dt)) return;
 
     this.resetSkillTimer();
     this.playerModel.setCanUseSkill(false);
 
-    this.playerView.playSkillAnimation(() => {
+    // Determine skill type based on last attack type or current situation
+    const skillType = this.determineSkillType();
+
+    this.playerView.playSkillAnimation(skillType, () => {
       this.playerModel.setCanUseSkill(true);
-      this.executeSkillDamage();
+      this.executeSkillDamage(skillType);
     });
+  },
+
+  determineSkillType() {
+    // Use last attack type if available
+    const lastAttackType = this.playerModel.getCurrentAttackType();
+    if (lastAttackType) {
+      return lastAttackType;
+    }
+
+    // Otherwise, determine based on closest enemy
+    const enemy = this.findClosestEnemy(
+      this.playerModel.getRangedAttackRange()
+    );
+    if (!enemy) return "melee"; // Default to melee if no enemy
+
+    return this.determineAttackType(enemy);
   },
 
   canUseSkill(dt) {
@@ -237,14 +260,40 @@ cc.Class({
     this.skillTimer = 0;
   },
 
-  executeSkillDamage() {
+  executeSkillDamage(skillType) {
     const SKILL_RANGE = 200;
     const SKILL_DAMAGE = 20;
 
-    this.findEnemiesInRange(SKILL_RANGE).forEach((enemy) => {
-      const script = enemy.getComponent("Enemy") || enemy.getComponent("Boss");
-      script?.takeDamage?.(SKILL_DAMAGE);
-    });
+    if (skillType === "melee") {
+      // Melee skill: damage all enemies in range
+      this.findEnemiesInRange(SKILL_RANGE).forEach((enemy) => {
+        const script =
+          enemy.getComponent("Enemy") || enemy.getComponent("Boss");
+        script?.takeDamage?.(SKILL_DAMAGE);
+      });
+    } else {
+      // Ranged skill: create multiple arrows to different targets
+      const enemies = this.findEnemiesInRange(SKILL_RANGE);
+      const maxArrows = Math.min(5, enemies.length); // Max 5 arrows
+
+      for (let i = 0; i < maxArrows; i++) {
+        const target = enemies[i];
+        this.spawnSkillArrowToTarget(target, SKILL_DAMAGE);
+      }
+    }
+  },
+
+  spawnSkillArrowToTarget(target, damage) {
+    if (!this.arrowPrefab || !target || !this.canvasNode) return;
+
+    const arrow = cc.instantiate(this.arrowPrefab);
+    this.canvasNode.addChild(arrow);
+    arrow.setPosition(this.node.position);
+
+    const arrowScript = arrow.getComponent("Arrow");
+    if (arrowScript && arrowScript.init) {
+      arrowScript.init(target, damage);
+    }
   },
 
   // === EXP SYSTEM ===
@@ -331,21 +380,23 @@ cc.Class({
   getBaseAttack() {
     return this.playerModel?.getBaseAttack() || 0;
   },
-  // FIX: Đổi getAttackRange thành getRangedAttackRange
+
   getRangedAttackRange() {
     return this.playerModel?.getRangedAttackRange() || 0;
   },
+
   getMeleeAttackRange() {
     return this.playerModel?.getMeleeAttackRange() || 0;
   },
+
   getExpPickupRange() {
     return this.playerModel?.getExpPickupRange() || 0;
   },
+
   getCriticalRate() {
     return this.playerModel?.getCriticalRate() || 0;
   },
 
-  // Backwards compatibility - nếu có code khác vẫn gọi getAttackRange
   getAttackRange() {
     cc.warn(
       "[PlayerController] getAttackRange is deprecated. Use getRangedAttackRange instead."

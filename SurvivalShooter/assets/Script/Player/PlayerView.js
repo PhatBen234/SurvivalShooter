@@ -1,4 +1,4 @@
-// PlayerView.js - Chỉ xử lý UI và animation
+// PlayerView.js - Updated với skill riêng biệt
 cc.Class({
   extends: cc.Component,
 
@@ -7,7 +7,6 @@ cc.Class({
     walkAnim: cc.Animation,
     meleeAttackAnim: cc.Animation,
     rangedAttackAnim: cc.Animation,
-    skillNode: cc.Node,
 
     // UI Labels
     hpLabel: cc.Label,
@@ -20,6 +19,8 @@ cc.Class({
 
     // References
     playerModel: null,
+    meleeSkillNode: null, // MCSkill node
+    rangedSkillNode: null, // MCSkillArrow node
   },
 
   onLoad() {
@@ -28,8 +29,12 @@ cc.Class({
     this.setAnimationActive(this.meleeAttackAnim, false);
     this.setAnimationActive(this.rangedAttackAnim, false);
 
-    if (this.skillNode) {
-      this.skillNode.active = false;
+    // Initialize skill nodes
+    if (this.meleeSkillNode) {
+      this.meleeSkillNode.active = false;
+    }
+    if (this.rangedSkillNode) {
+      this.rangedSkillNode.active = false;
     }
   },
 
@@ -76,23 +81,41 @@ cc.Class({
     }
   },
 
-  playSkillAnimation(onFinished) {
-    if (!this.skillNode) return;
+  // === SKILL ANIMATION METHODS - Updated to handle both skill types ===
+  playSkillAnimation(skillType, onFinished) {
+    const skillNode =
+      skillType === "melee" ? this.meleeSkillNode : this.rangedSkillNode;
+    const animName = skillType === "melee" ? "SkillSplash" : "MCSkillArrow";
 
-    this.skillNode.setPosition(cc.v2(0, 0));
-    this.skillNode.active = true;
+    if (!skillNode) {
+      console.warn(`[PlayerView] ${skillType} skill node not found`);
+      if (onFinished) onFinished();
+      return;
+    }
 
-    const anim = this.skillNode.getComponent(cc.Animation);
-    if (anim && anim.getAnimationState("SkillSplash")) {
-      anim.play("SkillSplash");
+    skillNode.setPosition(cc.v2(0, 0));
+    skillNode.active = true;
+
+    const anim = skillNode.getComponent(cc.Animation);
+    if (anim && anim.getAnimationState(animName)) {
+      anim.play(animName);
       anim.once("finished", () => {
-        this.skillNode.active = false;
+        skillNode.active = false;
         if (onFinished) onFinished();
       });
     } else {
-      this.skillNode.active = false;
+      console.warn(
+        `[PlayerView] Animation '${animName}' not found on skill node`
+      );
+      skillNode.active = false;
       if (onFinished) onFinished();
     }
+  },
+
+  // Backward compatibility - old method
+  playSkillAnimation_Old(onFinished) {
+    // Default to melee skill for backward compatibility
+    this.playSkillAnimation("melee", onFinished);
   },
 
   finishAttackAnimation() {
@@ -146,7 +169,6 @@ cc.Class({
       this.expRangeLabel.string = `EXP Range: ${this.playerModel.getExpPickupRange()}`;
     }
     if (this.attackRangeLabel) {
-      // FIX: Đổi getAttackRange() thành getRangedAttackRange()
       this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Ranged: ${this.playerModel.getRangedAttackRange()}`;
     }
   },
@@ -173,5 +195,19 @@ cc.Class({
   setPlayerModel(model) {
     this.playerModel = model;
     this.updateAllUI();
+  },
+
+  // New method to set skill nodes from PlayerController
+  setSkillNodes(meleeSkillNode, rangedSkillNode) {
+    this.meleeSkillNode = meleeSkillNode;
+    this.rangedSkillNode = rangedSkillNode;
+
+    // Make sure they start inactive
+    if (this.meleeSkillNode) {
+      this.meleeSkillNode.active = false;
+    }
+    if (this.rangedSkillNode) {
+      this.rangedSkillNode.active = false;
+    }
   },
 });
