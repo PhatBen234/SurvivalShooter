@@ -17,15 +17,12 @@ cc.Class({
     this.hp = this.maxHp;
     this.updateHpLabel();
 
-    // Tự tìm player nếu chưa có
-    this.player =
-      cc.find("Canvas").getComponentInChildren("Player") ||
-      cc.find("Canvas").getComponentInChildren("PlayerStage2") ||
-      cc.find("Canvas").getComponentInChildren("PlayerController") ||
-      cc.find("Canvas").getComponentInChildren("PlayerStage3");
-
-    if (this.player) {
-      this.player = this.player.node;
+    // Tự tìm PlayerController trong Canvas
+    const playerComponent = cc
+      .find("Canvas")
+      .getComponentInChildren("PlayerController");
+    if (playerComponent) {
+      this.player = playerComponent.node;
     } else {
       cc.warn("Enemy: Không tìm thấy Player!");
     }
@@ -34,10 +31,10 @@ cc.Class({
   update(dt) {
     if (!this.player || !this.player.isValid) return;
 
-    let dir = this.player.position.sub(this.node.position);
-    let distance = dir.mag();
+    const dir = this.player.position.sub(this.node.position);
+    const distance = dir.mag();
 
-    // Lật enemy
+    // Lật hướng enemy theo hướng di chuyển
     this.node.scaleX = dir.x > 0 ? 1 : -1;
 
     // Giữ label không bị lật
@@ -46,24 +43,19 @@ cc.Class({
     }
 
     if (distance > 5) {
-      let move = dir.normalize().mul(this.speed * dt);
+      const move = dir.normalize().mul(this.speed * dt);
       this.node.position = this.node.position.add(move);
     } else {
-      const playerScript =
-        this.player.getComponent("Player") ||
-        this.player.getComponent("PlayerStage2") ||
-        this.player.getComponent("PlayerController") ||
-        this.player.getComponent("PlayerStage3");
-
+      const playerScript = this.player.getComponent("PlayerController");
       if (playerScript && playerScript.takeDamage) {
         playerScript.takeDamage(this.damage);
       }
-      // Nếu enemy là kamikaze thì bật dòng dưới:
+      // Nếu là enemy cảm tử
       // this.node.destroy();
     }
   },
 
-  // Nếu bạn vẫn muốn hỗ trợ truyền player từ ngoài thì giữ lại
+  // Hỗ trợ truyền player từ ngoài
   init(playerNode) {
     this.player = playerNode;
   },
