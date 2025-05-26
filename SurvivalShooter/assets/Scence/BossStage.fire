@@ -5460,6 +5460,7 @@
     "_expPickupRange": 100,
     "_skillCooldown": 4,
     "_attackInterval": 2,
+    "_skillDamage": 10,
     "_isAttacking": false,
     "_currentAttackType": null,
     "_canUseSkill": true,
@@ -5498,6 +5499,7 @@
     "attackRangeLabel": {
       "__id__": 23
     },
+    "skillDamageLabel": null,
     "expBar": {
       "__id__": 31
     },

@@ -1,4 +1,4 @@
-// RangedAttackHandler.js - Xử lý tấn công và skill tầm xa
+// RangedAttackHandler.js - Xử lý tấn công và skill tầm xa với skillDamage
 cc.Class({
   extends: cc.Component,
 
@@ -73,22 +73,48 @@ cc.Class({
   executeRangedSkillDamage() {
     if (!this.playerModel || !this.canvasNode) return;
 
-    const SKILL_DAMAGE = 20;
-    this.executeHorizontalLineAttack(SKILL_DAMAGE);
+    // Sử dụng skillDamage từ PlayerModel thay vì hardcode
+    const BASE_SKILL_DAMAGE = this.playerModel.getSkillDamage();
+    const RANGED_SKILL_MULTIPLIER = 2; // Ranged skill damage = skillDamage * 2
+
+    // Có thể áp dụng crit cho skill damage
+    const skillDamage =
+      this.playerModel.calculateSkillDamage() * RANGED_SKILL_MULTIPLIER;
+
+    this.executeHorizontalLineAttack(skillDamage);
 
     // Hiển thị visual effect nếu có skill node
     this.showRangedSkillEffect();
+
+    // Log để debug
+    const enemiesInLine = this.getEnemiesInHorizontalLine();
+    cc.log(
+      `[RangedAttackHandler] Skill damage dealt: ${skillDamage} to ${enemiesInLine.length} enemies`
+    );
   },
 
   // Tấn công theo đường ngang
   executeHorizontalLineAttack(damage) {
     if (!this.canvasNode) return;
 
+    const enemiesInLine = this.getEnemiesInHorizontalLine();
+
+    // Gây damage cho tất cả enemy trong hàng
+    enemiesInLine.forEach((enemy) => {
+      const script = enemy.getComponent("Enemy") || enemy.getComponent("Boss");
+      script?.takeDamage?.(damage);
+    });
+  },
+
+  // Helper method để tìm enemies trong horizontal line
+  getEnemiesInHorizontalLine() {
+    if (!this.canvasNode) return [];
+
     const playerY = this.node.position.y;
     const LINE_HEIGHT = 80; // Chiều cao của vùng tấn công
 
     // Tìm tất cả enemy trong hàng ngang
-    const enemiesInLine = this.canvasNode.children.filter((node) => {
+    return this.canvasNode.children.filter((node) => {
       const isEnemy =
         ["Enemy", "FinalBoss"].includes(node.name) ||
         ["enemy", "finalBoss"].includes(node.group);
@@ -99,12 +125,6 @@ cc.Class({
       const yDiff = Math.abs(enemyY - playerY);
 
       return yDiff <= LINE_HEIGHT / 2;
-    });
-
-    // Gây damage cho tất cả enemy trong hàng
-    enemiesInLine.forEach((enemy) => {
-      const script = enemy.getComponent("Enemy") || enemy.getComponent("Boss");
-      script?.takeDamage?.(damage);
     });
   },
 
@@ -121,20 +141,30 @@ cc.Class({
   },
 
   // === SKILL ARROW SYSTEM (Alternative implementation) ===
-  // Thay vì horizontal line, có thể spawn nhiều arrows
-  executeSkillArrowAttack(damage) {
+  // Thay vì horizontal line, có thể spawn nhiều arrows với skill damage
+  executeSkillArrowAttack() {
     if (!this.canvasNode) return;
 
     // Tìm tất cả enemies trong range
     const enemies = this.findEnemiesInSkillRange();
 
+    // Tính skill damage
+    const BASE_SKILL_DAMAGE = this.playerModel.getSkillDamage();
+    const ARROW_SKILL_MULTIPLIER = 1.5; // Arrow skill damage = skillDamage * 1.5
+    const skillDamage =
+      this.playerModel.calculateSkillDamage() * ARROW_SKILL_MULTIPLIER;
+
     // Spawn arrow cho từng enemy
     enemies.forEach((enemy, index) => {
       // Delay một chút giữa các arrows để tạo hiệu ứng
       this.scheduleOnce(() => {
-        this.spawnSkillArrowToTarget(enemy, damage);
+        this.spawnSkillArrowToTarget(enemy, skillDamage);
       }, index * 0.1);
     });
+
+    cc.log(
+      `[RangedAttackHandler] Skill arrows fired: ${enemies.length} with damage: ${skillDamage} each`
+    );
   },
 
   // Tìm enemies trong skill range (có thể khác với attack range)

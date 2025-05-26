@@ -23,6 +23,7 @@ cc.Class({
     // Skill
     _skillCooldown: 4,
     _attackInterval: 2,
+    _skillDamage: 10, // Thêm skill damage base
 
     // State
     _isAttacking: false,
@@ -80,6 +81,14 @@ cc.Class({
   },
   addMeleeToRangedThreshold(amount) {
     this._meleeToRangedThreshold += amount;
+  },
+
+  // === SKILL DAMAGE METHODS ===
+  getSkillDamage() {
+    return this._skillDamage;
+  },
+  addSkillDamage(amount) {
+    this._skillDamage += amount;
   },
 
   // === MOVEMENT METHODS ===
@@ -159,6 +168,15 @@ cc.Class({
     return damage;
   },
 
+  // Tính damage cho skill dựa trên base skill damage
+  calculateSkillDamage() {
+    let damage = this._skillDamage;
+    if (Math.random() < this._criticalRate) {
+      damage *= 2;
+    }
+    return damage;
+  },
+
   // === SKILL BUFF METHODS ===
   applySkillBuff(skillId, amount) {
     switch (skillId) {
@@ -175,6 +193,9 @@ cc.Class({
       case 4: // Crit Up
         this.addCriticalRate(amount);
         break;
+      case 5: // Skill Damage
+        this.addSkillDamage(amount);
+        break;
       default:
         cc.warn(`[PlayerModel] Unknown skill ID: ${skillId}`);
     }
@@ -188,8 +209,9 @@ cc.Class({
     this.addExpPickupRange(10);
     this.addCriticalRate(0.05);
     this.addMeleeAttackRange(10);
-    this.addRangedAttackRange(15); // Đổi từ addAttackRange thành addRangedAttackRange
+    this.addRangedAttackRange(15);
     this.addMeleeToRangedThreshold(10);
+    this.addSkillDamage(2); // Thêm skill damage khi level up
     this.setExpToNextLevel(Math.floor(this._expToNextLevel * 1.25));
   },
 });

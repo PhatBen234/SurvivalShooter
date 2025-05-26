@@ -23,4 +23,10 @@ export const defaultSkills = [
     maxLevel: 3,
     description: "Tăng tỉ lệ chí mạng",
   },
+  {
+    id: 5,
+    name: "Skill Damage",
+    maxLevel: 3,
+    description: "Tăng sát thương skill",
+  },
 ];

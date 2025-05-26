@@ -1,4 +1,4 @@
-// MeleeAttackHandler.js - Xử lý tấn công và skill tầm gần
+// MeleeAttackHandler.js - Xử lý tấn công và skill tầm gần với skillDamage
 cc.Class({
   extends: cc.Component,
 
@@ -68,7 +68,15 @@ cc.Class({
   executeMeleeSkillDamage() {
     if (!this.playerModel || !this.canvasNode) return;
 
-    const SKILL_DAMAGE = 40;
+    // Sử dụng skillDamage từ PlayerModel thay vì hardcode
+    const BASE_SKILL_DAMAGE = this.playerModel.getSkillDamage();
+    const MELEE_SKILL_MULTIPLIER = 3; // Melee skill damage = skillDamage * 3
+    const finalSkillDamage = BASE_SKILL_DAMAGE * MELEE_SKILL_MULTIPLIER;
+
+    // Có thể áp dụng crit cho skill damage
+    const skillDamage =
+      this.playerModel.calculateSkillDamage() * MELEE_SKILL_MULTIPLIER;
+
     const MELEE_SKILL_RANGE = 200;
 
     // Tìm tất cả enemies trong vùng circular
@@ -79,12 +87,17 @@ cc.Class({
       const enemyScript =
         enemy.getComponent("Enemy") || enemy.getComponent("Boss");
       if (enemyScript?.takeDamage) {
-        enemyScript.takeDamage(SKILL_DAMAGE);
+        enemyScript.takeDamage(skillDamage);
       }
     });
 
     // Hiển thị visual effect nếu có skill node
     this.showMeleeSkillEffect();
+
+    // Log để debug
+    cc.log(
+      `[MeleeAttackHandler] Skill damage dealt: ${skillDamage} to ${enemies.length} enemies`
+    );
   },
 
   // Hiển thị effect cho melee skill

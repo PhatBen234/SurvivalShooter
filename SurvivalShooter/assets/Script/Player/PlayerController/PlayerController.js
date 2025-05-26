@@ -1,4 +1,4 @@
-// PlayerController.js - Main Controller với skill được tách riêng
+// PlayerController.js - Updated with skillDamage system integration
 cc.Class({
   extends: cc.Component,
 
@@ -41,7 +41,7 @@ cc.Class({
       this.playerView.setSkillNodes(this.meleeSkillNode, this.rangedSkillNode);
     }
 
-    // Initialize attack handlers
+    // Initialize attack handlers with skill nodes
     this.meleeAttackHandler?.init(
       this.playerModel,
       this.playerView,
@@ -216,7 +216,7 @@ cc.Class({
     }
   },
 
-  // === SKILL SYSTEM - Delegated to attack handlers ===
+  // === SKILL SYSTEM - Enhanced with skillDamage integration ===
   handleSkill(dt) {
     if (!this.canUseSkill(dt)) return;
 
@@ -225,6 +225,12 @@ cc.Class({
 
     // Determine skill type based on last attack type or current situation
     const skillType = this.determineSkillType();
+
+    // Log skill usage for debugging
+    const skillDamage = this.playerModel.getSkillDamage();
+    cc.log(
+      `[PlayerController] Using ${skillType} skill with base damage: ${skillDamage}`
+    );
 
     // Delegate skill execution to the appropriate handler
     const handler =
@@ -235,7 +241,11 @@ cc.Class({
     if (handler && handler.performSkill) {
       handler.performSkill(() => {
         this.playerModel.setCanUseSkill(true);
+        cc.log(`[PlayerController] ${skillType} skill finished`);
       });
+    } else {
+      cc.warn(`[PlayerController] No ${skillType} attack handler found`);
+      this.playerModel.setCanUseSkill(true);
     }
   },
 
@@ -289,7 +299,15 @@ cc.Class({
   },
 
   applyLevelUp() {
+    const oldSkillDamage = this.playerModel.getSkillDamage();
+
     this.playerModel.applyLevelUpBenefits();
+
+    const newSkillDamage = this.playerModel.getSkillDamage();
+    cc.log(
+      `[PlayerController] Level up! Skill damage: ${oldSkillDamage} -> ${newSkillDamage}`
+    );
+
     this.playerView.updateAllUI();
 
     const skillMgrScript = this.skillManager?.getComponent("SkillManager");
@@ -343,15 +361,31 @@ cc.Class({
     this.playerView.showDamageEffect();
   },
 
-  // === PUBLIC API ===
+  // === PUBLIC API - Enhanced with skillDamage ===
   applySkillBuff(skillId, amount) {
     if (!this.playerModel || !this.playerView) return;
+
+    const oldSkillDamage = this.playerModel.getSkillDamage();
     this.playerModel.applySkillBuff(skillId, amount);
+    const newSkillDamage = this.playerModel.getSkillDamage();
+
+    // Log skill buff application
+    if (skillId === 5) {
+      // Skill Damage buff
+      cc.log(
+        `[PlayerController] Skill Damage buff applied: ${oldSkillDamage} -> ${newSkillDamage}`
+      );
+    }
+
     this.playerView.updateAllUI();
   },
 
   getBaseAttack() {
     return this.playerModel?.getBaseAttack() || 0;
+  },
+
+  getSkillDamage() {
+    return this.playerModel?.getSkillDamage() || 0;
   },
 
   getRangedAttackRange() {

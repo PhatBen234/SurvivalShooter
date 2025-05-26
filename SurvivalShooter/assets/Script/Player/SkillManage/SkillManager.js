@@ -104,6 +104,7 @@ cc.Class({
       2: { name: "Range Boost", amount: 20 }, // +20 range
       3: { name: "Pickup Magnet", amount: 15 }, // +15 exp pickup range
       4: { name: "Crit Up", amount: 0.05 }, // +5% crit rate
+      5: { name: "Skill Damage", amount: 10 }, // +10 skill damage
     };
 
     const effect = skillEffects[skillId];
@@ -141,12 +142,13 @@ cc.Class({
 
     cc.log("[SkillManager] Current Player Stats:");
     cc.log(`- Attack: ${this.playerController.getBaseAttack()}`);
-    cc.log(`- Range: ${this.playerController.getAttackRange()}`);
+    cc.log(`- Range: ${this.playerController.getRangedAttackRange()}`);
     cc.log(`- EXP Range: ${this.playerController.getExpPickupRange()}`);
     cc.log(
       `- Crit Rate: ${Math.floor(
         this.playerController.getCriticalRate() * 100
       )}%`
     );
+    cc.log(`- Skill Damage: ${this.playerController.getSkillDamage()}`);
   },
 });
