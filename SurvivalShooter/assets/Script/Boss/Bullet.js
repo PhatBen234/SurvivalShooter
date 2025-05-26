@@ -37,7 +37,7 @@ cc.Class({
             player.name
           }, khoảng cách: ${dist.toFixed(2)}`
         );
-        let playerScript = player.getComponent("PlayerStage3");
+        let playerScript = player.getComponent("PlayerController");
 
         if (playerScript?.takeDamage) {
           cc.log(

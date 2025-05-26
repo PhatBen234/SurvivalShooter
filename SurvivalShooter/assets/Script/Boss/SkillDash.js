@@ -51,7 +51,7 @@ cc.Class({
           players.forEach((p) => {
             let dist = boss.position.sub(p.position).mag();
             if (dist < 100) {
-              let playerScript = p.getComponent("PlayerStage3");
+              let playerScript = p.getComponent("PlayerController");
               if (playerScript?.takeDamage) {
                 playerScript.takeDamage(this.damage);
                 cc.log(
