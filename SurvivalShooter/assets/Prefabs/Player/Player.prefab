@@ -58,13 +58,10 @@
       },
       {
         "__id__": 29
-      },
-      {
-        "__id__": 30
       }
     ],
     "_prefab": {
-      "__id__": 31
+      "__id__": 30
     },
     "_opacity": 255,
     "_color": {
@@ -109,8 +106,8 @@
     "_skewX": 0,
     "_skewY": 0,
     "_is3DNode": false,
-    "_groupIndex": 0,
-    "groupIndex": 0,
+    "_groupIndex": 1,
+    "groupIndex": 1,
     "_id": ""
   },
   {
@@ -700,8 +697,8 @@
     "_skewX": 0,
     "_skewY": 0,
     "_is3DNode": false,
-    "_groupIndex": 0,
-    "groupIndex": 0,
+    "_groupIndex": 1,
+    "groupIndex": 1,
     "_id": ""
   },
   {
@@ -846,20 +843,6 @@
     "playerModel": null,
     "meleeSkillNode": null,
     "rangedSkillNode": null,
-    "_id": ""
-  },
-  {
-    "__type__": "163dedMqPJMJLvkBc+2VtEi",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "playerModel": null,
-    "playerView": null,
-    "canvasNode": null,
-    "meleeSkillNode": null,
     "_id": ""
   },
   {
