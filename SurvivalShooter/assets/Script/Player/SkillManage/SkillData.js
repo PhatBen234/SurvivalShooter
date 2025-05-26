@@ -29,10 +29,4 @@ export const defaultSkills = [
     maxLevel: 5,
     description: "Tăng sát thương skill",
   },
-  {
-    id: 6,
-    name: "Ultimate Skill",
-    maxLevel: 1,
-    description: "Chiêu Ulti gây sát thương toàn bản đồ",
-  },
 ];
