@@ -1,4 +1,4 @@
-// PlayerController.js - Main Controller với skill riêng biệt
+// PlayerController.js - Main Controller với skill được tách riêng
 cc.Class({
   extends: cc.Component,
 
@@ -45,13 +45,15 @@ cc.Class({
     this.meleeAttackHandler?.init(
       this.playerModel,
       this.playerView,
-      this.canvasNode
+      this.canvasNode,
+      this.meleeSkillNode
     );
     this.rangedAttackHandler?.init(
       this.playerModel,
       this.playerView,
       this.canvasNode,
-      this.arrowPrefab
+      this.arrowPrefab,
+      this.rangedSkillNode
     );
   },
 
@@ -214,7 +216,7 @@ cc.Class({
     }
   },
 
-  // === SKILL SYSTEM - Updated to use different skills based on attack type ===
+  // === SKILL SYSTEM - Delegated to attack handlers ===
   handleSkill(dt) {
     if (!this.canUseSkill(dt)) return;
 
@@ -224,10 +226,17 @@ cc.Class({
     // Determine skill type based on last attack type or current situation
     const skillType = this.determineSkillType();
 
-    this.playerView.playSkillAnimation(skillType, () => {
-      this.playerModel.setCanUseSkill(true);
-      this.executeSkillDamage(skillType);
-    });
+    // Delegate skill execution to the appropriate handler
+    const handler =
+      skillType === "melee"
+        ? this.meleeAttackHandler
+        : this.rangedAttackHandler;
+
+    if (handler && handler.performSkill) {
+      handler.performSkill(() => {
+        this.playerModel.setCanUseSkill(true);
+      });
+    }
   },
 
   determineSkillType() {
@@ -258,63 +267,6 @@ cc.Class({
 
   resetSkillTimer() {
     this.skillTimer = 0;
-  },
-
-  executeSkillDamage(skillType) {
-    const SKILL_DAMAGE = 20;
-
-    if (skillType === "melee") {
-      // Melee skill: damage all enemies in circular range
-      const MELEE_SKILL_RANGE = 200;
-      this.findEnemiesInRange(MELEE_SKILL_RANGE).forEach((enemy) => {
-        const script =
-          enemy.getComponent("Enemy") || enemy.getComponent("Boss");
-        script?.takeDamage?.(SKILL_DAMAGE);
-      });
-    } else {
-      // Ranged skill: damage all enemies in horizontal line across screen
-      this.executeHorizontalLineAttack(SKILL_DAMAGE);
-    }
-  },
-
-  executeHorizontalLineAttack(damage) {
-    if (!this.canvasNode) return;
-
-    const playerY = this.node.position.y;
-    const LINE_HEIGHT = 80; // Chiều cao của vùng tấn công
-
-    // Tìm tất cả enemy trong hàng ngang
-    const enemiesInLine = this.canvasNode.children.filter((node) => {
-      const isEnemy =
-        ["Enemy", "FinalBoss"].includes(node.name) ||
-        ["enemy", "finalBoss"].includes(node.group);
-
-      if (!isEnemy || !node.isValid) return false;
-
-      const enemyY = node.position.y;
-      const yDiff = Math.abs(enemyY - playerY);
-
-      return yDiff <= LINE_HEIGHT / 2;
-    });
-
-    // Gây damage cho tất cả enemy trong hàng
-    enemiesInLine.forEach((enemy) => {
-      const script = enemy.getComponent("Enemy") || enemy.getComponent("Boss");
-      script?.takeDamage?.(damage);
-    });
-  },
-
-  spawnSkillArrowToTarget(target, damage) {
-    if (!this.arrowPrefab || !target || !this.canvasNode) return;
-
-    const arrow = cc.instantiate(this.arrowPrefab);
-    this.canvasNode.addChild(arrow);
-    arrow.setPosition(this.node.position);
-
-    const arrowScript = arrow.getComponent("Arrow");
-    if (arrowScript && arrowScript.init) {
-      arrowScript.init(target, damage);
-    }
   },
 
   // === EXP SYSTEM ===

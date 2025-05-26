@@ -2824,6 +2824,7 @@
     "playerModel": null,
     "playerView": null,
     "canvasNode": null,
+    "meleeSkillNode": null,
     "_id": "d9vYNcii5L26YAQdFkgl1W"
   },
   {
@@ -2838,6 +2839,7 @@
     "playerView": null,
     "canvasNode": null,
     "arrowPrefab": null,
+    "rangedSkillNode": null,
     "_id": "0dP4JmM/xG+bXQtrlG7mIN"
   },
   {
