@@ -102,10 +102,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 64
+        "__id__": 69
       },
       {
-        "__id__": 65
+        "__id__": 70
       }
     ],
     "_prefab": null,
@@ -1723,6 +1723,7 @@
       "__id__": 33
     },
     "menuScript": null,
+    "hasBoss": true,
     "_id": "8ekLR9NSBG06DdwRwT0pEi"
   },
   {
@@ -1765,6 +1766,21 @@
       },
       {
         "__id__": 63
+      },
+      {
+        "__id__": 64
+      },
+      {
+        "__id__": 65
+      },
+      {
+        "__id__": 66
+      },
+      {
+        "__id__": 67
+      },
+      {
+        "__id__": 68
       }
     ],
     "_prefab": null,
@@ -2764,6 +2780,7 @@
     "_expPickupRange": 100,
     "_skillCooldown": 4,
     "_attackInterval": 2,
+    "_skillDamage": 10,
     "_isAttacking": false,
     "_currentAttackType": null,
     "_canUseSkill": true,
@@ -2802,6 +2819,7 @@
     "attackRangeLabel": {
       "__id__": 15
     },
+    "skillDamageLabel": null,
     "expBar": {
       "__id__": 23
     },
@@ -2841,6 +2859,67 @@
     "arrowPrefab": null,
     "rangedSkillNode": null,
     "_id": "0dP4JmM/xG+bXQtrlG7mIN"
+  },
+  {
+    "__type__": "fe83bpFzPVO4pGKrtDhd373",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 36
+    },
+    "_enabled": true,
+    "_id": "cf28M1qBpERKguQ5PzsS2N"
+  },
+  {
+    "__type__": "25d03X7DzZNJ7pRRGiO3aDK",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 36
+    },
+    "_enabled": true,
+    "canvasNode": {
+      "__id__": 2
+    },
+    "_id": "9f44YGrv1E6aJFE3KMEYWR"
+  },
+  {
+    "__type__": "2b45fwNa/pPk47R1PdxNK48",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 36
+    },
+    "_enabled": true,
+    "canvasNode": {
+      "__id__": 2
+    },
+    "_id": "9bGcAg/rpOjqbuqsJZK2vA"
+  },
+  {
+    "__type__": "241f1lBV6NBxLelcimUAUT8",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 36
+    },
+    "_enabled": true,
+    "canvasNode": {
+      "__id__": 2
+    },
+    "_id": "acebhEgSNC+Kwl/2lLhuYg"
+  },
+  {
+    "__type__": "5e596geFkFEbpUtZKrruZ5x",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 36
+    },
+    "_enabled": true,
+    "canvasNode": null,
+    "skillManager": null,
+    "_id": "80dEYS8a9JQbWH8N9P+XWF"
   },
   {
     "__type__": "cc.Canvas",

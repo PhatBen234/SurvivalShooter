@@ -93,19 +93,19 @@
         "__id__": 36
       },
       {
-        "__id__": 127
+        "__id__": 132
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 129
+        "__id__": 134
       },
       {
-        "__id__": 130
+        "__id__": 135
       },
       {
-        "__id__": 131
+        "__id__": 136
       }
     ],
     "_prefab": null,
@@ -1764,6 +1764,21 @@
       },
       {
         "__id__": 126
+      },
+      {
+        "__id__": 127
+      },
+      {
+        "__id__": 128
+      },
+      {
+        "__id__": 129
+      },
+      {
+        "__id__": 130
+      },
+      {
+        "__id__": 131
       }
     ],
     "_prefab": null,
@@ -5782,6 +5797,61 @@
     "_id": "11eP3kou1AMYY/qSlfwBs6"
   },
   {
+    "__type__": "5e596geFkFEbpUtZKrruZ5x",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 36
+    },
+    "_enabled": true,
+    "canvasNode": null,
+    "skillManager": null,
+    "_id": "67wbFmKK5KG4DxuGnRKRSt"
+  },
+  {
+    "__type__": "241f1lBV6NBxLelcimUAUT8",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 36
+    },
+    "_enabled": true,
+    "canvasNode": null,
+    "_id": "ddtFT9ulRMU4TkZbE/Wlly"
+  },
+  {
+    "__type__": "fe83bpFzPVO4pGKrtDhd373",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 36
+    },
+    "_enabled": true,
+    "_id": "ffBfh2ZTxEGYQGRsoeGciN"
+  },
+  {
+    "__type__": "25d03X7DzZNJ7pRRGiO3aDK",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 36
+    },
+    "_enabled": true,
+    "canvasNode": null,
+    "_id": "93RvsXrcRLsKmVgvOxqxz+"
+  },
+  {
+    "__type__": "2b45fwNa/pPk47R1PdxNK48",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 36
+    },
+    "_enabled": true,
+    "canvasNode": null,
+    "_id": "8dHqteMdhIf5ehwn4wo5I5"
+  },
+  {
     "__type__": "cc.Node",
     "_name": "GameController",
     "_objFlags": 0,
@@ -5792,7 +5862,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 128
+        "__id__": 133
       }
     ],
     "_prefab": null,
@@ -5848,7 +5918,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 127
+      "__id__": 132
     },
     "_enabled": true,
     "enemyPrefab": {
