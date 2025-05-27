@@ -36,9 +36,9 @@ cc.Class({
     this.playerModel.applyLevelUpBenefits();
 
     const newSkillDamage = this.playerModel.getSkillDamage();
-    cc.log(
-      `[PlayerExpHandler] Level up! Skill damage: ${oldSkillDamage} -> ${newSkillDamage}`
-    );
+    // cc.log(
+    //   `[PlayerExpHandler] Level up! Skill damage: ${oldSkillDamage} -> ${newSkillDamage}`
+    // );
 
     this.playerView.updateAllUI();
 

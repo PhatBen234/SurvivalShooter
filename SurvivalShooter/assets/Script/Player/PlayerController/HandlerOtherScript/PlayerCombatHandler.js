@@ -44,11 +44,6 @@ cc.Class({
   },
 
   determineAttackType(enemy) {
-    const both = this.meleeAttackHandler && this.rangedAttackHandler;
-    if (!both) {
-      return this.meleeAttackHandler ? "melee" : "ranged";
-    }
-
     const distance = this.node.position.sub(enemy.position).mag();
     const meleeRange = this.playerModel.getMeleeAttackRange();
 
@@ -99,11 +94,9 @@ cc.Class({
     this.playerView.finishAttackAnimation();
 
     const dir = this.inputHandler.getInputDirection();
-    if (dir.mag() > 0) {
-      this.playerView.playWalkAnimation();
-    } else {
-      this.playerView.stopWalkAnimation();
-    }
+    dir.mag() > 0
+      ? this.playerView.playWalkAnimation()
+      : this.playerView.stopWalkAnimation();
   },
 
   takeDamage(amount) {
@@ -141,7 +134,7 @@ cc.Class({
           enemy,
           distance: this.node.position.sub(enemy.position).mag(),
         }))
-        .filter(({ distance }) => distance <= maxRange && distance < Infinity)
+        .filter(({ distance }) => distance <= maxRange)
         .sort((a, b) => a.distance - b.distance)[0]?.enemy || null
     );
   },
