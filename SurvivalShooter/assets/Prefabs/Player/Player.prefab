@@ -31,22 +31,13 @@
       },
       {
         "__id__": 18
+      },
+      {
+        "__id__": 22
       }
     ],
     "_active": true,
     "_components": [
-      {
-        "__id__": 22
-      },
-      {
-        "__id__": 23
-      },
-      {
-        "__id__": 24
-      },
-      {
-        "__id__": 25
-      },
       {
         "__id__": 26
       },
@@ -58,10 +49,31 @@
       },
       {
         "__id__": 29
+      },
+      {
+        "__id__": 30
+      },
+      {
+        "__id__": 31
+      },
+      {
+        "__id__": 32
+      },
+      {
+        "__id__": 33
+      },
+      {
+        "__id__": 34
+      },
+      {
+        "__id__": 35
+      },
+      {
+        "__id__": 36
       }
     ],
     "_prefab": {
-      "__id__": 30
+      "__id__": 37
     },
     "_opacity": 255,
     "_color": {
@@ -238,12 +250,12 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "0b2+nbzAxPR5Ul5P3SHF6i",
+    "fileId": "e6OIrpQEBPnZHWWUZq8WtS",
     "sync": false
   },
   {
     "__type__": "cc.Node",
-    "_name": "MCAttackSword",
+    "_name": "MCAttackArcher",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -351,7 +363,7 @@
     },
     "_enabled": true,
     "_defaultClip": {
-      "__uuid__": "bd487408-6134-4a11-9f4e-0691ed1b9493"
+      "__uuid__": "74c8d792-c3d5-4597-90d1-b54c46acf432"
     },
     "_clips": [
       {
@@ -369,12 +381,12 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "12ofaodCpDh5lOVisd4tEg",
+    "fileId": "8eLsQIlcdDfob3Ai9IdbW/",
     "sync": false
   },
   {
     "__type__": "cc.Node",
-    "_name": "MCAttackArcher",
+    "_name": "MCAttackSword",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -482,7 +494,7 @@
     },
     "_enabled": true,
     "_defaultClip": {
-      "__uuid__": "74c8d792-c3d5-4597-90d1-b54c46acf432"
+      "__uuid__": "bd487408-6134-4a11-9f4e-0691ed1b9493"
     },
     "_clips": [
       {
@@ -500,7 +512,7 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "d1SGaySBFAa4twt0piI4YW",
+    "fileId": "12ofaodCpDh5lOVisd4tEg",
     "sync": false
   },
   {
@@ -766,6 +778,137 @@
     "sync": false
   },
   {
+    "__type__": "cc.Node",
+    "_name": "MCUltimate",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 1
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 23
+      },
+      {
+        "__id__": 24
+      }
+    ],
+    "_prefab": {
+      "__id__": 25
+    },
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 512,
+      "height": 512
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.Sprite",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 22
+    },
+    "_enabled": true,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_spriteFrame": {
+      "__uuid__": "ff8ff597-fa10-49ea-93dd-d197f253bb3a"
+    },
+    "_type": 0,
+    "_sizeMode": 1,
+    "_fillType": 0,
+    "_fillCenter": {
+      "__type__": "cc.Vec2",
+      "x": 0,
+      "y": 0
+    },
+    "_fillStart": 0,
+    "_fillRange": 0,
+    "_isTrimmedMode": true,
+    "_atlas": {
+      "__uuid__": "09f625db-de29-4534-af34-c4dbf40be452"
+    },
+    "_id": ""
+  },
+  {
+    "__type__": "cc.Animation",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 22
+    },
+    "_enabled": true,
+    "_defaultClip": {
+      "__uuid__": "321be1be-0646-4cf5-a21c-033d8306a146"
+    },
+    "_clips": [
+      {
+        "__uuid__": "321be1be-0646-4cf5-a21c-033d8306a146"
+      }
+    ],
+    "playOnLoad": true,
+    "_id": ""
+  },
+  {
+    "__type__": "cc.PrefabInfo",
+    "root": {
+      "__id__": 1
+    },
+    "asset": {
+      "__id__": 0
+    },
+    "fileId": "f7sv20ExZE2qAolzww9R/A",
+    "sync": false
+  },
+  {
     "__type__": "97e012SGlRBf61Pcsr/cNwD",
     "_name": "",
     "_objFlags": 0,
@@ -783,6 +926,9 @@
     },
     "rangedSkillNode": {
       "__id__": 18
+    },
+    "ultimateSkillNode": {
+      "__id__": 22
     },
     "_id": ""
   },
@@ -809,6 +955,9 @@
     "_skillCooldown": 4,
     "_attackInterval": 2,
     "_skillDamage": 10,
+    "_hasUltimateSkill": false,
+    "_ultimateCooldown": 1,
+    "_canUseUltimate": true,
     "_isAttacking": false,
     "_currentAttackType": null,
     "_canUseSkill": true,
@@ -827,10 +976,10 @@
       "__id__": 4
     },
     "meleeAttackAnim": {
-      "__id__": 8
+      "__id__": 12
     },
     "rangedAttackAnim": {
-      "__id__": 12
+      "__id__": 8
     },
     "hpLabel": null,
     "attackLabel": null,
@@ -838,10 +987,62 @@
     "expRangeLabel": null,
     "attackRangeLabel": null,
     "skillDamageLabel": null,
+    "ultimateLabel": null,
     "expBar": null,
     "levelLabel": null,
     "playerModel": null,
     "meleeSkillNode": null,
+    "rangedSkillNode": null,
+    "ultimateSkillNode": null,
+    "_id": ""
+  },
+  {
+    "__type__": "fe83bpFzPVO4pGKrtDhd373",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "_id": ""
+  },
+  {
+    "__type__": "25d03X7DzZNJ7pRRGiO3aDK",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "canvasNode": null,
+    "_id": ""
+  },
+  {
+    "__type__": "163dedMqPJMJLvkBc+2VtEi",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "playerModel": null,
+    "playerView": null,
+    "canvasNode": null,
+    "meleeSkillNode": null,
+    "_id": ""
+  },
+  {
+    "__type__": "8a2661ausVBKo4gOeQNdhTn",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 1
+    },
+    "_enabled": true,
+    "playerModel": null,
+    "playerView": null,
+    "canvasNode": null,
+    "arrowPrefab": null,
     "rangedSkillNode": null,
     "_id": ""
   },
@@ -869,17 +1070,7 @@
     "_id": ""
   },
   {
-    "__type__": "fe83bpFzPVO4pGKrtDhd373",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "_id": ""
-  },
-  {
-    "__type__": "25d03X7DzZNJ7pRRGiO3aDK",
+    "__type__": "2b45fwNa/pPk47R1PdxNK48",
     "_name": "",
     "_objFlags": 0,
     "node": {
@@ -890,13 +1081,15 @@
     "_id": ""
   },
   {
-    "__type__": "2b45fwNa/pPk47R1PdxNK48",
+    "__type__": "e4bc94NjVxL54sB0FYB1pjv",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 1
     },
     "_enabled": true,
+    "playerModel": null,
+    "playerView": null,
     "canvasNode": null,
     "_id": ""
   },
