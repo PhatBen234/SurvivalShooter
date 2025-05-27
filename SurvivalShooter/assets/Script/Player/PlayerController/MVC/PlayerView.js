@@ -1,4 +1,3 @@
-// PlayerView.js - Updated with Ultimate Skill support
 cc.Class({
   extends: cc.Component,
 
@@ -15,7 +14,7 @@ cc.Class({
     expRangeLabel: cc.Label,
     attackRangeLabel: cc.Label,
     skillDamageLabel: cc.Label,
-    ultimateLabel: cc.Label, // New label for ultimate status
+    ultimateLabel: cc.Label,
     expBar: cc.ProgressBar,
     levelLabel: cc.Label,
 
@@ -23,7 +22,7 @@ cc.Class({
     playerModel: null,
     meleeSkillNode: null,
     rangedSkillNode: null,
-    ultimateSkillNode: null, // New reference for ultimate skill node
+    ultimateSkillNode: null,
   },
 
   onLoad() {
@@ -31,124 +30,94 @@ cc.Class({
     this.setAnimationActive(this.meleeAttackAnim, false);
     this.setAnimationActive(this.rangedAttackAnim, false);
 
-    if (this.meleeSkillNode) this.meleeSkillNode.active = false;
-    if (this.rangedSkillNode) this.rangedSkillNode.active = false;
-    if (this.ultimateSkillNode) this.ultimateSkillNode.active = false;
+    this.deactivateSkillNodes();
   },
 
   // === ANIMATION METHODS ===
   playWalkAnimation() {
-    if (!this.walkAnim) return;
-    const state = this.walkAnim.getAnimationState("Soldier");
-    if (state && !state.isPlaying) {
-      this.walkAnim.play("Soldier");
-    }
+    this.playAnimationIfNotPlaying(this.walkAnim, "Soldier");
   },
 
   stopWalkAnimation() {
-    if (!this.walkAnim) return;
-    const state = this.walkAnim.getAnimationState("Soldier");
-    if (state && state.isPlaying) {
-      this.walkAnim.stop("Soldier");
-    }
+    this.stopAnimationIfPlaying(this.walkAnim, "Soldier");
   },
 
   playMeleeAttackAnimation(onFinished) {
-    this.setAllAttackAnimationsOff();
-    this.setAnimationActive(this.meleeAttackAnim, true);
-
-    const attackState = this.meleeAttackAnim.getAnimationState("SoldierAttack");
-    if (attackState) {
-      this.meleeAttackAnim.play("SoldierAttack");
-      if (onFinished) attackState.once("finished", onFinished);
-    } else if (onFinished) {
-      onFinished();
-    }
+    this.playAttackAnimation(this.meleeAttackAnim, "SoldierAttack", onFinished);
   },
 
   playRangedAttackAnimation(onFinished) {
-    this.setAllAttackAnimationsOff();
-    this.setAnimationActive(this.rangedAttackAnim, true);
+    this.playAttackAnimation(this.rangedAttackAnim, "ArrowAttack", onFinished);
+  },
 
-    const attackState = this.rangedAttackAnim.getAnimationState("ArrowAttack");
-    if (attackState) {
-      this.rangedAttackAnim.play("ArrowAttack");
-      if (onFinished) attackState.once("finished", onFinished);
-    } else if (onFinished) {
-      onFinished();
+  playAttackAnimation(animComponent, animName, onFinished) {
+    this.setAllAttackAnimationsOff();
+    this.setAnimationActive(animComponent, true);
+
+    const animState = animComponent.getAnimationState(animName);
+    if (animState) {
+      animComponent.play(animName);
+      if (onFinished) animState.once("finished", onFinished);
+    } else {
+      onFinished?.();
     }
   },
 
-  // === SKILL ANIMATION METHODS ===
   playSkillAnimation(skillType, onFinished) {
     const skillNode =
       skillType === "melee" ? this.meleeSkillNode : this.rangedSkillNode;
     const animName = skillType === "melee" ? "SkillSplash" : "MCSkillArrow";
 
-    if (!skillNode) {
-      if (onFinished) onFinished();
-      return;
-    }
+    if (!skillNode) return onFinished?.();
 
-    if (skillType === "melee") {
-      skillNode.setPosition(cc.v2(0, 0));
-      skillNode.setScale(1, 1);
-    } else {
-      this.setupRangedSkillDisplay(skillNode);
-    }
-
+    skillNode.setPosition(cc.v2(0, 0));
+    skillNode.setScale(
+      skillType === "melee" ? 1 : this.getRangedSkillScaleX(skillNode),
+      1
+    );
     skillNode.active = true;
-    const anim = skillNode.getComponent(cc.Animation);
 
-    if (anim && anim.getAnimationState(animName)) {
+    const anim = skillNode.getComponent(cc.Animation);
+    const animState = anim?.getAnimationState(animName);
+
+    if (animState) {
       anim.play(animName);
       anim.once("finished", () => {
         skillNode.active = false;
-        if (onFinished) onFinished();
+        onFinished?.();
       });
     } else {
       skillNode.active = false;
-      if (onFinished) onFinished();
+      onFinished?.();
     }
   },
 
-  // === ULTIMATE SKILL ANIMATION ===
   playUltimateAnimation(onFinished) {
-    if (!this.ultimateSkillNode) {
-      cc.warn("[PlayerView] Ultimate skill node not found!");
-      if (onFinished) onFinished();
-      return;
-    }
+    if (!this.ultimateSkillNode) return onFinished?.();
 
-    // Position ultimate effect at player center
     this.ultimateSkillNode.setPosition(cc.v2(0, 0));
-    this.ultimateSkillNode.setScale(1.5, 1.5); // Make it bigger for ultimate
+    this.ultimateSkillNode.setScale(1.5, 1.5);
     this.ultimateSkillNode.active = true;
 
     const anim = this.ultimateSkillNode.getComponent(cc.Animation);
+    const animState = anim?.getAnimationState("Ultimate");
 
-    if (anim && anim.getAnimationState("Ultimate")) {
-      cc.log("[PlayerView] Playing Ultimate animation");
+    if (animState) {
       anim.play("Ultimate");
       anim.once("finished", () => {
         this.ultimateSkillNode.active = false;
-        cc.log("[PlayerView] Ultimate animation finished");
-        if (onFinished) onFinished();
+        onFinished?.();
       });
     } else {
-      cc.warn("[PlayerView] Ultimate animation state not found!");
       this.ultimateSkillNode.active = false;
-      if (onFinished) onFinished();
+      onFinished?.();
     }
   },
 
-  setupRangedSkillDisplay(skillNode) {
+  getRangedSkillScaleX(skillNode) {
     const canvasSize = this.node.parent.getContentSize();
-    const skillNodeSize = skillNode.getContentSize();
-
-    skillNode.setPosition(cc.v2(0, 0));
-    const scaleX = canvasSize.width / skillNodeSize.width;
-    skillNode.setScale(scaleX, 1);
+    const skillSize = skillNode.getContentSize();
+    return canvasSize.width / skillSize.width;
   },
 
   finishAttackAnimation() {
@@ -157,9 +126,9 @@ cc.Class({
   },
 
   setAllAttackAnimationsOff() {
-    this.setAnimationActive(this.walkAnim, false);
-    this.setAnimationActive(this.meleeAttackAnim, false);
-    this.setAnimationActive(this.rangedAttackAnim, false);
+    [this.walkAnim, this.meleeAttackAnim, this.rangedAttackAnim].forEach(
+      (anim) => this.setAnimationActive(anim, false)
+    );
   },
 
   setAnimationActive(animationComponent, isActive) {
@@ -168,20 +137,27 @@ cc.Class({
     if (!isActive) animationComponent.stop();
   },
 
-  // === VISUAL EFFECTS ===
+  playAnimationIfNotPlaying(animComp, animName) {
+    const state = animComp?.getAnimationState(animName);
+    if (state && !state.isPlaying) animComp.play(animName);
+  },
+
+  stopAnimationIfPlaying(animComp, animName) {
+    const state = animComp?.getAnimationState(animName);
+    if (state && state.isPlaying) animComp.stop(animName);
+  },
+
+  // === UI & EFFECTS ===
   showDamageEffect() {
     this.node.runAction(cc.sequence(cc.fadeTo(0.1, 100), cc.fadeTo(0.1, 255)));
   },
 
   updatePlayerScale(direction) {
-    if (direction.x !== 0) {
-      this.node.scaleX = direction.x > 0 ? 1 : -1;
-    }
+    if (direction.x !== 0) this.node.scaleX = direction.x > 0 ? 1 : -1;
   },
 
-  // === UI UPDATE METHODS ===
   updateHpUI() {
-    if (this.playerModel && this.hpLabel) {
+    if (this.hpLabel && this.playerModel) {
       this.hpLabel.string = `HP: ${this.playerModel.getCurrentHp()}`;
     }
   },
@@ -189,57 +165,53 @@ cc.Class({
   updateStatsUI() {
     if (!this.playerModel) return;
 
-    if (this.attackLabel) {
-      this.attackLabel.string = `Atk: ${this.playerModel.getBaseAttack()}`;
-    }
+    this.attackLabel.string = `Atk: ${this.playerModel.getBaseAttack()}`;
+    this.skillDamageLabel.string = `Skill: ${this.playerModel.getSkillDamage()}`;
+    this.critLabel.string = `Crit: ${Math.floor(
+      this.playerModel.getCriticalRate() * 100
+    )}%`;
+    this.expRangeLabel.string = `EXP Range: ${this.playerModel.getExpPickupRange()}`;
+    this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Archer: ${this.playerModel.getRangedAttackRange()}`;
 
-    if (this.skillDamageLabel) {
-      this.skillDamageLabel.string = `Skill: ${this.playerModel.getSkillDamage()}`;
-    }
-
-    if (this.critLabel) {
-      this.critLabel.string = `Crit: ${Math.floor(
-        this.playerModel.getCriticalRate() * 100
-      )}%`;
-    }
-
-    if (this.expRangeLabel) {
-      this.expRangeLabel.string = `EXP Range: ${this.playerModel.getExpPickupRange()}`;
-    }
-
-    if (this.attackRangeLabel) {
-      this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Archer: ${this.playerModel.getRangedAttackRange()}`;
-    }
-
-    // Update ultimate UI
     this.updateUltimateUI();
   },
 
   updateUltimateUI() {
     if (!this.ultimateLabel || !this.playerModel) return;
 
-    if (this.playerModel.hasUltimateSkill()) {
-      const canUse = this.playerModel.canUseUltimate();
-      this.ultimateLabel.string = canUse
-        ? "Ultimate: READY"
-        : "Ultimate: COOLDOWN";
-      this.ultimateLabel.node.color = canUse ? cc.Color.GREEN : cc.Color.YELLOW;
+    const label = this.ultimateLabel;
+    const hasUltimate = this.playerModel.hasUltimateSkill();
+
+    if (!hasUltimate) {
+      label.string = "Ultimate: LOCKED";
+      label.node.color = cc.Color.GRAY;
+      return;
+    }
+
+    if (this.playerModel.canUseUltimate()) {
+      label.string = "Ultimate: READY";
+      label.node.color = cc.Color.GREEN;
     } else {
-      this.ultimateLabel.string = "Ultimate: LOCKED";
-      this.ultimateLabel.node.color = cc.Color.GRAY;
+      const handler = this.node.getComponent("UltimateSkillHandler");
+      const cooldown = Math.max(
+        0,
+        Math.ceil(
+          (handler?.ultimateCooldownTime || 0) - (handler?.ultimateTimer || 0)
+        )
+      );
+      label.string = `Ultimate: COOLDOWN (${cooldown}s)`;
+      label.node.color = cc.Color.YELLOW;
     }
   },
 
   updateExpUI() {
     if (!this.playerModel) return;
 
-    if (this.expBar) {
-      this.expBar.progress =
-        this.playerModel.getCurrentExp() / this.playerModel.getExpToNextLevel();
-    }
-    if (this.levelLabel) {
+    const progress =
+      this.playerModel.getCurrentExp() / this.playerModel.getExpToNextLevel();
+    if (this.expBar) this.expBar.progress = progress;
+    if (this.levelLabel)
       this.levelLabel.string = `Lv: ${this.playerModel.getLevel()}`;
-    }
   },
 
   updateAllUI() {
@@ -254,13 +226,20 @@ cc.Class({
     this.updateAllUI();
   },
 
-  setSkillNodes(meleeSkillNode, rangedSkillNode, ultimateSkillNode = null) {
-    this.meleeSkillNode = meleeSkillNode;
-    this.rangedSkillNode = rangedSkillNode;
-    this.ultimateSkillNode = ultimateSkillNode;
+  setSkillNodes(melee, ranged, ultimate = null) {
+    this.meleeSkillNode = melee;
+    this.rangedSkillNode = ranged;
+    this.ultimateSkillNode = ultimate;
+    this.deactivateSkillNodes();
+  },
 
+  deactivateSkillNodes() {
     if (this.meleeSkillNode) this.meleeSkillNode.active = false;
     if (this.rangedSkillNode) this.rangedSkillNode.active = false;
     if (this.ultimateSkillNode) this.ultimateSkillNode.active = false;
+  },
+
+  update(dt) {
+    this.updateUltimateUI();
   },
 });
