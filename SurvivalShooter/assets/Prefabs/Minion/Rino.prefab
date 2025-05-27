@@ -13,25 +13,25 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Goblin",
+    "_name": "Rino",
     "_objFlags": 0,
     "_parent": null,
     "_children": [
       {
         "__id__": 2
-      },
-      {
-        "__id__": 6
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 10
+        "__id__": 6
+      },
+      {
+        "__id__": 7
       }
     ],
     "_prefab": {
-      "__id__": 11
+      "__id__": 8
     },
     "_opacity": 255,
     "_color": {
@@ -43,8 +43,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 45,
-      "height": 35
+      "width": 50,
+      "height": 50
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -55,8 +55,8 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        0,
-        0,
+        451.022,
+        375.632,
         0,
         0,
         0,
@@ -82,7 +82,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Enemy Sprite Minion",
+    "_name": "Rino Image",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -110,8 +110,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 45,
-      "height": 35
+      "width": 50,
+      "height": 30
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -163,7 +163,7 @@
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
     "_spriteFrame": {
-      "__uuid__": "964e8d4f-9fda-4257-8daa-7be8e00950cf"
+      "__uuid__": "12eacd2c-432f-426d-aea3-cb16673709db"
     },
     "_type": 0,
     "_sizeMode": 0,
@@ -177,7 +177,7 @@
     "_fillRange": 0,
     "_isTrimmedMode": true,
     "_atlas": {
-      "__uuid__": "f3b815f0-bc05-411c-b4f1-df7021df7f5d"
+      "__uuid__": "6658fe4e-829c-4393-8221-1c408d2b19b9"
     },
     "_id": ""
   },
@@ -190,11 +190,11 @@
     },
     "_enabled": true,
     "_defaultClip": {
-      "__uuid__": "f5d76d8e-f38f-4df2-b079-abe6dd32c8cc"
+      "__uuid__": "77d13d13-e6fb-4c86-85a2-de7cd2885ba6"
     },
     "_clips": [
       {
-        "__uuid__": "f5d76d8e-f38f-4df2-b079-abe6dd32c8cc"
+        "__uuid__": "77d13d13-e6fb-4c86-85a2-de7cd2885ba6"
       }
     ],
     "playOnLoad": true,
@@ -208,154 +208,44 @@
     "asset": {
       "__id__": 0
     },
-    "fileId": "a2vHdwSAVHBausAF704lup",
+    "fileId": "ca0mEVvx9PJJl/DiwcttYM",
     "sync": false
   },
   {
-    "__type__": "cc.Node",
-    "_name": "hpLabel",
+    "__type__": "cc.BoxCollider",
+    "_name": "",
     "_objFlags": 0,
-    "_parent": {
+    "node": {
       "__id__": 1
     },
-    "_children": [],
-    "_active": true,
-    "_components": [
-      {
-        "__id__": 7
-      },
-      {
-        "__id__": 8
-      }
-    ],
-    "_prefab": {
-      "__id__": 9
-    },
-    "_opacity": 255,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 13.89,
-      "height": 12.6
-    },
-    "_anchorPoint": {
+    "_enabled": true,
+    "tag": 0,
+    "_offset": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        -8.526,
-        24.627,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
-      "z": 0
+      "y": 0
     },
-    "_skewX": 0,
-    "_skewY": 0,
-    "_is3DNode": false,
-    "_groupIndex": 2,
-    "groupIndex": 2,
+    "_size": {
+      "__type__": "cc.Size",
+      "width": 50,
+      "height": 50
+    },
     "_id": ""
   },
   {
-    "__type__": "cc.Label",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 6
-    },
-    "_enabled": true,
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
-    "_string": "HP",
-    "_N$string": "HP",
-    "_fontSize": 10,
-    "_lineHeight": 10,
-    "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
-    "_spacingX": 0,
-    "_batchAsBitmap": false,
-    "_styleFlags": 0,
-    "_underlineHeight": 0,
-    "_N$horizontalAlign": 1,
-    "_N$verticalAlign": 1,
-    "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
-    "_N$cacheMode": 0,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.Animation",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 6
-    },
-    "_enabled": true,
-    "_defaultClip": null,
-    "_clips": [],
-    "playOnLoad": false,
-    "_id": ""
-  },
-  {
-    "__type__": "cc.PrefabInfo",
-    "root": {
-      "__id__": 1
-    },
-    "asset": {
-      "__id__": 0
-    },
-    "fileId": "19WUIwD9tIXKIxisTKIqB7",
-    "sync": false
-  },
-  {
-    "__type__": "5da0e43DDpG0rrC8CDundVY",
+    "__type__": "0a1f0OoHN5EqJntd1m7xCJA",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 1
     },
     "_enabled": true,
-    "speed": 100,
-    "damage": 1,
-    "spriteNode": {
-      "__id__": 2
-    },
-    "hpLabel": {
-      "__id__": 7
-    },
-    "maxHp": 10,
-    "expPrefab": {
-      "__uuid__": "e9655eec-04e0-4f14-952a-4cc9ae24fd52"
-    },
-    "expAmount": 20,
+    "maxHp": 80,
+    "damage": 15,
+    "speed": 140,
+    "scoreValue": 20,
+    "skillCooldown": 3,
+    "skillPrefabs": [],
     "_id": ""
   },
   {

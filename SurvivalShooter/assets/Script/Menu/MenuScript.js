@@ -7,6 +7,10 @@ cc.Class({
     homeBtn: cc.Node,
     settingLayout: cc.Node,
 
+    stage1Button: cc.Button,
+    stage2Button: cc.Button,
+    stage3Button: cc.Button,
+
     music: {
       default: null,
       type: cc.AudioClip,
@@ -47,7 +51,53 @@ cc.Class({
 
     // Backup: Thử phát nhạc sau khi user tương tác (do browser policy)
     this.setupUserInteractionListener();
+
+    //Chọn Stage 
+    // let unlocked = JSON.parse(cc.sys.localStorage.getItem("stage_unlock") || "[true,false,false]");
+    // for (let i = 0; i < this.stageButtons.length; i++) {
+    //   this.stageButtons[i].interactable = unlocked[i];
+    // }
+    this.updateStageButtons();
   },
+
+  //Chọn Stage
+  onEnable() {
+    this.updateStageButtons();
+  },
+
+  updateStageButtons() {
+        // Cập nhật trạng thái các nút stage
+        this.stage1Button.interactable = cc.find("GameData").getComponent("GameData").isStageUnlocked(1);
+        this.stage2Button.interactable = cc.find("GameData").getComponent("GameData").isStageUnlocked(2);
+        this.stage3Button.interactable = cc.find("GameData").getComponent("GameData").isStageUnlocked(3);
+        
+        // Thay đổi màu sắc nút
+        this.updateButtonColor(this.stage1Button, cc.find("GameData").getComponent("GameData").isStageUnlocked(1));
+        this.updateButtonColor(this.stage2Button, cc.find("GameData").getComponent("GameData").isStageUnlocked(2));
+        this.updateButtonColor(this.stage3Button, cc.find("GameData").getComponent("GameData").isStageUnlocked(3));
+    },
+    
+    updateButtonColor(button, unlocked) {
+        let color = unlocked ? cc.Color.WHITE : cc.Color.GRAY;
+        button.node.color = color;
+    },
+    
+    onStage1Click() {
+        cc.game.gameManager.startGame(1);
+    },
+    
+    onStage2Click() {
+        cc.game.gameManager.startGame(2);
+    },
+    
+    onStage3Click() {
+        cc.game.gameManager.startGame(3);
+    },
+    
+  // //Chọn Stage
+  // startStage(index) {
+  //   cc.director.loadScene("Stage" + (index + 1));
+  // },
 
   setupVolumeSlider() {
     if (this.volumeSlider) {
@@ -134,17 +184,17 @@ cc.Class({
     this.homeBtn.active = true;
   },
 
-  onStage1Click() {
-    cc.director.loadScene("Stage1");
-  },
+  // onStage1Click() {
+  //   cc.director.loadScene("Stage1");
+  // },
 
-  onStage2Click() {
-    cc.director.loadScene("Stage2");
-  },
+  // onStage2Click() {
+  //   cc.director.loadScene("Stage2");
+  // },
 
-  onStage3Click() {
-    cc.director.loadScene("BossStage");
-  },
+  // onStage3Click() {
+  //   cc.director.loadScene("BossStage");
+  // },
 
   onSettingsClick() {
     this.settingLayout.active = true;

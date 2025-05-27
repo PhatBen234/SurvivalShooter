@@ -1,3 +1,4 @@
+//player data.js -> get || set => event onchange => update UI
 cc.Class({
   extends: cc.Component,
 
