@@ -1,4 +1,4 @@
-// UltimateSkillHandler.js - Handles Ultimate Skill system
+// UltimateSkillHandler.js - Handles Ultimate Skill system (Logic only)
 cc.Class({
   extends: cc.Component,
 
@@ -6,19 +6,12 @@ cc.Class({
     playerModel: null,
     playerView: null,
     canvasNode: null,
-    ultimateSkillNode: null, // MCUltimate node reference
   },
 
-  init(playerModel, playerView, canvasNode, ultimateSkillNode) {
+  init(playerModel, playerView, canvasNode) {
     this.playerModel = playerModel;
     this.playerView = playerView;
     this.canvasNode = canvasNode;
-    this.ultimateSkillNode = ultimateSkillNode;
-
-    // Initialize ultimate skill node
-    if (this.ultimateSkillNode) {
-      this.ultimateSkillNode.active = false;
-    }
 
     // Ultimate skill timer
     this.ultimateTimer = 0;
@@ -79,42 +72,16 @@ cc.Class({
 
     cc.log("[UltimateSkillHandler] Performing Ultimate Skill!");
 
+    // Set cooldown immediately
     this.playerModel.setCanUseUltimate(false);
     this.ultimateTimer = 0;
 
-    this.playUltimateAnimation(() => {
+    // Let PlayerView handle the animation
+    this.playerView.playUltimateAnimation(() => {
+      // Execute damage after animation completes
       this.executeUltimateDamage();
       if (onFinishCallback) onFinishCallback();
     });
-  },
-
-  playUltimateAnimation(onFinished) {
-    if (!this.ultimateSkillNode) {
-      cc.warn("[UltimateSkillHandler] Ultimate skill node not found!");
-      if (onFinished) onFinished();
-      return;
-    }
-
-    this.ultimateSkillNode.setPosition(cc.v2(0, 0));
-    this.ultimateSkillNode.setScale(1, 1);
-    this.ultimateSkillNode.active = true;
-
-    const anim = this.ultimateSkillNode.getComponent(cc.Animation);
-
-    if (anim && anim.getAnimationState("Ultimate")) {
-      cc.log("[UltimateSkillHandler] Playing Ultimate animation");
-      anim.play("Ultimate");
-
-      anim.once("finished", () => {
-        this.ultimateSkillNode.active = false;
-        cc.log("[UltimateSkillHandler] Ultimate animation finished");
-        if (onFinished) onFinished();
-      });
-    } else {
-      cc.warn("[UltimateSkillHandler] Ultimate animation not found!");
-      this.ultimateSkillNode.active = false;
-      if (onFinished) onFinished();
-    }
   },
 
   executeUltimateDamage() {
@@ -143,8 +110,6 @@ cc.Class({
         );
       }
     });
-
-    // Removed: this.showUltimateEffect();
   },
 
   findEnemiesInRange(range) {

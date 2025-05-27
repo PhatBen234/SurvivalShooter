@@ -41,11 +41,10 @@ cc.Class({
 
     if (this.playerView) {
       this.playerView.setPlayerModel(this.playerModel);
-      // FIX: Pass ALL skill nodes including ultimateSkillNode to PlayerView
       this.playerView.setSkillNodes(
         this.meleeSkillNode,
         this.rangedSkillNode,
-        this.ultimateSkillNode // <-- This was missing!
+        this.ultimateSkillNode
       );
     }
 
@@ -111,16 +110,14 @@ cc.Class({
       this.rangedAttackHandler
     );
 
-    // Initialize ultimate skill handler
     this.ultimateHandler = this.getComponent("UltimateSkillHandler");
     if (!this.ultimateHandler) {
       this.ultimateHandler = this.addComponent("UltimateSkillHandler");
     }
     this.ultimateHandler.init(
       this.playerModel,
-      this.playerView, // Pass PlayerView so it can call animation methods
-      this.canvasNode,
-      this.ultimateSkillNode
+      this.playerView,
+      this.canvasNode
     );
 
     // Initialize exp handler
