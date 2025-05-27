@@ -1,4 +1,3 @@
-// PlayerController.js - Updated with Ultimate Skill support
 cc.Class({
   extends: cc.Component,
 
@@ -42,8 +41,12 @@ cc.Class({
 
     if (this.playerView) {
       this.playerView.setPlayerModel(this.playerModel);
-      // Pass skill nodes to PlayerView
-      this.playerView.setSkillNodes(this.meleeSkillNode, this.rangedSkillNode);
+      // FIX: Pass ALL skill nodes including ultimateSkillNode to PlayerView
+      this.playerView.setSkillNodes(
+        this.meleeSkillNode,
+        this.rangedSkillNode,
+        this.ultimateSkillNode // <-- This was missing!
+      );
     }
 
     // Initialize attack handlers with skill nodes
@@ -115,7 +118,7 @@ cc.Class({
     }
     this.ultimateHandler.init(
       this.playerModel,
-      this.playerView,
+      this.playerView, // Pass PlayerView so it can call animation methods
       this.canvasNode,
       this.ultimateSkillNode
     );
@@ -143,22 +146,18 @@ cc.Class({
     }
   },
 
-  // === DELEGATED METHODS ===
-  // Experience system
+  // Rest of the methods remain the same...
   gainExp(amount) {
     this.expHandler?.gainExp?.(amount);
   },
 
-  // Damage system
   takeDamage(amount) {
     this.combatHandler?.takeDamage?.(amount);
   },
 
-  // Skill system
   applySkillBuff(skillId, amount) {
     this.skillHandler?.applySkillBuff?.(skillId, amount);
 
-    // Special handling for Ultimate Skill unlock
     if (skillId === 6) {
       cc.log(
         "[PlayerController] Ultimate Skill unlocked! Auto-trigger enabled."
@@ -166,7 +165,6 @@ cc.Class({
     }
   },
 
-  // Manual ultimate trigger (for testing or special cases)
   triggerUltimate() {
     if (this.ultimateHandler) {
       this.ultimateHandler.forceUltimate(() => {
@@ -175,7 +173,6 @@ cc.Class({
     }
   },
 
-  // Get ultimate status for UI
   getUltimateStatus() {
     return (
       this.ultimateHandler?.getUltimateStatus() || {
@@ -186,7 +183,6 @@ cc.Class({
     );
   },
 
-  // === PUBLIC API ===
   getBaseAttack() {
     return this.playerModel?.getBaseAttack() || 0;
   },
@@ -218,7 +214,6 @@ cc.Class({
     return this.getRangedAttackRange();
   },
 
-  // === LEGACY UTILITY METHODS (for backward compatibility) ===
   findEnemiesInRange(range) {
     return this.combatHandler?.findEnemiesInRange?.(range) || [];
   },
