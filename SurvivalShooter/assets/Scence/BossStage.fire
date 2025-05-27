@@ -2551,6 +2551,7 @@
     "rangedSkillNode": {
       "__id__": 49
     },
+    "ultimateSkillNode": null,
     "_id": "95GPNY2C5DbLiE3mm99Ody"
   },
   {
@@ -5724,6 +5725,7 @@
     "skillDamageLabel": {
       "__id__": 21
     },
+    "ultimateLabel": null,
     "expBar": {
       "__id__": 33
     },
@@ -5737,6 +5739,7 @@
     "rangedSkillNode": {
       "__id__": 43
     },
+    "ultimateSkillNode": null,
     "_id": "cfgY27RbhDmJ0SPtpfcUey"
   },
   {

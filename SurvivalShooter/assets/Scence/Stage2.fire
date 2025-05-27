@@ -2442,6 +2442,7 @@
     "rangedSkillNode": {
       "__id__": 49
     },
+    "ultimateSkillNode": null,
     "_id": "53rCIPA4tIgby2DpNqoujD"
   },
   {
@@ -5773,6 +5774,7 @@
     "skillDamageLabel": {
       "__id__": 28
     },
+    "ultimateLabel": null,
     "expBar": {
       "__id__": 11
     },
@@ -5782,6 +5784,7 @@
     "playerModel": null,
     "meleeSkillNode": null,
     "rangedSkillNode": null,
+    "ultimateSkillNode": null,
     "_id": "f7UJ2JBjdEBpdgsJO1lMRs"
   },
   {

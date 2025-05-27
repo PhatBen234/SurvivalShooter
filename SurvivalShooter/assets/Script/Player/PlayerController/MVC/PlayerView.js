@@ -2,15 +2,10 @@ cc.Class({
   extends: cc.Component,
 
   properties: {
-    // Animation components - kéo từ editor
+    // Animation components
     walkAnim: cc.Animation,
     meleeAttackAnim: cc.Animation,
     rangedAttackAnim: cc.Animation,
-
-    // Skill nodes - kéo từ editor
-    meleeSkillNode: cc.Node,
-    rangedSkillNode: cc.Node,
-    ultimateSkillNode: cc.Node,
 
     // UI Labels
     hpLabel: cc.Label,
@@ -25,58 +20,142 @@ cc.Class({
 
     // References
     playerModel: null,
-    animationController: null, // Reference đến PlayerAnimationController
+    meleeSkillNode: null,
+    rangedSkillNode: null,
+    ultimateSkillNode: null,
   },
 
   onLoad() {
-    // Validate animation components first
-    if (!this.walkAnim || !this.meleeAttackAnim || !this.rangedAttackAnim) {
-      console.error("Missing animation components in PlayerView:", {
-        walkAnim: !!this.walkAnim,
-        meleeAttackAnim: !!this.meleeAttackAnim,
-        rangedAttackAnim: !!this.rangedAttackAnim,
+    this.setAnimationActive(this.walkAnim, true);
+    this.setAnimationActive(this.meleeAttackAnim, false);
+    this.setAnimationActive(this.rangedAttackAnim, false);
+
+    this.deactivateSkillNodes();
+  },
+
+  // === ANIMATION METHODS ===
+  playWalkAnimation() {
+    this.playAnimationIfNotPlaying(this.walkAnim, "Soldier");
+  },
+
+  stopWalkAnimation() {
+    this.stopAnimationIfPlaying(this.walkAnim, "Soldier");
+  },
+
+  playMeleeAttackAnimation(onFinished) {
+    this.playAttackAnimation(this.meleeAttackAnim, "SoldierAttack", onFinished);
+  },
+
+  playRangedAttackAnimation(onFinished) {
+    this.playAttackAnimation(this.rangedAttackAnim, "ArrowAttack", onFinished);
+  },
+
+  playAttackAnimation(animComponent, animName, onFinished) {
+    this.setAllAttackAnimationsOff();
+    this.setAnimationActive(animComponent, true);
+
+    const animState = animComponent.getAnimationState(animName);
+    if (animState) {
+      animComponent.play(animName);
+      if (onFinished) animState.once("finished", onFinished);
+    } else {
+      onFinished?.();
+    }
+  },
+
+  playSkillAnimation(skillType, onFinished) {
+    const skillNode =
+      skillType === "melee" ? this.meleeSkillNode : this.rangedSkillNode;
+    const animName = skillType === "melee" ? "SkillSplash" : "MCSkillArrow";
+
+    if (!skillNode) return onFinished?.();
+
+    skillNode.setPosition(cc.v2(0, 0));
+    skillNode.setScale(
+      skillType === "melee" ? 1 : this.getRangedSkillScaleX(skillNode),
+      1
+    );
+    skillNode.active = true;
+
+    const anim = skillNode.getComponent(cc.Animation);
+    const animState = anim?.getAnimationState(animName);
+
+    if (animState) {
+      anim.play(animName);
+      anim.once("finished", () => {
+        skillNode.active = false;
+        onFinished?.();
       });
-      return;
+    } else {
+      skillNode.active = false;
+      onFinished?.();
     }
-
-    // Lấy reference đến animation controller
-    this.animationController = this.node.getComponent("HandlerAnimation");
-
-    if (!this.animationController) {
-      console.error("HandlerAnimation component not found on node");
-      return;
-    }
-
-    // Setup animation controller trong nextTick để đảm bảo tất cả đã ready
-    this.scheduleOnce(() => {
-      this.initializeAnimationController();
-    }, 0);
   },
 
-  initializeAnimationController() {
-    if (!this.animationController) return;
+  playUltimateAnimation(onFinished) {
+    if (!this.ultimateSkillNode) return onFinished?.();
 
-    // Truyền các animation components trước
-    this.animationController.setAnimationComponents(
-      this.walkAnim,
-      this.meleeAttackAnim,
-      this.rangedAttackAnim
-    );
+    this.ultimateSkillNode.setPosition(cc.v2(0, 0));
+    this.ultimateSkillNode.setScale(1.5, 1.5);
+    this.ultimateSkillNode.active = true;
 
-    // Sau đó truyền skill nodes
-    this.animationController.setSkillNodes(
-      this.meleeSkillNode,
-      this.rangedSkillNode,
-      this.ultimateSkillNode
-    );
+    const anim = this.ultimateSkillNode.getComponent(cc.Animation);
+    const animState = anim?.getAnimationState("Ultimate");
 
-    // Log status để debug
-    this.animationController.logStatus();
-
-    console.log("PlayerView: Animation controller initialized successfully");
+    if (animState) {
+      anim.play("Ultimate");
+      anim.once("finished", () => {
+        this.ultimateSkillNode.active = false;
+        onFinished?.();
+      });
+    } else {
+      this.ultimateSkillNode.active = false;
+      onFinished?.();
+    }
   },
 
-  // === UI UPDATE METHODS ===
+  getRangedSkillScaleX(skillNode) {
+    const canvasSize = this.node.parent.getContentSize();
+    const skillSize = skillNode.getContentSize();
+    return canvasSize.width / skillSize.width;
+  },
+
+  finishAttackAnimation() {
+    this.setAllAttackAnimationsOff();
+    this.setAnimationActive(this.walkAnim, true);
+  },
+
+  setAllAttackAnimationsOff() {
+    [this.walkAnim, this.meleeAttackAnim, this.rangedAttackAnim].forEach(
+      (anim) => this.setAnimationActive(anim, false)
+    );
+  },
+
+  setAnimationActive(animationComponent, isActive) {
+    if (!animationComponent || !animationComponent.node) return;
+    animationComponent.node.active = isActive;
+    if (!isActive) animationComponent.stop();
+  },
+
+  playAnimationIfNotPlaying(animComp, animName) {
+    const state = animComp?.getAnimationState(animName);
+    if (state && !state.isPlaying) animComp.play(animName);
+  },
+
+  stopAnimationIfPlaying(animComp, animName) {
+    const state = animComp?.getAnimationState(animName);
+    if (state && state.isPlaying) animComp.stop(animName);
+  },
+
+  // === UI & EFFECTS ===
+  showDamageEffect() {
+    this.node.runAction(cc.sequence(cc.fadeTo(0.1, 100), cc.fadeTo(0.1, 255)));
+  },
+
+  updatePlayerScale(direction) {
+    if (direction.x !== 0) this.node.scaleX = direction.x > 0 ? 1 : -1;
+  },
+
   updateHpUI() {
     if (this.hpLabel && this.playerModel) {
       this.hpLabel.string = `HP: ${this.playerModel.getCurrentHp()}`;
@@ -86,23 +165,13 @@ cc.Class({
   updateStatsUI() {
     if (!this.playerModel) return;
 
-    if (this.attackLabel) {
-      this.attackLabel.string = `Atk: ${this.playerModel.getBaseAttack()}`;
-    }
-    if (this.skillDamageLabel) {
-      this.skillDamageLabel.string = `Skill: ${this.playerModel.getSkillDamage()}`;
-    }
-    if (this.critLabel) {
-      this.critLabel.string = `Crit: ${Math.floor(
-        this.playerModel.getCriticalRate() * 100
-      )}%`;
-    }
-    if (this.expRangeLabel) {
-      this.expRangeLabel.string = `EXP Range: ${this.playerModel.getExpPickupRange()}`;
-    }
-    if (this.attackRangeLabel) {
-      this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Archer: ${this.playerModel.getRangedAttackRange()}`;
-    }
+    this.attackLabel.string = `Atk: ${this.playerModel.getBaseAttack()}`;
+    this.skillDamageLabel.string = `Skill: ${this.playerModel.getSkillDamage()}`;
+    this.critLabel.string = `Crit: ${Math.floor(
+      this.playerModel.getCriticalRate() * 100
+    )}%`;
+    this.expRangeLabel.string = `EXP Range: ${this.playerModel.getExpPickupRange()}`;
+    this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Archer: ${this.playerModel.getRangedAttackRange()}`;
 
     this.updateUltimateUI();
   },
@@ -134,15 +203,11 @@ cc.Class({
   updateExpUI() {
     if (!this.playerModel) return;
 
-    if (this.expBar) {
-      const progress =
-        this.playerModel.getCurrentExp() / this.playerModel.getExpToNextLevel();
-      this.expBar.progress = progress;
-    }
-
-    if (this.levelLabel) {
+    const progress =
+      this.playerModel.getCurrentExp() / this.playerModel.getExpToNextLevel();
+    if (this.expBar) this.expBar.progress = progress;
+    if (this.levelLabel)
       this.levelLabel.string = `Lv: ${this.playerModel.getLevel()}`;
-    }
   },
 
   updateAllUI() {
@@ -151,110 +216,22 @@ cc.Class({
     this.updateExpUI();
   },
 
-  // === ANIMATION DELEGATE METHODS ===
-  // Các method này delegate việc xử lý animation sang AnimationController
-  playWalkAnimation() {
-    if (!this.animationController?.isReady()) {
-      console.warn("Animation controller not ready for walk animation");
-      return;
-    }
-    this.animationController.playWalkAnimation();
-  },
-
-  stopWalkAnimation() {
-    if (!this.animationController?.isReady()) {
-      console.warn("Animation controller not ready for stop walk animation");
-      return;
-    }
-    this.animationController.stopWalkAnimation();
-  },
-
-  playMeleeAttackAnimation(onFinished) {
-    if (!this.animationController?.isReady()) {
-      console.warn("Animation controller not ready for melee attack animation");
-      onFinished?.();
-      return;
-    }
-    this.animationController.playMeleeAttackAnimation(onFinished);
-  },
-
-  playRangedAttackAnimation(onFinished) {
-    if (!this.animationController?.isReady()) {
-      console.warn(
-        "Animation controller not ready for ranged attack animation"
-      );
-      onFinished?.();
-      return;
-    }
-    this.animationController.playRangedAttackAnimation(onFinished);
-  },
-
-  playSkillAnimation(skillType, onFinished) {
-    if (!this.animationController?.isReady()) {
-      console.warn("Animation controller not ready for skill animation");
-      onFinished?.();
-      return;
-    }
-    this.animationController.playSkillAnimation(skillType, onFinished);
-  },
-
-  playUltimateAnimation(onFinished) {
-    if (!this.animationController?.isReady()) {
-      console.warn("Animation controller not ready for ultimate animation");
-      onFinished?.();
-      return;
-    }
-    this.animationController.playUltimateAnimation(onFinished);
-  },
-
-  finishAttackAnimation() {
-    if (!this.animationController?.isReady()) {
-      console.warn(
-        "Animation controller not ready for finish attack animation"
-      );
-      return;
-    }
-    this.animationController.finishAttackAnimation();
-  },
-
-  showDamageEffect() {
-    if (!this.animationController) {
-      console.warn("Animation controller not available for damage effect");
-      return;
-    }
-    this.animationController.showDamageEffect();
-  },
-
-  updatePlayerScale(direction) {
-    if (!this.animationController) {
-      console.warn("Animation controller not available for scale update");
-      return;
-    }
-    this.animationController.updatePlayerScale(direction);
-  },
-
-  // === SETUP METHODS ===
+  // === SETUP ===
   setPlayerModel(model) {
     this.playerModel = model;
     this.updateAllUI();
   },
 
-  // Deprecated - không cần method này nữa
   setSkillNodes(melee, ranged, ultimate = null) {
-    console.warn("setSkillNodes is deprecated, skill nodes are set in onLoad");
+    this.meleeSkillNode = melee;
+    this.rangedSkillNode = ranged;
+    this.ultimateSkillNode = ultimate;
+    this.deactivateSkillNodes();
   },
 
-  // === DEBUG METHODS ===
-  logViewStatus() {
-    console.log("PlayerView Status:", {
-      walkAnim: !!this.walkAnim,
-      meleeAttackAnim: !!this.meleeAttackAnim,
-      rangedAttackAnim: !!this.rangedAttackAnim,
-      meleeSkillNode: !!this.meleeSkillNode,
-      rangedSkillNode: !!this.rangedSkillNode,
-      ultimateSkillNode: !!this.ultimateSkillNode,
-      animationControllerExists: !!this.animationController,
-      animationControllerReady: this.animationController?.isReady() || false,
-    });
+  deactivateSkillNodes() {
+    if (this.meleeSkillNode) this.meleeSkillNode.active = false;
+    if (this.rangedSkillNode) this.rangedSkillNode.active = false;
+    if (this.ultimateSkillNode) this.ultimateSkillNode.active = false;
   },
 });

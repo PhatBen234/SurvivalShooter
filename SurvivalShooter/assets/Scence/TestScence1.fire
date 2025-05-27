@@ -93,19 +93,19 @@
         "__id__": 66
       },
       {
-        "__id__": 68
+        "__id__": 40
       },
       {
-        "__id__": 40
+        "__id__": 68
       }
     ],
     "_active": true,
     "_components": [
       {
-        "__id__": 85
+        "__id__": 84
       },
       {
-        "__id__": 86
+        "__id__": 85
       }
     ],
     "_prefab": null,
@@ -1983,13 +1983,10 @@
       },
       {
         "__id__": 82
-      },
-      {
-        "__id__": 83
       }
     ],
     "_prefab": {
-      "__id__": 84
+      "__id__": 83
     },
     "_opacity": 255,
     "_color": {
@@ -2036,7 +2033,7 @@
     "_is3DNode": false,
     "_groupIndex": 1,
     "groupIndex": 1,
-    "_id": "97vfClQB9C/5QYNLYVnL3k"
+    "_id": "9fX/+wFrxJjrS+Eq810LNr"
   },
   {
     "__type__": "cc.Node",
@@ -2103,7 +2100,7 @@
     "_is3DNode": false,
     "_groupIndex": 1,
     "groupIndex": 1,
-    "_id": "0f6VumEwlDdZKlOkfgjCYB"
+    "_id": "b7ys+7kVRMDJRp/ywz/KSQ"
   },
   {
     "__type__": "cc.Sprite",
@@ -2137,7 +2134,7 @@
     "_atlas": {
       "__uuid__": "06f9d512-91a2-4a1b-ad88-d9c073d8d134"
     },
-    "_id": "0011gG/VNH86SuBlU2hks7"
+    "_id": "5c9yGZVrRJuoBhAj8i4nPH"
   },
   {
     "__type__": "cc.Animation",
@@ -2156,7 +2153,7 @@
       }
     ],
     "playOnLoad": true,
-    "_id": "405f22f49FN4FAg58EXB9G"
+    "_id": "b5/jEmsmxGtZE0bhszWSw5"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2171,7 +2168,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "MCAttackSword",
+    "_name": "MCAttackArcher",
     "_objFlags": 0,
     "_parent": {
       "__id__": 40
@@ -2234,7 +2231,7 @@
     "_is3DNode": false,
     "_groupIndex": 1,
     "groupIndex": 1,
-    "_id": "16hbNWu/ZB/4b0WiAAfNfh"
+    "_id": "66728eTtVGupZpU7OVJFHs"
   },
   {
     "__type__": "cc.Sprite",
@@ -2268,7 +2265,7 @@
     "_atlas": {
       "__uuid__": "37b44c33-8766-4bb1-b6de-dda60e4ba867"
     },
-    "_id": "01YagK8qNPAb3i7Jyt3B3K"
+    "_id": "a1v8LLZMJHobw28QW+IMrK"
   },
   {
     "__type__": "cc.Animation",
@@ -2279,7 +2276,7 @@
     },
     "_enabled": true,
     "_defaultClip": {
-      "__uuid__": "bd487408-6134-4a11-9f4e-0691ed1b9493"
+      "__uuid__": "74c8d792-c3d5-4597-90d1-b54c46acf432"
     },
     "_clips": [
       {
@@ -2287,7 +2284,7 @@
       }
     ],
     "playOnLoad": true,
-    "_id": "2e2tAr60pEKpXehyDqNudq"
+    "_id": "adE1Dt3M5GFIdoJA9+fMeU"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2297,12 +2294,12 @@
     "asset": {
       "__uuid__": "7a4c279f-9f09-4618-945f-00d539a75e06"
     },
-    "fileId": "12ofaodCpDh5lOVisd4tEg",
+    "fileId": "8eLsQIlcdDfob3Ai9IdbW/",
     "sync": false
   },
   {
     "__type__": "cc.Node",
-    "_name": "MCAttackArcher",
+    "_name": "MCAttackSword",
     "_objFlags": 0,
     "_parent": {
       "__id__": 40
@@ -2365,7 +2362,7 @@
     "_is3DNode": false,
     "_groupIndex": 1,
     "groupIndex": 1,
-    "_id": "3b1xT/L6RBQ5L4Obf2t8En"
+    "_id": "87lJDGPjdH9KJQ8KCJGmY0"
   },
   {
     "__type__": "cc.Sprite",
@@ -2399,7 +2396,7 @@
     "_atlas": {
       "__uuid__": "37b44c33-8766-4bb1-b6de-dda60e4ba867"
     },
-    "_id": "9f4i3V9XJF1p/a3A6zogwd"
+    "_id": "7cch7IdqlMl7k/+uHZp+/e"
   },
   {
     "__type__": "cc.Animation",
@@ -2410,7 +2407,7 @@
     },
     "_enabled": true,
     "_defaultClip": {
-      "__uuid__": "74c8d792-c3d5-4597-90d1-b54c46acf432"
+      "__uuid__": "bd487408-6134-4a11-9f4e-0691ed1b9493"
     },
     "_clips": [
       {
@@ -2418,7 +2415,7 @@
       }
     ],
     "playOnLoad": true,
-    "_id": "b1blkWfsRBNoK1JC3SiWy/"
+    "_id": "5eKw7cr8BPwr3gXEX2cuOf"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2428,7 +2425,7 @@
     "asset": {
       "__uuid__": "7a4c279f-9f09-4618-945f-00d539a75e06"
     },
-    "fileId": "8eLsQIlcdDfob3Ai9IdbW/",
+    "fileId": "12ofaodCpDh5lOVisd4tEg",
     "sync": false
   },
   {
@@ -2496,7 +2493,7 @@
     "_is3DNode": false,
     "_groupIndex": 1,
     "groupIndex": 1,
-    "_id": "b7TpwaJu9CaZBTax7iE46M"
+    "_id": "d0FyPko0JMXrtPIXVHkFzE"
   },
   {
     "__type__": "cc.Sprite",
@@ -2530,7 +2527,7 @@
     "_atlas": {
       "__uuid__": "f2faf986-4a44-444a-9d56-a471e1b047a7"
     },
-    "_id": "27NlLAjZNE8KKFhq/60stn"
+    "_id": "dd6Wjj8DFGMIrUFBgF03/u"
   },
   {
     "__type__": "cc.Animation",
@@ -2549,7 +2546,7 @@
       }
     ],
     "playOnLoad": true,
-    "_id": "6cHzXd9shLKbmfKlIaZCr3"
+    "_id": "17YvoBNuFAKZ0Ky/0KnilE"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2627,7 +2624,7 @@
     "_is3DNode": false,
     "_groupIndex": 1,
     "groupIndex": 1,
-    "_id": "3d8ztK9RhN+qHmJd3RR+dO"
+    "_id": "bdPBKN4oxAY4cHLJVzeyL2"
   },
   {
     "__type__": "cc.Sprite",
@@ -2661,7 +2658,7 @@
     "_atlas": {
       "__uuid__": "13ced46d-6030-45e1-ba93-63b13ef8c799"
     },
-    "_id": "c5z2+AArhB+K6H6zX+cKfh"
+    "_id": "ebhvmpQc9MvrWPgUOlXq0x"
   },
   {
     "__type__": "cc.Animation",
@@ -2680,7 +2677,7 @@
       }
     ],
     "playOnLoad": true,
-    "_id": "8aVgJ88o1HOKeL8VvhijNQ"
+    "_id": "e6C0/9oiVCLpdSVuE9igyX"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2758,7 +2755,7 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
-    "_id": "b60msdnKRL/KcMJYHeuj54"
+    "_id": "a20RxZRfhB6opVRUkLhUeo"
   },
   {
     "__type__": "cc.Sprite",
@@ -2792,7 +2789,7 @@
     "_atlas": {
       "__uuid__": "09f625db-de29-4534-af34-c4dbf40be452"
     },
-    "_id": "16jk3CMylMeZHjr3wzSIg/"
+    "_id": "7aDJfRkGNFsr9/FxJSG9en"
   },
   {
     "__type__": "cc.Animation",
@@ -2811,7 +2808,7 @@
       }
     ],
     "playOnLoad": true,
-    "_id": "2f6PU0YllH2a2/LMLOiPsv"
+    "_id": "00u9F4LvBHfbyZsLuxoOuC"
   },
   {
     "__type__": "cc.PrefabInfo",
@@ -2850,7 +2847,7 @@
     "ultimateSkillNode": {
       "__id__": 61
     },
-    "_id": "11CG2cHY5KVZFV74VQKHaC"
+    "_id": "5e6ZUCKz9PK5QMMNYkJ5tA"
   },
   {
     "__type__": "cc.Node",
@@ -3194,7 +3191,7 @@
     "_currentAttackType": null,
     "_canUseSkill": true,
     "_lastDirection": null,
-    "_id": "420bz2PTBE4Yegat+vmC7L"
+    "_id": "57LqqjWgZGiL5iAZb6ixCM"
   },
   {
     "__type__": "6cc77IrB0tLurAdmg7bziUO",
@@ -3208,19 +3205,10 @@
       "__id__": 43
     },
     "meleeAttackAnim": {
-      "__id__": 47
-    },
-    "rangedAttackAnim": {
       "__id__": 51
     },
-    "meleeSkillNode": {
-      "__id__": 53
-    },
-    "rangedSkillNode": {
-      "__id__": 57
-    },
-    "ultimateSkillNode": {
-      "__id__": 61
+    "rangedAttackAnim": {
+      "__id__": 47
     },
     "hpLabel": {
       "__id__": 9
@@ -3238,7 +3226,7 @@
       "__id__": 17
     },
     "skillDamageLabel": {
-      "__id__": 15
+      "__id__": 13
     },
     "ultimateLabel": {
       "__id__": 21
@@ -3250,8 +3238,10 @@
       "__id__": 32
     },
     "playerModel": null,
-    "animationController": null,
-    "_id": "a6dDwhCnBK77Swd27ZlVRK"
+    "meleeSkillNode": null,
+    "rangedSkillNode": null,
+    "ultimateSkillNode": null,
+    "_id": "deJp/mR91I2KkTM0fuLEcb"
   },
   {
     "__type__": "fe83bpFzPVO4pGKrtDhd373",
@@ -3261,7 +3251,7 @@
       "__id__": 40
     },
     "_enabled": true,
-    "_id": "03FbvZTxlOwKsOWr24+6lE"
+    "_id": "f5mBqz64BA0rKJ7EJaZGtV"
   },
   {
     "__type__": "25d03X7DzZNJ7pRRGiO3aDK",
@@ -3272,7 +3262,7 @@
     },
     "_enabled": true,
     "canvasNode": null,
-    "_id": "faa+/MMi9EcaX6IS7z38Qy"
+    "_id": "e0ffLw0HFD374FDogIdqem"
   },
   {
     "__type__": "163dedMqPJMJLvkBc+2VtEi",
@@ -3286,7 +3276,7 @@
     "playerView": null,
     "canvasNode": null,
     "meleeSkillNode": null,
-    "_id": "9fyfYzFtFHlbUxn92Qz4T+"
+    "_id": "3ecGZNJilLp4fvlaT5V/oW"
   },
   {
     "__type__": "8a2661ausVBKo4gOeQNdhTn",
@@ -3301,7 +3291,7 @@
     "canvasNode": null,
     "arrowPrefab": null,
     "rangedSkillNode": null,
-    "_id": "17IKey/fJDro45vgGud9qH"
+    "_id": "0aupkUOMBBnIFAbvPO9uqH"
   },
   {
     "__type__": "241f1lBV6NBxLelcimUAUT8",
@@ -3312,7 +3302,7 @@
     },
     "_enabled": true,
     "canvasNode": null,
-    "_id": "439Q9qKUFL2KkngvpePzq2"
+    "_id": "74UKXyO8lFbI1gmh17BlqS"
   },
   {
     "__type__": "5e596geFkFEbpUtZKrruZ5x",
@@ -3324,7 +3314,7 @@
     "_enabled": true,
     "canvasNode": null,
     "skillManager": null,
-    "_id": "1bQqwciSJIcK9UcUI3ZFJj"
+    "_id": "bfknmRAJxDIrY2BHTlF47/"
   },
   {
     "__type__": "2b45fwNa/pPk47R1PdxNK48",
@@ -3335,7 +3325,7 @@
     },
     "_enabled": true,
     "canvasNode": null,
-    "_id": "b0kDYRgLFOCpdZ8/DAAz6l"
+    "_id": "92b6ssdhRD+40snpR7E46D"
   },
   {
     "__type__": "e4bc94NjVxL54sB0FYB1pjv",
@@ -3348,17 +3338,7 @@
     "playerModel": null,
     "playerView": null,
     "canvasNode": null,
-    "_id": "f9EfNjNEhKnKdxh15BBMA8"
-  },
-  {
-    "__type__": "1b38fX1xKVBKLd1TmzijC9S",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 40
-    },
-    "_enabled": true,
-    "_id": "6c8kngc55CvLfFmShu3z1N"
+    "_id": "adEiHZnzVK4ouVSTJ6X6uS"
   },
   {
     "__type__": "cc.PrefabInfo",
