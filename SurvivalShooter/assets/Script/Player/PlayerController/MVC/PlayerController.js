@@ -6,10 +6,9 @@ cc.Class({
     arrowPrefab: cc.Prefab,
     skillManager: cc.Node,
 
-    // Skill nodes
-    meleeSkillNode: cc.Node, // MCSkill node
-    rangedSkillNode: cc.Node, // MCSkillArrow node
-    ultimateSkillNode: cc.Node, // MCUltimate node
+    meleeSkillNode: cc.Node,
+    rangedSkillNode: cc.Node,
+    ultimateSkillNode: cc.Node,
   },
 
   onLoad() {
@@ -18,43 +17,39 @@ cc.Class({
   },
 
   onDestroy() {
-    // Input handler will handle its own cleanup
+    // No cleanup needed here
   },
 
   update(dt) {
     this.movementHandler?.handleMovement?.(dt);
     this.combatHandler?.handleAutoAttack?.(dt);
     this.skillHandler?.handleSkill?.(dt);
-    this.ultimateHandler?.update?.(dt); // Update ultimate cooldown
+    this.ultimateHandler?.update?.(dt);
     this.expHandler?.collectNearbyExp?.(dt);
-
-    // Auto-trigger ultimate when available
-    this.handleAutoUltimate();
+    this.autoTriggerUltimate();
   },
 
-  // === INITIALIZATION ===
+  // === Initialization ===
   initComponents() {
     this.playerModel = this.getComponent("PlayerModel");
     this.playerView = this.getComponent("PlayerView");
     this.meleeAttackHandler = this.getComponent("MeleeAttackHandler");
     this.rangedAttackHandler = this.getComponent("RangedAttackHandler");
 
-    if (this.playerView) {
-      this.playerView.setPlayerModel(this.playerModel);
-      this.playerView.setSkillNodes(
-        this.meleeSkillNode,
-        this.rangedSkillNode,
-        this.ultimateSkillNode
-      );
-    }
+    this.playerView?.setPlayerModel(this.playerModel);
+    this.playerView?.setSkillNodes(
+      this.meleeSkillNode,
+      this.rangedSkillNode,
+      this.ultimateSkillNode
+    );
 
-    // Initialize attack handlers with skill nodes
     this.meleeAttackHandler?.init(
       this.playerModel,
       this.playerView,
       this.canvasNode,
       this.meleeSkillNode
     );
+
     this.rangedAttackHandler?.init(
       this.playerModel,
       this.playerView,
@@ -65,17 +60,13 @@ cc.Class({
   },
 
   initHandlers() {
-    // Initialize input handler
-    this.inputHandler = this.getComponent("PlayerInputHandler");
-    if (!this.inputHandler) {
-      this.inputHandler = this.addComponent("PlayerInputHandler");
-    }
+    this.inputHandler =
+      this.getComponent("PlayerInputHandler") ||
+      this.addComponent("PlayerInputHandler");
 
-    // Initialize movement handler
-    this.movementHandler = this.getComponent("PlayerMovementHandler");
-    if (!this.movementHandler) {
-      this.movementHandler = this.addComponent("PlayerMovementHandler");
-    }
+    this.movementHandler =
+      this.getComponent("PlayerMovementHandler") ||
+      this.addComponent("PlayerMovementHandler");
     this.movementHandler.canvasNode = this.canvasNode;
     this.movementHandler.init(
       this.playerModel,
@@ -83,11 +74,9 @@ cc.Class({
       this.inputHandler
     );
 
-    // Initialize combat handler
-    this.combatHandler = this.getComponent("PlayerCombatHandler");
-    if (!this.combatHandler) {
-      this.combatHandler = this.addComponent("PlayerCombatHandler");
-    }
+    this.combatHandler =
+      this.getComponent("PlayerCombatHandler") ||
+      this.addComponent("PlayerCombatHandler");
     this.combatHandler.canvasNode = this.canvasNode;
     this.combatHandler.init(
       this.playerModel,
@@ -97,11 +86,9 @@ cc.Class({
       this.inputHandler
     );
 
-    // Initialize skill handler
-    this.skillHandler = this.getComponent("PlayerSkillHandler");
-    if (!this.skillHandler) {
-      this.skillHandler = this.addComponent("PlayerSkillHandler");
-    }
+    this.skillHandler =
+      this.getComponent("PlayerSkillHandler") ||
+      this.addComponent("PlayerSkillHandler");
     this.skillHandler.canvasNode = this.canvasNode;
     this.skillHandler.init(
       this.playerModel,
@@ -110,40 +97,35 @@ cc.Class({
       this.rangedAttackHandler
     );
 
-    this.ultimateHandler = this.getComponent("UltimateSkillHandler");
-    if (!this.ultimateHandler) {
-      this.ultimateHandler = this.addComponent("UltimateSkillHandler");
-    }
+    this.ultimateHandler =
+      this.getComponent("UltimateSkillHandler") ||
+      this.addComponent("UltimateSkillHandler");
     this.ultimateHandler.init(
       this.playerModel,
       this.playerView,
       this.canvasNode
     );
 
-    // Initialize exp handler
-    this.expHandler = this.getComponent("PlayerExpHandler");
-    if (!this.expHandler) {
-      this.expHandler = this.addComponent("PlayerExpHandler");
-    }
+    this.expHandler =
+      this.getComponent("PlayerExpHandler") ||
+      this.addComponent("PlayerExpHandler");
     this.expHandler.canvasNode = this.canvasNode;
     this.expHandler.skillManager = this.skillManager;
     this.expHandler.init(this.playerModel, this.playerView);
   },
 
-  // === AUTO ULTIMATE HANDLING ===
-  handleAutoUltimate() {
-    if (!this.ultimateHandler || !this.playerModel) return;
-
-    // Auto-trigger ultimate when available and enemies are nearby
-    if (this.ultimateHandler.shouldTriggerUltimate()) {
-      cc.log("[PlayerController] Auto-triggering Ultimate Skill!");
-      this.ultimateHandler.performUltimateSkill(() => {
-        cc.log("[PlayerController] Ultimate Skill completed!");
-      });
+  // === Ultimate Handling ===
+  autoTriggerUltimate() {
+    if (this.ultimateHandler?.shouldTriggerUltimate()) {
+      this.ultimateHandler.performUltimateSkill();
     }
   },
 
-  // Rest of the methods remain the same...
+  triggerUltimate() {
+    this.ultimateHandler?.forceUltimate();
+  },
+
+  // === Public API ===
   gainExp(amount) {
     this.expHandler?.gainExp?.(amount);
   },
@@ -154,22 +136,9 @@ cc.Class({
 
   applySkillBuff(skillId, amount) {
     this.skillHandler?.applySkillBuff?.(skillId, amount);
-
-    if (skillId === 6) {
-      cc.log(
-        "[PlayerController] Ultimate Skill unlocked! Auto-trigger enabled."
-      );
-    }
   },
 
-  triggerUltimate() {
-    if (this.ultimateHandler) {
-      this.ultimateHandler.forceUltimate(() => {
-        cc.log("[PlayerController] Manual Ultimate Skill completed!");
-      });
-    }
-  },
-
+  // === Getters ===
   getUltimateStatus() {
     return (
       this.ultimateHandler?.getUltimateStatus() || {
@@ -204,13 +173,12 @@ cc.Class({
     return this.playerModel?.getCriticalRate() || 0;
   },
 
+  // Deprecated
   getAttackRange() {
-    cc.warn(
-      "[PlayerController] getAttackRange is deprecated. Use getRangedAttackRange instead."
-    );
     return this.getRangedAttackRange();
   },
 
+  // === Combat Utilities ===
   findEnemiesInRange(range) {
     return this.combatHandler?.findEnemiesInRange?.(range) || [];
   },

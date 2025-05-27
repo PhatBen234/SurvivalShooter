@@ -188,18 +188,14 @@ cc.Class({
       return;
     }
 
-    if (this.playerModel.canUseUltimate()) {
+    const handler = this.node.getComponent("UltimateSkillHandler");
+
+    if (this.playerModel.canUseUltimate() && !handler?.isUltimateOnCooldown) {
       label.string = "Ultimate: READY";
       label.node.color = cc.Color.GREEN;
     } else {
-      const handler = this.node.getComponent("UltimateSkillHandler");
-      const cooldown = Math.max(
-        0,
-        Math.ceil(
-          (handler?.ultimateCooldownTime || 0) - (handler?.ultimateTimer || 0)
-        )
-      );
-      label.string = `Ultimate: COOLDOWN (${cooldown}s)`;
+      const cooldown = handler?.getRemainingCooldown() || 0;
+      label.string = `Ultimate: COOLDOWN (${Math.ceil(cooldown)}s)`;
       label.node.color = cc.Color.YELLOW;
     }
   },
@@ -239,7 +235,4 @@ cc.Class({
     if (this.ultimateSkillNode) this.ultimateSkillNode.active = false;
   },
 
-  update(dt) {
-    this.updateUltimateUI();
-  },
 });

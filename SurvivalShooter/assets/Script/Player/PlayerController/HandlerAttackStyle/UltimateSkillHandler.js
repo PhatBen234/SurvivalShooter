@@ -1,4 +1,4 @@
-// UltimateSkillHandler.js - Handles Ultimate Skill system (Logic only)
+// UltimateSkillHandler.js - Fixed Ultimate Skill system with accurate timing
 cc.Class({
   extends: cc.Component,
 
@@ -13,11 +13,16 @@ cc.Class({
     this.playerView = playerView;
     this.canvasNode = canvasNode;
 
-    // Ultimate skill timer
-    this.ultimateTimer = 0;
+    // Ultimate skill timer - Sử dụng timestamp thực tế
+    this.ultimateStartTime = 0;
     this.ultimateCooldownTime = 15; // 15 seconds cooldown
+    this.isUltimateOnCooldown = false;
 
-    cc.log("[UltimateSkillHandler] Initialized");
+    // Debug timing
+    this.lastLogTime = 0;
+    this.debugInterval = 1; // Log mỗi giây để kiểm tra
+
+    cc.log("[UltimateSkillHandler] Initialized with 15s cooldown");
   },
 
   calculateUltimateDamage() {
@@ -29,24 +34,46 @@ cc.Class({
   },
 
   update(dt) {
-    this.updateUltimateCooldown(dt);
+    // CHỈ COMPONENT NÀY XỬ LÝ THỜI GIAN
+    this.updateUltimateCooldown();
+
+    // Cập nhật UI ultimate sau khi tính cooldown
+    if (this.playerView && this.playerView.updateUltimateUI) {
+      this.playerView.updateUltimateUI();
+    }
+
+    // Debug timing (optional - có thể xóa sau khi fix)
+    this.debugTiming();
   },
 
-  updateUltimateCooldown(dt) {
-    if (!this.playerModel) return;
+  updateUltimateCooldown() {
+    if (!this.playerModel || !this.isUltimateOnCooldown) return;
 
-    if (
-      !this.playerModel.canUseUltimate() &&
-      this.playerModel.hasUltimateSkill()
-    ) {
-      this.ultimateTimer += dt;
+    // Sử dụng thời gian thực tế thay vì dt tích lũy
+    const currentTime = Date.now() / 1000; // Convert to seconds
+    const elapsedTime = currentTime - this.ultimateStartTime;
 
-      if (this.ultimateTimer >= this.ultimateCooldownTime) {
-        this.playerModel.setCanUseUltimate(true);
-        this.ultimateTimer = 0;
-        cc.log("[UltimateSkillHandler] Ultimate skill ready!");
-      }
+    if (elapsedTime >= this.ultimateCooldownTime) {
+      this.playerModel.setCanUseUltimate(true);
+      this.isUltimateOnCooldown = false;
+      this.ultimateStartTime = 0;
+      cc.log(
+        "[UltimateSkillHandler] Ultimate skill ready after " +
+          elapsedTime.toFixed(2) +
+          "s!"
+      );
     }
+  },
+
+  // Getter cho remaining cooldown time
+  getRemainingCooldown() {
+    if (!this.isUltimateOnCooldown) return 0;
+
+    const currentTime = Date.now() / 1000;
+    const elapsedTime = currentTime - this.ultimateStartTime;
+    const remaining = Math.max(0, this.ultimateCooldownTime - elapsedTime);
+
+    return remaining;
   },
 
   shouldTriggerUltimate() {
@@ -55,6 +82,7 @@ cc.Class({
     return (
       this.playerModel.hasUltimateSkill() &&
       this.playerModel.canUseUltimate() &&
+      !this.isUltimateOnCooldown &&
       this.findEnemiesInRange(400).length > 0
     );
   },
@@ -72,9 +100,8 @@ cc.Class({
 
     cc.log("[UltimateSkillHandler] Performing Ultimate Skill!");
 
-    // Set cooldown immediately
-    this.playerModel.setCanUseUltimate(false);
-    this.ultimateTimer = 0;
+    // Bắt đầu cooldown ngay lập tức
+    this.startUltimateCooldown();
 
     // Let PlayerView handle the animation
     this.playerView.playUltimateAnimation(() => {
@@ -82,6 +109,16 @@ cc.Class({
       this.executeUltimateDamage();
       if (onFinishCallback) onFinishCallback();
     });
+  },
+
+  startUltimateCooldown() {
+    this.playerModel.setCanUseUltimate(false);
+    this.isUltimateOnCooldown = true;
+    this.ultimateStartTime = Date.now() / 1000; // Lưu timestamp hiện tại
+
+    cc.log(
+      "[UltimateSkillHandler] Started cooldown at: " + this.ultimateStartTime
+    );
   },
 
   executeUltimateDamage() {
@@ -133,11 +170,16 @@ cc.Class({
     if (!this.playerModel)
       return { hasUltimate: false, canUse: false, cooldown: 0 };
 
+    const remainingCooldown = this.getRemainingCooldown();
+
     return {
       hasUltimate: this.playerModel.hasUltimateSkill(),
-      canUse: this.playerModel.canUseUltimate(),
-      cooldown: this.ultimateCooldownTime - this.ultimateTimer,
-      cooldownProgress: this.ultimateTimer / this.ultimateCooldownTime,
+      canUse: this.playerModel.canUseUltimate() && !this.isUltimateOnCooldown,
+      cooldown: remainingCooldown,
+      cooldownProgress: this.isUltimateOnCooldown
+        ? (this.ultimateCooldownTime - remainingCooldown) /
+          this.ultimateCooldownTime
+        : 1,
     };
   },
 
@@ -151,6 +193,33 @@ cc.Class({
     }
 
     cc.log("[UltimateSkillHandler] Force triggering ultimate skill");
+
+    // Reset cooldown state khi force
+    this.isUltimateOnCooldown = false;
+    this.playerModel.setCanUseUltimate(true);
+
     this.performUltimateSkill(onFinishCallback);
+  },
+
+  // Debug function - có thể xóa sau khi fix
+  debugTiming() {
+    const currentTime = Date.now() / 1000;
+
+    if (
+      currentTime - this.lastLogTime >= this.debugInterval &&
+      this.isUltimateOnCooldown
+    ) {
+      const remaining = this.getRemainingCooldown();
+      cc.log(`[DEBUG] Ultimate cooldown remaining: ${remaining.toFixed(1)}s`);
+      this.lastLogTime = currentTime;
+    }
+  },
+
+  // Reset cooldown (for debugging)
+  resetUltimateCooldown() {
+    this.isUltimateOnCooldown = false;
+    this.ultimateStartTime = 0;
+    this.playerModel.setCanUseUltimate(true);
+    cc.log("[UltimateSkillHandler] Ultimate cooldown reset");
   },
 });
