@@ -1,79 +1,98 @@
-// GameManager.js
 cc.Class({
     extends: cc.Component,
     
     properties: {
-        gameUI: cc.Node,
-        mainMenu: cc.Node,
-        resultPanel: cc.Node
+        // UI Controllers
+        uiStageController: cc.Node,
+        enemyManager: cc.Node,
     },
     
     onLoad() {
-        this.gameState = cc.find("Constants").getComponent("Constants").GAME_STATE.MENU;
-        this.currentStage = 1;
+        // Game state variables
         this.currentRound = 1;
-        this.roundTimer = 0;
+        this.roundTimer = 90; // 1p30s = 90 seconds
         this.totalScore = 0;
+        this.isGameActive = false;
         
-        // Load game data
+        // Round settings
+        this.ROUND_1_TIME = 5; // 1 minute 30 seconds
+        this.ROUND_2_TIME = 90; // 1 minute 30 seconds
+        this.ROUND_3_TIME = -1; // Unlimited time
+        
+        // Register global reference
         cc.game.gameManager = this;
-        cc.find("GameData").getComponent("GameData").loadData();
         
-        this.showMainMenu();
+        console.log("GameManager loaded");
+    },
+
+    start() {
+        // Get references in start() to ensure other components are loaded
+        if (this.uiStageController) {
+            this.uiController = this.uiStageController.getComponent('UIStageController');
+            console.log("UI Controller found:", !!this.uiController);
+        }
+        
+        if (this.enemyManager) {
+            this.enemyManagerComponent = this.enemyManager.getComponent('EnemyManager');
+            console.log("Enemy Manager found:", !!this.enemyManagerComponent);
+        }
+        
+        // Start game after getting references
+        this.startGame();
     },
     
-    startGame(stageNumber) {
-        this.currentStage = stageNumber;
+    startGame() {
         this.currentRound = 1;
-        this.roundTimer = cc.find("Constants").getComponent("Constants").ROUND_SETTINGS.ROUND_1_TIME;
+        this.roundTimer = this.ROUND_1_TIME;
         this.totalScore = 0;
+        this.isGameActive = true;
         
-        this.gameState = cc.find("Constants").getComponent("Constants").GAME_STATE.PLAYING;
-        
-        this.mainMenu.active = false;
-        this.gameUI.active = true;
-        this.resultPanel.active = false;
-        
-        // Bắt đầu round 1
+        // Start first round
         this.startRound(1);
         
-        // Cập nhật UI
+        // Update UI
         this.updateUI();
     },
     
     update(dt) {
-        if (this.gameState !== cc.find("Constants").getComponent("Constants").GAME_STATE.PLAYING) return;
+        if (!this.isGameActive) return;
         
-        // Cập nhật timer cho round 1 và 2
-        if (this.currentRound <= 2) {
+        // Update timer for round 1 and 2 only
+        if (this.currentRound <= 2 && this.roundTimer > 0) {
             this.roundTimer -= dt;
             
             if (this.roundTimer <= 0) {
                 this.nextRound();
             }
             
-            this.updateUI();
+            // Update timer UI
+            this.updateTimerUI();
         }
     },
     
     startRound(roundNumber) {
         this.currentRound = roundNumber;
         
-        // Set timer cho round
+        // Set timer for round
         switch(roundNumber) {
             case 1:
-                this.roundTimer = cc.find("Constants").getComponent("Constants").ROUND_SETTINGS.ROUND_1_TIME;
+                this.roundTimer = this.ROUND_1_TIME;
                 break;
             case 2:
-                this.roundTimer = cc.find("Constants").getComponent("Constants").ROUND_SETTINGS.ROUND_2_TIME;
+                this.roundTimer = this.ROUND_2_TIME;
                 break;
             case 3:
-                this.roundTimer = -1; // Không giới hạn thời gian
+                this.roundTimer = this.ROUND_3_TIME;
                 break;
         }
         
-        // Thông báo enemy manager về round hiện tại
-        cc.game.enemyManager.setCurrentRound(roundNumber);
+        // Notify enemy manager about current round
+        if (this.enemyManagerComponent) {
+            this.enemyManagerComponent.setCurrentRound(roundNumber);
+        }
+        
+        // Update round UI
+        this.updateRoundUI();
     },
     
     nextRound() {
@@ -82,51 +101,71 @@ cc.Class({
         }
     },
     
-    addScore(points) {
-        this.totalScore += points;
-        this.updateUI();
-    },
-    
-    gameOver() {
-        this.gameState = cc.find("Constants").getComponent("Constants").GAME_STATE.GAME_OVER;
-        this.showGameOver();
-    },
-    
-    victory() {
-        this.gameState = cc.find("Constants").getComponent("Constants").GAME_STATE.VICTORY;
+    // Called when enemy is destroyed
+    onEnemyDestroyed(scorePoints) {
+        this.totalScore += scorePoints;
         
-        // Mở khóa stage tiếp theo
-        if (this.currentStage < 3) {
-            cc.find("GameData").getComponent("GameData").unlockStage(this.currentStage + 1);
+        // Fire event to UI controller to update score
+        if (this.uiController) {
+            this.uiController.updateScore(this.totalScore);
         }
+    },
+    
+    // Called when player dies
+    onPlayerDeath() {
+        this.isGameActive = false;
         
-        this.showVictory();
+        // Fire event to UI controller to show game over
+        if (this.uiController) {
+            this.uiController.showResultPanel(false); // false = game over
+        }
     },
     
-    showMainMenu() {
-        this.gameState = cc.find("Constants").getComponent("Constants").GAME_STATE.MENU;
-        this.mainMenu.active = true;
-        this.gameUI.active = false;
-        this.resultPanel.active = false;
+    // Called when stage is completed (can be triggered by boss death or other conditions)
+    onStageComplete() {
+        this.isGameActive = false;
+        
+        // Fire event to UI controller to show victory
+        if (this.uiController) {
+            this.uiController.showResultPanel(true); // true = victory
+        }
     },
     
-    showGameOver() {
-        this.resultPanel.active = true;
-        this.resultPanel.getComponent("ResultPanel").showResult(false, this.totalScore);
-    },
-    
-    showVictory() {
-        this.resultPanel.active = true;
-        this.resultPanel.getComponent("ResultPanel").showResult(true, this.totalScore);
-    },
-    
+    // UI Update methods
     updateUI() {
-        this.gameUI.getComponent("GameUI").updateScore(this.totalScore);
-        this.gameUI.getComponent("GameUI").updateRound(this.currentRound);
-        this.gameUI.getComponent("GameUI").updateTimer(this.roundTimer);
+        this.updateRoundUI();
+        this.updateTimerUI();
+        if (this.uiController) {
+            this.uiController.updateScore(this.totalScore);
+        }
+    },
+    
+    updateRoundUI() {
+        if (this.uiController) {
+            this.uiController.updateRound(this.currentRound);
+        }
+    },
+    
+    updateTimerUI() {
+        if (this.uiController) {
+            this.uiController.updateTimer(this.roundTimer);
+        }
+    },
+    
+    // Getter methods
+    getCurrentRound() {
+        return this.currentRound;
+    },
+    
+    getRoundTimer() {
+        return this.roundTimer;
+    },
+    
+    getTotalScore() {
+        return this.totalScore;
     },
     
     isPlaying() {
-        return this.gameState === cc.find("Constants").getComponent("Constants").GAME_STATE.PLAYING;
+        return this.isGameActive;
     }
 });

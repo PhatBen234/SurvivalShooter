@@ -1,54 +1,33 @@
-// BaseSkill.js
 cc.Class({
     extends: cc.Component,
-    
+
     properties: {
         damage: 20,
-        speed: 200,
-        lifeTime: 3.0
+        speed: 300,
     },
-    
-    onLoad() {
-        this.target = null;
-        this.timer = 0;
+
+    init(owner) {
+        this.owner = owner;
+        // Gọi hàm execute sau khi init
+        this.execute();
     },
-    
-    init(targetNode) {
-        this.target = targetNode;
-        this.timer = 0;
-        this.node.active = true;
+
+    execute() {
+        // Override trong các subclass để thực hiện skill
+        cc.warn("BaseSkill: execute() should be overridden in subclass");
     },
-    
-    update(dt) {
-        if (!this.target) return;
-        
-        this.timer += dt;
-        if (this.timer >= this.lifeTime) {
-            this.returnToPool();
-            return;
-        }
-        
-        this.moveToTarget(dt);
+
+    destroySkill() {
+        // Hủy skill node an toàn
+        this.scheduleOnce(() => {
+            if (this.node && this.node.isValid) {
+                this.node.destroy();
+            }
+        }, 0.1);
     },
-    
-    moveToTarget(dt) {
-        let targetPos = this.target.getPosition();
-        let currentPos = this.node.getPosition();
-        
-        let direction = targetPos.sub(currentPos).normalize();
-        let moveDistance = this.speed * dt;
-        
-        this.node.setPosition(currentPos.add(direction.mul(moveDistance)));
-    },
-    
-    onCollisionEnter(other, self) {
-        if (other.node.group === "player") {
-            other.getComponent("PlayerController").takeDamage(this.damage);
-            this.returnToPool();
-        }
-    },
-    
-    returnToPool() {
-        // Override trong class con
+
+    onDestroy() {
+        // Cleanup khi skill bị hủy
+        this.unscheduleAllCallbacks();
     }
 });

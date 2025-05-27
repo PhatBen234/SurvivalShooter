@@ -1,88 +1,101 @@
-// EnemyLevel2.js
+// cc.Class({
+//     extends: require("BaseEnemy"),
+
+//     properties: {
+//         skillPrefabs: [cc.Prefab], // Gán từ Inspector
+//         skillInterval: 5,          // Thời gian giữa các kỹ năng (cooldown)
+//     },
+
+//     onLoad() {
+//         this._super();
+//         this.nextSkillTime = 0;
+//     },
+
+//     update(dt) {
+//         this._super(dt);
+
+//         this.nextSkillTime -= dt;
+//         if (this.nextSkillTime <= 0 && this.skillPrefabs.length > 0) {
+//             this.castRandomSkill();
+//             this.nextSkillTime = this.skillInterval;
+//         }
+//     },
+
+//     castRandomSkill() {
+//         if (!this.skillPrefabs || this.skillPrefabs.length === 0) {
+//             return;
+//         }
+
+//         let prefab = this.skillPrefabs[Math.floor(Math.random() * this.skillPrefabs.length)];
+        
+//         if (!prefab) {
+//             return;
+//         }
+
+//         let skill = cc.instantiate(prefab);
+//         skill.setPosition(this.node.position);
+//         this.node.parent.addChild(skill);
+
+//         // Thử tìm component SkillShoot hoặc các component skill khác
+//         let skillComponent = skill.getComponent("SkillShoot");
+        
+//         if (skillComponent && skillComponent.init) {
+//             skillComponent.init(this.node);
+//         }
+//     },
+// });
+
 cc.Class({
-    extends: require("EnemyLevel1"),
-    
+    extends: require("BaseEnemy"),
+
     properties: {
-        maxHp: {
-            default: 80,
-            override: true
-        },
-        damage: {
-            default: 15,
-            override: true
-        },
-        speed: {
-            default: 70,
-            override: true
-        },
-        scoreValue: {
-            default: 20,
-            override: true
-        },
-        skillCooldown: 3.0, // 3 giây sử dụng skill một lần
-        skillPrefabs: [cc.Prefab] // Mảng các skill prefab
+        skillPrefabs: [cc.Prefab], // Gán từ Inspector
+        skillInterval: 5,          // Thời gian giữa các kỹ năng (cooldown)
     },
-    
+
     onLoad() {
         this._super();
-        this.skillTimer = 0;
-        this.availableSkills = [
-            cc.find("Constants").getComponent("Constants").POOL_TAG.SKILL_FIREBALL,
-            cc.find("Constants").getComponent("Constants").POOL_TAG.SKILL_ICE,
-            cc.find("Constants").getComponent("Constants").POOL_TAG.SKILL_LIGHTNING
-        ];
+        this.nextSkillTime = 0;
     },
-    
+
     update(dt) {
         this._super(dt);
-        
-        if (this.isDead) return;
-        
-        // Cập nhật skill timer
-        this.skillTimer += dt;
-        if (this.skillTimer >= this.skillCooldown) {
-            this.useRandomSkill();
-            this.skillTimer = 0;
+
+        this.nextSkillTime -= dt;
+        if (this.nextSkillTime <= 0 && this.skillPrefabs.length > 0) {
+            this.castRandomSkill();
+            this.nextSkillTime = this.skillInterval;
         }
     },
-    
-    useRandomSkill() {
-        if (this.availableSkills.length === 0) return;
-        
-        let randomIndex = Math.floor(Math.random() * this.availableSkills.length);
-        let skillTag = this.availableSkills[randomIndex];
-        
-        this.castSkill(skillTag);
-    },
-    
-    castSkill(skillTag) {
-        let skillNode = null;
-        let prefab = null;
-        
-        switch(skillTag) {
-            case cc.find("Constants").getComponent("Constants").POOL_TAG.SKILL_FIREBALL:
-                prefab = cc.game.poolManager.fireballPrefab;
-                break;
-            case cc.find("Constants").getComponent("Constants").POOL_TAG.SKILL_ICE:
-                prefab = cc.game.poolManager.icePrefab;
-                break;
-            case cc.find("Constants").getComponent("Constants").POOL_TAG.SKILL_LIGHTNING:
-                prefab = cc.game.poolManager.lightningPrefab;
-                break;
+
+    castRandomSkill() {
+        if (!this.skillPrefabs || this.skillPrefabs.length === 0) {
+            cc.error("[EnemyLevel2] Không có skillPrefabs!");
+            return;
         }
+
+        let prefab = this.skillPrefabs[Math.floor(Math.random() * this.skillPrefabs.length)];
         
-        if (prefab) {
-            skillNode = cc.game.poolManager.getFromPool(skillTag, prefab);
-            skillNode.parent = this.node.parent;
-            skillNode.setPosition(this.node.getPosition());
-            skillNode.getComponent("BaseSkill").init(this.player);
+        if (!prefab) {
+            cc.error("[EnemyLevel2] skillPrefab là null!");
+            return;
+        }
+
+        let skill = cc.instantiate(prefab);
+        skill.setPosition(this.node.position);
+        this.node.parent.addChild(skill);
+
+        // Thử tìm component skill khác nhau
+        let skillComponent = skill.getComponent("SkillShoot") || 
+                            skill.getComponent("SkillDash");
+        
+        if (skillComponent && skillComponent.init) {
+            skillComponent.init(this.node);
+            cc.log("[EnemyLevel2] Đã cast skill thành công:", skill.name);
+        } else {
+            cc.error("[EnemyLevel2] Không tìm thấy component skill hoặc method init!");
+            // Vẫn giữ skill node, có thể nó tự hoạt động
         }
     },
-    
-    returnToPool() {
-        cc.game.poolManager.putToPool(
-            cc.find("Constants").getComponent("Constants").POOL_TAG.ENEMY_LV2,
-            this.node
-        );
-    }
 });
+//Todo: Skill quái chưa random và khá đồng thời, làm sao để giảm lượng skill gây ra để tránh lag máy    

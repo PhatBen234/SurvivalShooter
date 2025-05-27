@@ -43,8 +43,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 50,
-      "height": 50
+      "width": 20,
+      "height": 20
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -227,8 +227,8 @@
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 50,
-      "height": 50
+      "width": 20,
+      "height": 20
     },
     "_id": ""
   },
@@ -240,12 +240,26 @@
       "__id__": 1
     },
     "_enabled": true,
-    "maxHp": 80,
+    "hp": 250,
     "damage": 15,
     "speed": 70,
-    "scoreValue": 20,
-    "skillCooldown": 3,
-    "skillPrefabs": [],
+    "score": 10,
+    "target": null,
+    "damageLabelPrefab": {
+      "__uuid__": "56ac74e3-33fa-4c25-8944-62ab173d95b3"
+    },
+    "flipOnMove": true,
+    "originalFacingLeft": false,
+    "damageInterval": 1,
+    "skillPrefabs": [
+      {
+        "__uuid__": "dce16517-29b5-46ea-8bb3-6c48c4817a45"
+      },
+      {
+        "__uuid__": "b5af0797-e562-4962-baa9-88737eb0691f"
+      }
+    ],
+    "skillInterval": 5,
     "_id": ""
   },
   {
