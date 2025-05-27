@@ -27,6 +27,15 @@ cc.Class({
     cc.log("[UltimateSkillHandler] Initialized");
   },
 
+  // Tính damage cho ultimate skill
+  calculateUltimateDamage() {
+    let damage = this.playerModel.getSkillDamage() * 4;
+    if (Math.random() < this.playerModel.getCriticalRate()) {
+      damage *= 2;
+    }
+    return damage;
+  },
+
   update(dt) {
     this.updateUltimateCooldown(dt);
   },
@@ -121,7 +130,7 @@ cc.Class({
   executeUltimateDamage() {
     if (!this.canvasNode) return;
 
-    const ultimateDamage = this.playerModel.calculateUltimateDamage();
+    const ultimateDamage = this.calculateUltimateDamage();
     const ultimateRange = 500; // Large range for ultimate
 
     cc.log(

@@ -17,6 +17,24 @@ cc.Class({
     this.rangedSkillNode = rangedSkillNode;
   },
 
+  // Tính damage cho ranged attack
+  calculateRangedDamage() {
+    let damage = this.playerModel.getBaseAttack();
+    if (Math.random() < this.playerModel.getCriticalRate()) {
+      damage *= 2;
+    }
+    return damage;
+  },
+
+  // Tính damage cho ranged skill
+  calculateRangedSkillDamage() {
+    let damage = this.playerModel.getSkillDamage();
+    if (Math.random() < this.playerModel.getCriticalRate()) {
+      damage *= 2;
+    }
+    return damage;
+  },
+
   performAttack(target, onFinishCallback) {
     if (!this.playerModel || !this.playerView || !target?.isValid) return;
 
@@ -35,7 +53,7 @@ cc.Class({
 
     const arrowScript = arrow.getComponent("Arrow");
     if (arrowScript?.init) {
-      arrowScript.init(target, this.playerModel.calculateDamage());
+      arrowScript.init(target, this.calculateRangedDamage());
     }
   },
 
@@ -51,7 +69,7 @@ cc.Class({
   executeRangedSkillDamage() {
     if (!this.playerModel || !this.canvasNode) return;
 
-    const skillDamage = this.playerModel.calculateSkillDamage() * 2;
+    const skillDamage = this.calculateRangedSkillDamage() * 2;
     this.executeHorizontalLineAttack(skillDamage);
     this.showRangedSkillEffect();
   },
@@ -89,7 +107,7 @@ cc.Class({
   executeSkillArrowAttack() {
     if (!this.canvasNode) return;
 
-    const skillDamage = this.playerModel.calculateSkillDamage() * 1.5;
+    const skillDamage = this.calculateRangedSkillDamage() * 2;
     this.findEnemiesInSkillRange().forEach((enemy, index) => {
       this.scheduleOnce(
         () => this.spawnSkillArrowToTarget(enemy, skillDamage),

@@ -15,6 +15,24 @@ cc.Class({
     this.meleeSkillNode = meleeSkillNode;
   },
 
+  // Tính damage cho melee attack
+  calculateMeleeDamage() {
+    let damage = this.playerModel.getBaseAttack();
+    if (Math.random() < this.playerModel.getCriticalRate()) {
+      damage *= 2;
+    }
+    return damage;
+  },
+
+  // Tính damage cho melee skill
+  calculateMeleeSkillDamage() {
+    let damage = this.playerModel.getSkillDamage();
+    if (Math.random() < this.playerModel.getCriticalRate()) {
+      damage *= 2;
+    }
+    return damage;
+  },
+
   performAttack(onFinishCallback) {
     if (!this.playerModel || !this.playerView) return;
 
@@ -27,7 +45,7 @@ cc.Class({
   executeMeleeDamage() {
     if (!this.canvasNode) return;
 
-    const damage = this.playerModel.calculateDamage();
+    const damage = this.calculateMeleeDamage();
     this.findEnemiesInRange(this.playerModel.getMeleeAttackRange()).forEach(
       (enemy) => {
         const enemyScript =
@@ -49,7 +67,7 @@ cc.Class({
   executeMeleeSkillDamage() {
     if (!this.canvasNode) return;
 
-    const skillDamage = this.playerModel.calculateSkillDamage() * 3;
+    const skillDamage = this.calculateMeleeSkillDamage() * 3;
     this.findEnemiesInRange(200).forEach((enemy) => {
       const enemyScript =
         enemy.getComponent("Enemy") || enemy.getComponent("Boss");

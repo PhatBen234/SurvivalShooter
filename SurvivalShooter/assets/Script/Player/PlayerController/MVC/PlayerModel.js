@@ -181,33 +181,6 @@ cc.Class({
     this._canUseSkill = value;
   },
 
-  // === DAMAGE CALCULATION ===
-  calculateDamage() {
-    let damage = this._baseAttack;
-    if (Math.random() < this._criticalRate) {
-      damage *= 2;
-    }
-    return damage;
-  },
-
-  // Tính damage cho skill dựa trên base skill damage
-  calculateSkillDamage() {
-    let damage = this._skillDamage;
-    if (Math.random() < this._criticalRate) {
-      damage *= 2;
-    }
-    return damage;
-  },
-
-  // Tính damage cho ultimate skill - gây nhiều damage hơn
-  calculateUltimateDamage() {
-    let damage = this._skillDamage * 4;
-    if (Math.random() < this._criticalRate) {
-      damage *= 2;
-    }
-    return damage;
-  },
-
   // === SKILL BUFF METHODS ===
   applySkillBuff(skillId, amount) {
     switch (skillId) {
