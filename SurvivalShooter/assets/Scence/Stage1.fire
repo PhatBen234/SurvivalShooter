@@ -6602,7 +6602,9 @@
     "spawnInterval": 3,
     "enemiesPerWave": 10,
     "enemyLv1Prefabs": [
-      null
+      {
+        "__uuid__": "a578b5a2-b9e2-441f-8dc0-7d5eecde3caf"
+      }
     ],
     "enemyLv2Prefabs": [],
     "bossEnemyPrefab": {
