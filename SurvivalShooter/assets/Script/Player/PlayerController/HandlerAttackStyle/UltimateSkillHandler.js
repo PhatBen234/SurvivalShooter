@@ -89,7 +89,7 @@ cc.Class({
 
     enemies.forEach((enemy) => {
       const enemyScript =
-        enemy.getComponent("Enemy") || enemy.getComponent("Boss");
+        enemy.getComponent("BaseEnemy") || enemy.getComponent("EnemyLevel2");
       enemyScript?.takeDamage?.(damage);
     });
   },
@@ -101,8 +101,8 @@ cc.Class({
       if (!node.isValid) return false;
 
       const isEnemy =
-        ["Enemy", "FinalBoss"].includes(node.name) ||
-        ["enemy", "finalBoss"].includes(node.group);
+        ["BaseEnemy", "EnemyLevel2"].includes(node.name) ||
+        node.group === "enemy";
 
       if (!isEnemy) return false;
 

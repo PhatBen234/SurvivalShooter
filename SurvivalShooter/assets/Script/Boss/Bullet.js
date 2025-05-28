@@ -59,7 +59,7 @@ cc.Class({
   init(pos, angle, damage = null, speed = null) {
     this.node.setPosition(pos);
     this.direction = angle;
-    
+
     // Cho phép override damage và speed từ skill
     if (damage !== null) {
       this.damage = damage;
@@ -74,10 +74,10 @@ cc.Class({
 
     // Di chuyển đạn theo hướng và tốc độ
     this.moveForward(dt);
-    
+
     // Kiểm tra va chạm với player
     this.checkPlayerCollision();
-    
+
     // Kiểm tra nếu đạn ra khỏi màn hình
     this.checkBounds();
   },
@@ -96,7 +96,7 @@ cc.Class({
 
     for (let player of players) {
       if (!player || !player.isValid) continue;
-      
+
       let dist = this.node.position.sub(player.position).mag();
       if (dist < 30) {
         this.hitPlayer(player);
@@ -106,15 +106,15 @@ cc.Class({
   },
 
   hitPlayer(player) {
-    let playerScript = player.getComponent("Player");
-    
+    let playerScript = player.getComponent("PlayerController");
+
     if (playerScript?.takeDamage) {
       playerScript.takeDamage(this.damage);
       cc.log(`[Bullet] Gây ${this.damage} damage cho player`);
     } else {
       cc.warn("[Bullet] Không tìm thấy hàm takeDamage trong player");
     }
-    
+
     this.hasHit = true; // đánh dấu đã trúng
     this.destroyBullet(); // huỷ viên đạn
   },
@@ -131,5 +131,5 @@ cc.Class({
     if (this.node && this.node.isValid) {
       this.node.destroy();
     }
-  }
+  },
 });

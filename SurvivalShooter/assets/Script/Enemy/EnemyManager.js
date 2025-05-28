@@ -325,7 +325,8 @@ cc.Class({
         // Set spawn position
         let pos = this.getRandomSpawnPosition();
         enemy.setPosition(pos);
-        this.node.addChild(enemy);
+        let spawnParent = this.spawnArea || this.canvas || this.node;
+        spawnParent.addChild(enemy);
         
         // Set target for enemy - try multiple component names
         let enemyComponent = enemy.getComponent('BaseEnemy') || 
