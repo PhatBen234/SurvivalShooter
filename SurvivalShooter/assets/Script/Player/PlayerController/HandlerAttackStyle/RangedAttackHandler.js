@@ -77,7 +77,9 @@ cc.Class({
   executeHorizontalLineAttack(damage) {
     this.getEnemiesInHorizontalLine().forEach((enemy) => {
       const script =
-        enemy.getComponent("BaseEnemy") || enemy.getComponent("EnemyLevel2");
+        enemy.getComponent("BaseEnemy") ||
+        enemy.getComponent("EnemyLevel2") ||
+        enemy.getComponent("BossEnemy");
       script?.takeDamage?.(damage);
     });
   },
@@ -91,7 +93,7 @@ cc.Class({
     return this.canvasNode.children.filter((node) => {
       if (
         !node.isValid ||
-        (!["BaseEnemy", "EnemyLevel2"].includes(node.name) &&
+        (!["BaseEnemy", "EnemyLevel2", "BossEnemy"].includes(node.name) &&
           node.group !== "enemy")
       ) {
         return false;
@@ -124,7 +126,7 @@ cc.Class({
     return this.canvasNode.children.filter((node) => {
       if (
         !node.isValid ||
-        (!["BaseEnemy", "EnemyLevel2"].includes(node.name) &&
+        (!["BaseEnemy", "EnemyLevel2", "BossEnemy"].includes(node.name) &&
           node.group !== "enemy")
       ) {
         return false;

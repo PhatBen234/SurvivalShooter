@@ -96,7 +96,7 @@ cc.Class({
 
     return this.canvasNode.children.filter((node) => {
       const isEnemy =
-        ["BaseEnemy", "EnemyLevel2"].includes(node.name) ||
+        ["BaseEnemy", "EnemyLevel2", "BossEnemy"].includes(node.name) ||
         node.group === "enemy";
       const inRange = this.node.position.sub(node.position).mag() <= range;
       return isEnemy && node.isValid && inRange;
@@ -107,7 +107,7 @@ cc.Class({
     const enemies =
       this.canvasNode?.children.filter(
         (node) =>
-          ["BaseEnemy", "EnemyLevel2"].includes(node.name) ||
+          ["BaseEnemy", "EnemyLevel2", "BossEnemy"].includes(node.name) ||
           node.group === "enemy"
       ) || [];
 

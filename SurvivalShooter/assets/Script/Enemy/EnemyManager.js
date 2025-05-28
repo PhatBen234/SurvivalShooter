@@ -325,8 +325,7 @@ cc.Class({
         // Set spawn position
         let pos = this.getRandomSpawnPosition();
         enemy.setPosition(pos);
-        let spawnParent = this.spawnArea || this.canvas || this.node;
-        spawnParent.addChild(enemy);
+        this.canvas.addChild(enemy);
         
         // Set target for enemy - try multiple component names
         let enemyComponent = enemy.getComponent('BaseEnemy') || 
@@ -349,7 +348,7 @@ cc.Class({
         }
     },
 
-    spawnBoss() {
+        spawnBoss() {
         if (!this.bossEnemyPrefab) {
             return;
         }
@@ -362,7 +361,7 @@ cc.Class({
         // Spawn boss at center or random position
         let pos = cc.v2(0, 0); // Center spawn for boss
         boss.setPosition(pos);
-        this.node.addChild(boss);
+        this.canvas.addChild(boss);
         
         // Set target for boss
         let bossComponent = boss.getComponent('BaseEnemy') || boss.getComponent('EnemyBase') || boss.getComponent('BossEnemy');

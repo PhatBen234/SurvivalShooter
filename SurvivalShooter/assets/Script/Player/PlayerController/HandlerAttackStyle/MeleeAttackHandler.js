@@ -49,7 +49,9 @@ cc.Class({
     this.findEnemiesInRange(this.playerModel.getMeleeAttackRange()).forEach(
       (enemy) => {
         const enemyScript =
-          enemy.getComponent("BaseEnemy") || enemy.getComponent("EnemyLevel2");
+          enemy.getComponent("BaseEnemy") ||
+          enemy.getComponent("EnemyLevel2") ||
+          enemy.getComponent("BossEnemy");
         enemyScript?.takeDamage?.(damage);
       }
     );
@@ -69,9 +71,11 @@ cc.Class({
 
     const skillDamage = this.calculateMeleeSkillDamage() * 3;
     this.findEnemiesInRange(200).forEach((enemy) => {
-      const enemyScript1 = enemy.getComponent("BaseEnemy");
-      const enemyScript2 = enemy.getComponent("EnemyLevel2");
-      enemyScript1?.takeDamage?.(skillDamage);
+      const enemyScript =
+        enemy.getComponent("BaseEnemy") ||
+        enemy.getComponent("EnemyLevel2") ||
+        enemy.getComponent("BossEnemy");
+      enemyScript?.takeDamage?.(skillDamage);
     });
 
     this.showMeleeSkillEffect();
@@ -88,7 +92,7 @@ cc.Class({
     return this.canvasNode.children.filter((node) => {
       if (
         !node.isValid ||
-        (!["BaseEnemy", "EnemyLevel2"].includes(node.name) &&
+        (!["BaseEnemy", "EnemyLevel2", "BossEnemy"].includes(node.name) &&
           node.group !== "enemy")
       ) {
         return false;

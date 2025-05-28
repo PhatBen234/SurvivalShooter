@@ -3,12 +3,12 @@ cc.Class({
 
   properties: {
     // HP & Movement
-    _maxHp: 100,
+    _maxHp: 10000,
     _currentHp: 100,
     _speed: 200,
 
     // Attack stats
-    _baseAttack: 10,
+    _baseAttack: 10000,
     _criticalRate: 0.1,
     _meleeAttackRange: 100,
     _rangedAttackRange: 300,
