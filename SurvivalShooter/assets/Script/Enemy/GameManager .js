@@ -1,55 +1,28 @@
 cc.Class({
-    extends: cc.Component,
-    
-    properties: {
-        // UI Controllers
-        uiStageController: cc.Node,
-        enemyManager: cc.Node,
-    },
-    
-    onLoad() {
-        // Game state variables
-        this.currentRound = 1;
-        this.roundTimer = 90; // 1p30s = 90 seconds
-        this.totalScore = 0;
-        this.isGameActive = false;
-        
-        // Round settings
-        this.ROUND_1_TIME = 1; // 1 minute 30 seconds
-        this.ROUND_2_TIME = 1; // 1 minute 30 seconds
-        this.ROUND_3_TIME = -1; // Unlimited time
-        
-        // Register global reference
-        cc.game.gameManager = this;
-        
-        console.log("GameManager loaded");
-    },
+  extends: cc.Component,
 
   properties: {
-    // UI Controllers
     uiStageController: cc.Node,
     enemyManager: cc.Node,
-
-    // ✅ Thêm reference đến player để check máu
     player: cc.Node,
   },
 
   onLoad() {
     // Game state variables
     this.currentRound = 1;
-    this.roundTimer = 90; // 1p30s = 90 seconds
+    this.roundTimer = 90;
     this.totalScore = 0;
     this.isGameActive = false;
+    this.bossSpawned = false;
+    this.bossDefeated = false;
 
     // Round settings
-    this.ROUND_1_TIME = 1; // 1 minute 30 seconds
-    this.ROUND_2_TIME = 1; // 1 minute 30 seconds
-    this.ROUND_3_TIME = -1; // Unlimited time
+    this.ROUND_1_TIME = 1;
+    this.ROUND_2_TIME = 1;
+    this.ROUND_3_TIME = -1;
 
     // Register global reference
     cc.game.gameManager = this;
-
-    console.log("GameManager loaded");
   },
 
   start() {
@@ -57,19 +30,15 @@ cc.Class({
     if (this.uiStageController) {
       this.uiController =
         this.uiStageController.getComponent("UIStageController");
-      console.log("UI Controller found:", !!this.uiController);
     }
 
     if (this.enemyManager) {
       this.enemyManagerComponent =
         this.enemyManager.getComponent("EnemyManager");
-      console.log("Enemy Manager found:", !!this.enemyManagerComponent);
     }
 
-    // ✅ Lấy reference đến PlayerModel để check máu
     if (this.player) {
       this.playerScript = this.player.getComponent("PlayerModel");
-      console.log("Player script found:", !!this.playerScript);
     }
 
     // Start game after getting references
@@ -81,18 +50,16 @@ cc.Class({
     this.roundTimer = this.ROUND_1_TIME;
     this.totalScore = 0;
     this.isGameActive = true;
+    this.bossSpawned = false;
+    this.bossDefeated = false;
 
-    // Start first round
     this.startRound(1);
-
-    // Update UI
     this.updateUI();
   },
 
   update(dt) {
     if (!this.isGameActive) return;
 
-    // ✅ Check player death như GameController cũ
     this.checkPlayerDeath();
 
     // Update timer for round 1 and 2 only
@@ -103,12 +70,28 @@ cc.Class({
         this.nextRound();
       }
 
-      // Update timer UI
       this.updateTimerUI();
+    }
+
+    // Check for boss spawn in round 3
+    if (
+      this.currentRound === 3 &&
+      !this.bossSpawned &&
+      this.roundTimer === -1
+    ) {
+      this.scheduleOnce(() => {
+        this.spawnBossNow();
+      }, 2.0);
+      this.bossSpawned = true;
     }
   },
 
-  // ✅ Thêm method check player death dựa trên GameController cũ
+  spawnBossNow() {
+    if (this.enemyManagerComponent) {
+      this.enemyManagerComponent.forceBossSpawn();
+    }
+  },
+
   checkPlayerDeath() {
     if (this.playerScript && this.playerScript._currentHp <= 0) {
       this.onPlayerDeath();
@@ -118,7 +101,6 @@ cc.Class({
   startRound(roundNumber) {
     this.currentRound = roundNumber;
 
-    // Set timer for round
     switch (roundNumber) {
       case 1:
         this.roundTimer = this.ROUND_1_TIME;
@@ -128,15 +110,14 @@ cc.Class({
         break;
       case 3:
         this.roundTimer = this.ROUND_3_TIME;
+        this.bossSpawned = false;
         break;
     }
 
-    // Notify enemy manager about current round
     if (this.enemyManagerComponent) {
       this.enemyManagerComponent.setCurrentRound(roundNumber);
     }
 
-    // Update round UI
     this.updateRoundUI();
   },
 
@@ -147,34 +128,82 @@ cc.Class({
   },
 
   // Called when enemy is destroyed
-  onEnemyDestroyed(scorePoints) {
+  onEnemyDestroyed(scorePoints, enemyNode) {
     this.totalScore += scorePoints;
 
-    // Fire event to UI controller to update score
+    // Boss detection in round 3
+    if (enemyNode && this.currentRound === 3) {
+      let isBoss = false;
+
+      // Check by node name
+      if (
+        enemyNode.name &&
+        (enemyNode.name.toLowerCase().includes("finalboss") ||
+          enemyNode.name.toLowerCase().includes("boss"))
+      ) {
+        isBoss = true;
+      }
+
+      // Check by BossEnemy component
+      if (enemyNode.getComponent("BossEnemy")) {
+        isBoss = true;
+      }
+
+      // Check isBoss flag in enemy components
+      let enemyComponents = [
+        enemyNode.getComponent("BossEnemy"),
+        enemyNode.getComponent("EnemyLevel2"),
+        enemyNode.getComponent("BaseEnemy"),
+      ];
+
+      for (let component of enemyComponents) {
+        if (component && component.isBoss === true) {
+          isBoss = true;
+          break;
+        }
+      }
+
+      if (isBoss) {
+        this.onBossDefeated();
+        return; // Don't update normal score UI
+      }
+    }
+
+    // Normal enemy - update score UI
     if (this.uiController) {
       this.uiController.updateScore(this.totalScore);
     }
   },
 
-  // Called when player dies
+  onBossDefeated() {
+    if (this.bossDefeated) {
+      return; // Prevent multiple calls
+    }
+
+    this.bossDefeated = true;
+    this.totalScore += 1000; // Bonus score for defeating boss
+    this.onStageComplete();
+  },
+
   onPlayerDeath() {
     this.isGameActive = false;
 
-    console.log("Player died! Game Over.");
-
-    // Fire event to UI controller to show game over
     if (this.uiController) {
-      this.uiController.showResultPanel(false); // false = game over
+      this.uiController.showResultPanel(false); // Game over
     }
   },
 
-  // Called when stage is completed (can be triggered by boss death or other conditions)
   onStageComplete() {
     this.isGameActive = false;
 
-    // Fire event to UI controller to show victory
+    // Stop enemy spawning
+    if (this.enemyManagerComponent) {
+      this.enemyManagerComponent.stopSpawning();
+    }
+
+    // Show victory
     if (this.uiController) {
-      this.uiController.showResultPanel(true); // true = victory
+      this.uiController.showResultPanel(true); // Victory
     }
   },
 
@@ -214,5 +243,13 @@ cc.Class({
 
   isPlaying() {
     return this.isGameActive;
+  },
+
+  isBossSpawned() {
+    return this.bossSpawned;
+  },
+
+  isBossDefeated() {
+    return this.bossDefeated;
   },
 });

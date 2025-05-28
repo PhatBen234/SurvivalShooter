@@ -651,6 +651,8 @@
     "damageLabelPrefab": {
       "__uuid__": "56ac74e3-33fa-4c25-8944-62ab173d95b3"
     },
+    "expPrefab": null,
+    "expAmount": 0,
     "flipOnMove": true,
     "originalFacingLeft": false,
     "damageInterval": 1,

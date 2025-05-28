@@ -229,7 +229,7 @@ cc.Class({
   fireEnemyDestroyedEvent() {
     // Notify GameManager about enemy destruction
     if (cc.game.gameManager) {
-      cc.game.gameManager.onEnemyDestroyed(this.score);
+      cc.game.gameManager.onEnemyDestroyed(this.score, this.node);
     }
   },
 
@@ -304,4 +304,10 @@ cc.Class({
       this.collidingPlayers.clear();
     }
   },
+  // fireEnemyDestroyedEvent() {
+  //   // ✅ QUAN TRỌNG: Truyền cả this.node để GameManager có thể detect boss
+  //   if (cc.game.gameManager) {
+  //     cc.game.gameManager.onEnemyDestroyed(this.score, this.node);
+  //   }
+  // },
 });
