@@ -10,11 +10,7 @@ cc.Class({
     stage1Button: cc.Button,
     stage2Button: cc.Button,
     stage3Button: cc.Button,
-
-    music: {
-      default: null,
-      type: cc.AudioClip,
-    },
+    
     volumeSlider: {
       default: null,
       type: cc.Slider,
@@ -29,165 +25,113 @@ cc.Class({
     this.homeBtn.active = false;
     this.settingLayout.active = false;
 
-    // Thiết lập volume slider trước
-    this.setupVolumeSlider();
+    // FIXED: Setup volume slider với delay để đảm bảo AudioManager đã sẵn sàng
+    this.scheduleOnce(() => {
+      this.setupVolumeSlider();
+      this.initializeMenuAudio();
+    }, 0.1);
 
-    // Thử phát nhạc ngay lập tức
-    this.playBackgroundMusic();
-
-    // Backup: Thử phát nhạc sau khi user tương tác (do browser policy)
-    this.setupUserInteractionListener();
-
-    //Chọn Stage 
-    // let unlocked = JSON.parse(cc.sys.localStorage.getItem("stage_unlock") || "[true,false,false]");
-    // for (let i = 0; i < this.stageButtons.length; i++) {
-    //   this.stageButtons[i].interactable = unlocked[i];
-    // }
-    // this.updateStageButtons();
+    console.log("MenuScript initialization complete");
   },
 
-  //Chọn Stage
-  // onEnable() {
-  //   this.updateStageButtons();
-  // },
+  start() {
+    // Additional setup in start() to ensure all components are ready
+    this.scheduleOnce(() => {
+      this.verifyAudioSetup();
+    }, 0.2);
+  },
 
-  // Trong MenuScript.js, sửa đổi phần updateStageButtons như sau:
-
-  // updateStageButtons() {
-  //   // Load data trước khi kiểm tra
-  //   let GameDataClass = require('GameData'); // Import class GameData
-  //   GameDataClass.loadData(); // Load dữ liệu đã lưu
-
-  //   // Cập nhật trạng thái các nút stage bằng cách gọi static method
-  //   this.stage1Button.interactable = GameDataClass.isStageUnlocked(1);
-  //   this.stage2Button.interactable = GameDataClass.isStageUnlocked(2);
-  //   this.stage3Button.interactable = GameDataClass.isStageUnlocked(3);
-
-  //   // Thay đổi màu sắc nút
-  //   this.updateButtonColor(this.stage1Button, GameDataClass.isStageUnlocked(1));
-  //   this.updateButtonColor(this.stage2Button, GameDataClass.isStageUnlocked(2));
-  //   this.updateButtonColor(this.stage3Button, GameDataClass.isStageUnlocked(3));
-  // },
-
-  // Cập nhật các hàm onClick cũng sử dụng GameData
-  // onStage1Click() {
-  //   let GameDataClass = require('GameData');
-  //   GameDataClass.currentStage = 1;
-  //   GameDataClass.saveData();
-  //   cc.director.loadScene("Stage1"); // hoặc cc.game.gameManager.startGame(1);
-  // },
-
-  // onStage2Click() {
-  //   let GameDataClass = require('GameData');
-  //   GameDataClass.currentStage = 2;
-  //   GameDataClass.saveData();
-  //   cc.director.loadScene("Stage2");
-  // },
-
-  // onStage3Click() {
-  //   let GameDataClass = require('GameData');
-  //   GameDataClass.currentStage = 3;
-  //   GameDataClass.saveData();
-  //   cc.director.loadScene("BossStage");
-  // },
-
-  // updateButtonColor(button, unlocked) {
-  //   let color = unlocked ? cc.Color.WHITE : cc.Color.GRAY;
-  //   button.node.color = color;
-  // },
-
-  // onStage1Click() {
-  //     cc.game.gameManager.startGame(1);
-  // },
-
-  // onStage2Click() {
-  //     cc.game.gameManager.startGame(2);
-  // },
-
-  // onStage3Click() {
-  //     cc.game.gameManager.startGame(3);
-  // },
-
-  // //Chọn Stage
-  // startStage(index) {
-  //   cc.director.loadScene("Stage" + (index + 1));
-  // },
-
-  setupVolumeSlider() {
-    if (this.volumeSlider) {
-      // Đặt âm lượng mặc định là 100%
-      this.volumeSlider.progress = 1.0;
-
-      // Lắng nghe sự kiện slide
-      this.volumeSlider.node.on("slide", this.onVolumeChanged, this);
-      console.log("Volume slider setup complete, default volume: 1.0");
+  verifyAudioSetup() {
+    let audioManager = cc.AudioManager && cc.AudioManager.getInstance();
+    if (audioManager) {
+      console.log("✅ AudioManager verified in MenuScript");
+      let info = audioManager.getCurrentMusicInfo();
+      console.log("Current audio info:", info);
     } else {
-      console.warn("Volume slider not assigned!");
+      console.error("❌ AudioManager not available in MenuScript");
+      // Retry after delay
+      this.scheduleOnce(() => {
+        this.verifyAudioSetup();
+      }, 1.0);
     }
   },
 
-  playBackgroundMusic() {
-    console.log("Attempting to play background music...");
+  initializeMenuAudio() {
+    // Get AudioManager instance with retry mechanism
+    this.attemptAudioInitialization(0);
+  },
 
-    if (!this.music) {
-      console.error("❌ Music asset not assigned to MenuScript!");
+  attemptAudioInitialization(attempt) {
+    let audioManager = cc.AudioManager && cc.AudioManager.getInstance();
+    if (audioManager) {
+      // Tell AudioManager we're in menu scene
+      audioManager.onSceneChanged("MainMenu");
+      console.log("✅ Menu audio initialized through AudioManager");
+    } else {
+      attempt++;
+      if (attempt < 5) {
+        console.warn(`AudioManager not found, retry attempt ${attempt}/5`);
+        this.scheduleOnce(() => {
+          this.attemptAudioInitialization(attempt);
+        }, 0.5);
+      } else {
+        console.error("❌ Failed to initialize AudioManager after 5 attempts");
+      }
+    }
+  },
+
+  setupVolumeSlider() {
+    if (!this.volumeSlider) {
+      console.warn("❌ Volume slider not assigned!");
       return;
     }
 
-    console.log("Music asset found:", this.music.name);
+    console.log("🎚️ Setting up volume slider...");
 
-    // Dừng nhạc cũ nếu có
-    if (this.currentAudioID !== undefined && this.currentAudioID !== -1) {
-      cc.audioEngine.stop(this.currentAudioID);
-    }
-
-    // Phát nhạc nền (loop = true, volume = 1.0)
-    this.currentAudioID = cc.audioEngine.play(this.music, true, 1.0);
-
-    if (this.currentAudioID === -1) {
-      console.error("❌ Failed to play background music");
-      this.musicPlayFailed = true;
+    // Get current volume from AudioManager
+    let audioManager = cc.AudioManager && cc.AudioManager.getInstance();
+    if (audioManager) {
+      let currentVolume = audioManager.getMasterVolume();
+      this.volumeSlider.progress = currentVolume;
+      console.log(`✅ Volume slider setup with AudioManager volume: ${currentVolume}`);
     } else {
-      console.log("✅ Background music playing with ID:", this.currentAudioID);
-      this.musicPlayFailed = false;
+      // Fallback to saved volume or default
+      let savedVolume = parseFloat(cc.sys.localStorage.getItem("game_master_volume")) || 1.0;
+      this.volumeSlider.progress = savedVolume;
+      console.log(`⚠️ Volume slider setup with saved volume: ${savedVolume} (AudioManager not available)`);
     }
+
+    // FIXED: Proper event listener setup
+    this.volumeSlider.node.on("slide", this.onVolumeChanged, this);
+    console.log("✅ Volume slider event listener attached");
+
+    // Also listen to slider events for real-time updates
+    this.volumeSlider.node.on(cc.Node.EventType.TOUCH_MOVE, this.onVolumeChanged, this);
   },
 
-  setupUserInteractionListener() {
-    // Lắng nghe click đầu tiên để phát nhạc (browser policy)
-    this.node.once(
-      cc.Node.EventType.TOUCH_START,
-      () => {
-        if (
-          this.musicPlayFailed ||
-          this.currentAudioID === -1 ||
-          this.currentAudioID === undefined
-        ) {
-          console.log("Retrying music playback after user interaction...");
-          this.playBackgroundMusic();
-        }
-      },
-      this
-    );
-  },
-
-  onVolumeChanged() {
-    if (!this.volumeSlider) return;
+  // FIXED: Improved volume change handler
+  onVolumeChanged(event) {
+    if (!this.volumeSlider) {
+      console.warn("Volume slider not available");
+      return;
+    }
 
     const volume = this.volumeSlider.progress;
-    console.log("Volume changed to:", volume);
+    console.log(`🔊 Volume slider changed to: ${volume}`);
 
-    // Điều chỉnh âm lượng nếu nhạc đang phát
-    if (this.currentAudioID !== undefined && this.currentAudioID !== -1) {
-      cc.audioEngine.setVolume(this.currentAudioID, volume);
-      console.log("Applied volume to audio ID:", this.currentAudioID);
+    // Update AudioManager volume immediately
+    let audioManager = cc.AudioManager && cc.AudioManager.getInstance();
+    if (audioManager) {
+      audioManager.setMasterVolume(volume);
+      console.log("✅ Applied volume through AudioManager");
+      
+      // Verify the change
+      let newVolume = audioManager.getMasterVolume();
+      console.log(`Verified new volume: ${newVolume}`);
     } else {
-      console.warn("No valid audio ID to adjust volume");
-      // Thử phát nhạc lại nếu chưa có
-      this.playBackgroundMusic();
-      if (this.currentAudioID !== undefined && this.currentAudioID !== -1) {
-        cc.audioEngine.setVolume(this.currentAudioID, volume);
-      }
+      // Fallback: Save to localStorage for when AudioManager is available
+      cc.sys.localStorage.setItem("game_master_volume", volume.toString());
+      console.warn("⚠️ AudioManager not available, saved volume to localStorage");
     }
   },
 
@@ -199,19 +143,24 @@ cc.Class({
   },
 
   onStage1Click() {
+    console.log("Loading Stage1...");
     cc.director.loadScene("Stage1");
   },
 
   onStage2Click() {
+    console.log("Loading Stage2...");
     cc.director.loadScene("Stage2");
   },
 
   onStage3Click() {
+    console.log("Loading BossStage...");
     cc.director.loadScene("BossStage");
   },
 
   onSettingsClick() {
     this.settingLayout.active = true;
+    // Refresh volume slider when opening settings
+    this.refreshVolumeSlider();
   },
 
   onGoBackClick() {
@@ -230,12 +179,55 @@ cc.Class({
     }
   },
 
+  // === UTILITY METHODS FOR AUDIO ===
+  
+  refreshVolumeSlider() {
+    if (!this.volumeSlider) return;
+
+    let audioManager = this.getAudioManager();
+    if (audioManager) {
+      let currentVolume = audioManager.getMasterVolume();
+      this.volumeSlider.progress = currentVolume;
+      console.log(`🔄 Refreshed volume slider to: ${currentVolume}`);
+    }
+  },
+  
+  getAudioManager() {
+    return cc.AudioManager && cc.AudioManager.getInstance();
+  },
+
+  // Method để test audio system
+  testAudioSystem() {
+    let audioManager = this.getAudioManager();
+    if (audioManager) {
+      console.log("=== AUDIO SYSTEM TEST ===");
+      let info = audioManager.getCurrentMusicInfo();
+      console.log("Current Audio Info:", info);
+      audioManager.verifyAudioSystem();
+      console.log("=== END AUDIO TEST ===");
+      return info;
+    }
+    console.error("AudioManager not available for testing");
+    return null;
+  },
+
+  // NEW: Method to force reinitialize audio (for debugging)
+  reinitializeAudio() {
+    let audioManager = this.getAudioManager();
+    if (audioManager) {
+      audioManager.forceReinitialize();
+      this.refreshVolumeSlider();
+      console.log("🔄 Audio system reinitialized");
+    }
+  },
+
   // === CLEANUP ===
   onDestroy() {
-    // Dừng nhạc khi component bị hủy
-    if (this.currentAudioID !== undefined && this.currentAudioID !== -1) {
-      cc.audioEngine.stop(this.currentAudioID);
-      console.log("Stopped background music on destroy");
+    // Clean up event listeners
+    if (this.volumeSlider && this.volumeSlider.node) {
+      this.volumeSlider.node.off("slide", this.onVolumeChanged, this);
+      this.volumeSlider.node.off(cc.Node.EventType.TOUCH_MOVE, this.onVolumeChanged, this);
     }
+    console.log("MenuScript cleanup complete");
   },
 });

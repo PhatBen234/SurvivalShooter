@@ -207,7 +207,7 @@ cc.Class({
             const expScript = exp.getComponent("Exp");
             if (expScript) {
                 expScript.expAmount = this.expAmount;
-                expScript.targetPlayer = this.player;
+                expScript.targetPlayer = this.target;
             }
         }
         // Clean up collision tracking

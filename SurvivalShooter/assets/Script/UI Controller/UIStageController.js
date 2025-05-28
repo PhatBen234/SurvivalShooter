@@ -1,4 +1,4 @@
-// UIStageController.js - Refactored
+// UIStageController.js - Updated with Score Display
 cc.Class({
     extends: cc.Component,
 
@@ -9,6 +9,7 @@ cc.Class({
         // Result Menu
         resultMenu: cc.Node,
         resultLabel: cc.Label,
+        scoreResultLabel: cc.Label, // NEW: Label to show final score
         nextStageBtn: cc.Node,
 
         // Game UI Elements
@@ -96,6 +97,12 @@ cc.Class({
         this.resultMenu.active = true;
         cc.director.pause();
 
+        // Get current score from GameManager
+        let currentScore = 0;
+        if (cc.game.gameManager) {
+            currentScore = cc.game.gameManager.getTotalScore();
+        }
+
         if (this.resultLabel) {
             if (isWin) {
                 this.resultLabel.string = "🎉 VICTORY! 🎉";
@@ -104,6 +111,12 @@ cc.Class({
                 this.resultLabel.string = "💀 GAME OVER 💀";
                 this.resultLabel.node.color = cc.Color.RED;
             }
+        }
+
+        // Show final score
+        if (this.scoreResultLabel) {
+            this.scoreResultLabel.string = `Final Score: ${currentScore}`;
+            this.scoreResultLabel.node.color = isWin ? cc.Color.YELLOW : cc.Color.WHITE;
         }
 
         // Show/hide next stage button based on result
@@ -118,6 +131,8 @@ cc.Class({
                 this.nextStageBtn.active = false;
             }
         }
+
+        console.log(`Result panel shown: ${isWin ? 'Victory' : 'Game Over'}, Score: ${currentScore}`);
     },
 
     onClickNextStage() {
