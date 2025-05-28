@@ -8,7 +8,11 @@ cc.Class({
         score: 10,
         target: cc.Node, // Player
         damageLabelPrefab: cc.Prefab,
-        
+
+        //Exp prefab for enemy destruction
+        expPrefab: cc.Prefab,
+        expAmount: 20,
+
         // Sprite flipping properties
         flipOnMove: {
             default: true,
@@ -18,7 +22,7 @@ cc.Class({
             default: false,
             tooltip: "Sprite gốc có đang nhìn sang trái không"
         },
-        
+
         // Collision damage properties
         damageInterval: {
             default: 1.0,
@@ -28,18 +32,18 @@ cc.Class({
 
     onLoad() {
         this.maxHp = this.hp; // Store original HP for percentage calculations
-        
+
         // Get sprite component for flipping
         this.spriteComponent = this.node.getComponent(cc.Sprite);
-        
+
         // Store original scale for flipping
         this.originalScaleX = this.node.scaleX;
-        
+
         // Initialize collision damage timer
         this.damageTimer = 0;
         this.isCollidingWithPlayer = false;
         this.collidingPlayers = new Set(); // Track multiple players if needed
-        
+
         if (this.target) {
             this.player = this.target.getComponent('PlayerController');
         }
@@ -51,13 +55,13 @@ cc.Class({
     enableCollisionDetection() {
         // Get collider component
         this.collider = this.node.getComponent(cc.Collider);
-        
+
         if (this.collider) {
             // Enable collision detection
             cc.director.getCollisionManager().enabled = true;
             // Optional: Enable debug draw to see collision boxes
             // cc.director.getCollisionManager().enabledDebugDraw = true;
-            
+
             console.log("Enemy collision detection enabled");
         } else {
             console.warn("No collider found on enemy node!");
@@ -70,7 +74,7 @@ cc.Class({
         if (other.node.group === 'player' || other.node.name === 'Player') {
             this.isCollidingWithPlayer = true;
             this.collidingPlayers.add(other.node);
-            
+
             // Deal immediate damage on first contact
             this.damageTimer = 0;
             this.dealDamageToPlayer(other.node);
@@ -89,7 +93,7 @@ cc.Class({
         // Player left collision area
         if (other.node.group === 'player' || other.node.name === 'Player') {
             this.collidingPlayers.delete(other.node);
-            
+
             // If no more players colliding, reset state
             if (this.collidingPlayers.size === 0) {
                 this.isCollidingWithPlayer = false;
@@ -100,18 +104,18 @@ cc.Class({
 
     update(dt) {
         if (!this.player || !this.target) return;
-        
+
         // Calculate direction to player
         let dir = this.target.position.sub(this.node.position).normalize();
-        
+
         // Update sprite facing direction
         if (this.flipOnMove) {
             this.updateSpriteDirection(dir);
         }
-        
+
         // Move towards player
         this.node.position = this.node.position.add(dir.mul(this.speed * dt));
-        
+
         // Handle continuous damage during collision
         this.handleContinuousDamage(dt);
     },
@@ -119,10 +123,10 @@ cc.Class({
     handleContinuousDamage(dt) {
         if (this.isCollidingWithPlayer && this.collidingPlayers.size > 0) {
             this.damageTimer += dt;
-            
+
             if (this.damageTimer >= this.damageInterval) {
                 this.damageTimer = 0;
-                
+
                 // Deal damage to all colliding players
                 this.collidingPlayers.forEach(playerNode => {
                     this.dealDamageToPlayer(playerNode);
@@ -133,7 +137,6 @@ cc.Class({
 
     dealDamageToPlayer(playerNode) {
         if (!playerNode || !playerNode.isValid) return;
-        
         let playerScript = playerNode.getComponent('PlayerController');
         if (playerScript && playerScript.takeDamage) {
             playerScript.takeDamage(this.damage);
@@ -143,10 +146,10 @@ cc.Class({
     updateSpriteDirection(direction) {
         // Skip if direction change is too small
         if (Math.abs(direction.x) < 0.1) return;
-        
+
         // Determine if moving right (direction.x > 0) or left (direction.x < 0)
         let isMovingRight = direction.x > 0;
-        
+
         // Simple flip logic - since original sprite faces right
         if (isMovingRight) {
             // Moving right - keep original orientation
@@ -160,7 +163,7 @@ cc.Class({
     takeDamage(amount) {
         this.hp -= amount;
         this.showDamage(amount);
-        
+
         if (this.hp <= 0) {
             this.onDie();
         }
@@ -168,23 +171,23 @@ cc.Class({
 
     showDamage(amount) {
         if (!this.damageLabelPrefab) return;
-        
+
         let label = cc.instantiate(this.damageLabelPrefab);
         if (!label) return;
-        
+
         let labelComponent = label.getComponent(cc.Label);
         if (labelComponent) {
             labelComponent.string = `-${amount}`;
         }
-        
+
         label.setPosition(this.node.position);
         this.node.parent.addChild(label);
 
         // Animate damage label
         cc.tween(label)
-            .by(0.5, { 
-                position: cc.v2(0, 50), 
-                opacity: -255 
+            .by(0.5, {
+                position: cc.v2(0, 50),
+                opacity: -255
             })
             .call(() => {
                 if (label && label.isValid) {
@@ -195,13 +198,25 @@ cc.Class({
     },
 
     onDie() {
+        // Show experience effect
+        if (this.expPrefab) {
+            const exp = cc.instantiate(this.expPrefab);
+            exp.setPosition(this.node.getPosition());
+            this.node.parent.addChild(exp);
+
+            const expScript = exp.getComponent("Exp");
+            if (expScript) {
+                expScript.expAmount = this.expAmount;
+                expScript.targetPlayer = this.player;
+            }
+        }
         // Clean up collision tracking
         this.collidingPlayers.clear();
         this.isCollidingWithPlayer = false;
-        
+
         // Fire event to GameManager instead of directly calling it
         this.fireEnemyDestroyedEvent();
-        
+
         // Destroy this enemy
         if (this.node && this.node.isValid) {
             this.node.destroy();
@@ -245,7 +260,7 @@ cc.Class({
     // Manual sprite direction control
     setSpriteDirection(facingLeft) {
         if (!this.spriteComponent) return;
-        
+
         if (this.originalFacingLeft) {
             // Original faces left
             this.node.scaleX = facingLeft ? Math.abs(this.originalScaleX) : -Math.abs(this.originalScaleX);

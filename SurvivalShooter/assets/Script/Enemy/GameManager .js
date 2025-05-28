@@ -15,8 +15,8 @@ cc.Class({
         this.isGameActive = false;
         
         // Round settings
-        this.ROUND_1_TIME = 5; // 1 minute 30 seconds
-        this.ROUND_2_TIME = 90; // 1 minute 30 seconds
+        this.ROUND_1_TIME = 1; // 1 minute 30 seconds
+        this.ROUND_2_TIME = 1; // 1 minute 30 seconds
         this.ROUND_3_TIME = -1; // Unlimited time
         
         // Register global reference
