@@ -1,5 +1,29 @@
 cc.Class({
-  extends: cc.Component,
+    extends: cc.Component,
+    
+    properties: {
+        // UI Controllers
+        uiStageController: cc.Node,
+        enemyManager: cc.Node,
+    },
+    
+    onLoad() {
+        // Game state variables
+        this.currentRound = 1;
+        this.roundTimer = 90; // 1p30s = 90 seconds
+        this.totalScore = 0;
+        this.isGameActive = false;
+        
+        // Round settings
+        this.ROUND_1_TIME = 1; // 1 minute 30 seconds
+        this.ROUND_2_TIME = 1; // 1 minute 30 seconds
+        this.ROUND_3_TIME = -1; // Unlimited time
+        
+        // Register global reference
+        cc.game.gameManager = this;
+        
+        console.log("GameManager loaded");
+    },
 
   properties: {
     // UI Controllers
