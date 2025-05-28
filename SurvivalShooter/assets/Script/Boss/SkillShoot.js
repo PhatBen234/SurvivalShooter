@@ -1,3 +1,48 @@
+// cc.Class({
+//     extends: cc.Component,
+
+//     properties: {
+//         bulletPrefab: cc.Prefab,
+//         shootCount: 36,
+//         damage: 20,
+//         speed: 300,
+//     },
+
+//     init(owner) {
+//         this.owner = owner;
+//         // Tự động bắn khi được khởi tạo
+//         this.shoot();
+//     },
+
+//     shoot() {
+        
+//         for (let i = 0; i < this.shootCount; i++) {
+//             if (!this.bulletPrefab) {
+//                 return;
+//             }
+
+//             let bullet = cc.instantiate(this.bulletPrefab);
+//             this.node.parent.addChild(bullet);
+            
+//             let angle = (360 / this.shootCount) * i;
+//             let bulletComponent = bullet.getComponent('Bullet');
+            
+//             if (bulletComponent) {
+//                 // Truyền damage từ skill sang bullet
+//                 bulletComponent.damage = this.damage;
+//                 bulletComponent.init(this.node.getPosition(), angle);
+//             } 
+//         }
+
+//         // Tự hủy skill sau khi bắn xong
+//         this.scheduleOnce(() => {
+//             if (this.node && this.node.isValid) {
+//                 this.node.destroy();
+//             }
+//         }, 0.1);
+//     }
+// });
+
 cc.Class({
     extends: require('BaseSkill'),
 

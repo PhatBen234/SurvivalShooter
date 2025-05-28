@@ -113,8 +113,8 @@ cc.Class({
 
     return this.canvasNode.children.filter((node) => {
       const isEnemy =
-        ["Enemy", "FinalBoss"].includes(node.name) ||
-        ["enemy", "finalBoss"].includes(node.group);
+        ["BaseEnemy", "EnemyLevel2"].includes(node.name) ||
+        node.group === "enemy";
       const inRange = this.node.position.sub(node.position).mag() <= range;
       return isEnemy && node.isValid && inRange;
     });
@@ -124,8 +124,8 @@ cc.Class({
     const enemies =
       this.canvasNode?.children.filter(
         (node) =>
-          ["Enemy", "FinalBoss"].includes(node.name) ||
-          ["enemy", "finalBoss"].includes(node.group)
+          ["BaseEnemy", "EnemyLevel2"].includes(node.name) ||
+          node.group === "enemy"
       ) || [];
 
     return (

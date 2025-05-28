@@ -1,3 +1,187 @@
+// cc.Class({
+//     extends: cc.Component,
+
+//     properties: {
+//         spawnInterval: 3, // Thời gian cooldown để spawn wave
+//         enemiesPerWave: 10, // số lượng enemy trong mỗi wave
+//         enemyLv1Prefabs: [cc.Prefab],
+//         enemyLv2Prefabs: [cc.Prefab], 
+//         bossEnemyPrefab: cc.Prefab, // Sửa lỗi typo: boosEnemyPrefab -> bossEnemyPrefab
+//         player: cc.Node,
+//         canvas: cc.Node,
+//     },
+
+//     onLoad() {
+//         this.timer = 0;
+//         this.currentRound = 1;
+//         this.isActive = false; // Chỉ spawn khi game đang chạy
+        
+//         // Đăng ký với game manager
+//         cc.game.enemyManager = this;
+//     },
+
+//     update(dt) {
+//         // Chỉ spawn khi game đang chạy
+//         if (!this.isActive || !cc.game.gameManager || !cc.game.gameManager.isPlaying()) {
+//             return;
+//         }
+        
+//         this.timer += dt;
+//         if (this.timer >= this.spawnInterval) {
+//             this.spawnWave();
+//             this.timer = 0;
+//         }
+//     },
+
+//     setCurrentRound(roundNumber) {
+//         this.currentRound = roundNumber;
+//         this.isActive = true;
+        
+//         // Điều chỉnh spawn interval và số lượng enemy theo round
+//         switch(roundNumber) {
+//             case 1:
+//                 this.spawnInterval = 3;
+//                 this.enemiesPerWave = 5;
+//                 break;
+//             case 2:
+//                 this.spawnInterval = 2.5;
+//                 this.enemiesPerWave = 7;
+//                 break;
+//             case 3:
+//                 this.spawnInterval = 2;
+//                 this.enemiesPerWave = 10;
+//                 break;
+//         }
+//     },
+
+//     spawnWave() {
+//         // Kiểm tra canvas có tồn tại không
+//         if (!this.canvas) {
+//             console.error("Canvas not found!");
+//             return;
+//         }
+        
+//         // Spawn enemy theo round
+//         for (let i = 0; i < this.enemiesPerWave; i++) {
+//             this.spawnSingleEnemy();
+//         }
+        
+//         // Spawn boss ở round 3
+//         if (this.currentRound === 3 && Math.random() < 0.1) { // 10% chance spawn boss
+//             this.spawnBoss();
+//         }
+//     },
+
+//     spawnSingleEnemy() {
+//         let prefab = null;
+        
+//         // Chọn prefab theo round
+//         switch(this.currentRound) {
+//             case 1:
+//                 // Chỉ spawn enemy level 1
+//                 if (this.enemyLv1Prefabs && this.enemyLv1Prefabs.length > 0) {
+//                     prefab = this.enemyLv1Prefabs[Math.floor(Math.random() * this.enemyLv1Prefabs.length)];
+//                 }
+//                 break;
+                
+//             case 2:
+//                 // Spawn cả level 1 và level 2
+//                 let allPrefabs = [];
+//                 if (this.enemyLv1Prefabs) allPrefabs = allPrefabs.concat(this.enemyLv1Prefabs);
+//                 if (this.enemyLv2Prefabs) allPrefabs = allPrefabs.concat(this.enemyLv2Prefabs);
+                
+//                 if (allPrefabs.length > 0) {
+//                     prefab = allPrefabs[Math.floor(Math.random() * allPrefabs.length)];
+//                 }
+//                 break;
+                
+//             case 3:
+//                 // Spawn tất cả loại enemy
+//                 let allPrefabsRound3 = [];
+//                 if (this.enemyLv1Prefabs) allPrefabsRound3 = allPrefabsRound3.concat(this.enemyLv1Prefabs);
+//                 if (this.enemyLv2Prefabs) allPrefabsRound3 = allPrefabsRound3.concat(this.enemyLv2Prefabs);
+                
+//                 if (allPrefabsRound3.length > 0) {
+//                     prefab = allPrefabsRound3[Math.floor(Math.random() * allPrefabsRound3.length)];
+//                 }
+//                 break;
+//         }
+        
+//         // Kiểm tra prefab hợp lệ
+//         if (!prefab) {
+//             console.error("No valid prefab found for round", this.currentRound);
+//             return;
+//         }
+        
+//         // Tạo enemy
+//         let enemy = cc.instantiate(prefab);
+//         if (!enemy) {
+//             console.error("Failed to instantiate enemy");
+//             return;
+//         }
+
+//         // Tính toán vị trí spawn
+//         let pos = this.getRandomSpawnPosition();
+//         enemy.setPosition(pos);
+//         this.node.addChild(enemy);
+        
+//         // Set target cho enemy
+//         let enemyComponent = enemy.getComponent('EnemyBase');
+//         if (enemyComponent && this.player) {
+//             enemyComponent.target = this.player;
+//         }
+//     },
+
+//     spawnBoss() {
+//         if (!this.bossEnemyPrefab) {
+//             console.warn("Boss prefab not assigned!");
+//             return;
+//         }
+        
+//         let boss = cc.instantiate(this.bossEnemyPrefab);
+//         if (!boss) {
+//             console.error("Failed to instantiate boss");
+//             return;
+//         }
+        
+//         let pos = this.getRandomSpawnPosition();
+//         boss.setPosition(pos);
+//         this.node.addChild(boss);
+        
+//         let bossComponent = boss.getComponent('EnemyBase');
+//         if (bossComponent && this.player) {
+//             bossComponent.target = this.player;
+//         }
+//     },
+
+//     getRandomSpawnPosition() {
+//         // Lấy kích thước canvas
+//         let canvasSize = this.canvas.getContentSize();
+//         let pos;
+        
+//         // Thử tìm vị trí hợp lệ (không quá gần player)
+//         let attempts = 0;
+//         do {
+//             let x = Math.random() * canvasSize.width - canvasSize.width / 2;
+//             let y = Math.random() * canvasSize.height - canvasSize.height / 2;
+//             pos = cc.v2(x, y);
+//             attempts++;
+//         } while (this.player && pos.sub(this.player.position).mag() < 100 && attempts < 10);
+        
+//         return pos;
+//     },
+
+//     stopSpawning() {
+//         this.isActive = false;
+//     },
+
+//     startSpawning() {
+//         this.isActive = true;
+//     }
+// });
+
+// EnemyManager.js - Refactored
+// EnemyManager.js - Refactored
 cc.Class({
     extends: cc.Component,
 
@@ -141,10 +325,14 @@ cc.Class({
         // Set spawn position
         let pos = this.getRandomSpawnPosition();
         enemy.setPosition(pos);
-        this.node.addChild(enemy);
+        let spawnParent = this.spawnArea || this.canvas || this.node;
+        spawnParent.addChild(enemy);
         
         // Set target for enemy - try multiple component names
-        let enemyComponent = enemy.getComponent('BaseEnemy');
+        let enemyComponent = enemy.getComponent('BaseEnemy') || 
+                           enemy.getComponent('EnemyBase') ||
+                           enemy.getComponent('Enemy');
+        
         if (enemyComponent && this.player) {
             if (enemyComponent.setTarget) {
                 enemyComponent.setTarget(this.player);
@@ -177,8 +365,7 @@ cc.Class({
         this.node.addChild(boss);
         
         // Set target for boss
-        //boss.getComponent('BaseEnemy') || 
-        let bossComponent = boss.getComponent('BossEnemy');
+        let bossComponent = boss.getComponent('BaseEnemy') || boss.getComponent('EnemyBase') || boss.getComponent('BossEnemy');
         if (bossComponent && this.player) {
             bossComponent.setTarget(this.player);
         }

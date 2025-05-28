@@ -41,7 +41,7 @@ cc.Class({
         this.collidingPlayers = new Set(); // Track multiple players if needed
         
         if (this.target) {
-            this.player = this.target.getComponent('Player');
+            this.player = this.target.getComponent('PlayerController');
         }
 
         // Enable collision detection
@@ -134,7 +134,7 @@ cc.Class({
     dealDamageToPlayer(playerNode) {
         if (!playerNode || !playerNode.isValid) return;
         
-        let playerScript = playerNode.getComponent('Player');
+        let playerScript = playerNode.getComponent('PlayerController');
         if (playerScript && playerScript.takeDamage) {
             playerScript.takeDamage(this.damage);
         }
@@ -228,7 +228,7 @@ cc.Class({
     setTarget(targetNode) {
         this.target = targetNode;
         if (targetNode) {
-            this.player = targetNode.getComponent('Player');
+            this.player = targetNode.getComponent('PlayerController');
         }
     },
 
