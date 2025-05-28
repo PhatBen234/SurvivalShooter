@@ -1,0 +1,904 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>Effect_Explosion_1_517x5170.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{512,512}</string>
+				<key>spriteSize</key>
+				<string>{512,512}</string>
+				<key>textureRect</key>
+				<string>{{0,0},{512,512}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x5171.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{509,499}</string>
+				<key>spriteSize</key>
+				<string>{509,499}</string>
+				<key>textureRect</key>
+				<string>{{513,0},{509,499}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.49901768172888017,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x5172.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{457,459}</string>
+				<key>spriteSize</key>
+				<string>{457,459}</string>
+				<key>textureRect</key>
+				<string>{{1023,0},{457,459}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.4989059080962801,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x5173.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{408,407}</string>
+				<key>spriteSize</key>
+				<string>{408,407}</string>
+				<key>textureRect</key>
+				<string>{{1481,0},{408,407}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x5174.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{356,356}</string>
+				<key>spriteSize</key>
+				<string>{356,356}</string>
+				<key>textureRect</key>
+				<string>{{0,513},{356,356}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x5175.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{329,317}</string>
+				<key>spriteSize</key>
+				<string>{329,317}</string>
+				<key>textureRect</key>
+				<string>{{357,513},{329,317}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.49848024316109424,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x5176.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{342,330}</string>
+				<key>spriteSize</key>
+				<string>{342,330}</string>
+				<key>textureRect</key>
+				<string>{{687,513},{342,330}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5029239766081871,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x5177.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{355,342}</string>
+				<key>spriteSize</key>
+				<string>{355,342}</string>
+				<key>textureRect</key>
+				<string>{{1030,513},{355,342}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5014084507042254,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x5178.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{366,353}</string>
+				<key>spriteSize</key>
+				<string>{366,353}</string>
+				<key>textureRect</key>
+				<string>{{1386,513},{366,353}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5027322404371585,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x5179.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{377,364}</string>
+				<key>spriteSize</key>
+				<string>{377,364}</string>
+				<key>textureRect</key>
+				<string>{{0,870},{377,364}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.4986737400530504,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51710.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{386,372}</string>
+				<key>spriteSize</key>
+				<string>{386,372}</string>
+				<key>textureRect</key>
+				<string>{{378,870},{386,372}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5025906735751295,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51711.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{394,380}</string>
+				<key>spriteSize</key>
+				<string>{394,380}</string>
+				<key>textureRect</key>
+				<string>{{765,870},{394,380}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5025380710659898,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51712.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{402,387}</string>
+				<key>spriteSize</key>
+				<string>{402,387}</string>
+				<key>textureRect</key>
+				<string>{{1160,870},{402,387}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5024875621890548,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51713.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{41,33}</string>
+				<key>spriteSize</key>
+				<string>{41,33}</string>
+				<key>textureRect</key>
+				<string>{{1563,870},{41,33}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.4878048780487805,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51714.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{407,345}</string>
+				<key>spriteSize</key>
+				<string>{407,345}</string>
+				<key>textureRect</key>
+				<string>{{1605,870},{407,345}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5012285012285013,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51715.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{20,19}</string>
+				<key>spriteSize</key>
+				<string>{20,19}</string>
+				<key>textureRect</key>
+				<string>{{2013,870},{20,19}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51716.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{10,11}</string>
+				<key>spriteSize</key>
+				<string>{10,11}</string>
+				<key>textureRect</key>
+				<string>{{2034,870},{10,11}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.6,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51717.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{17,17}</string>
+				<key>spriteSize</key>
+				<string>{17,17}</string>
+				<key>textureRect</key>
+				<string>{{0,1258},{17,17}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.47058823529411764,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51718.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{24,23}</string>
+				<key>spriteSize</key>
+				<string>{24,23}</string>
+				<key>textureRect</key>
+				<string>{{18,1258},{24,23}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51719.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{14,14}</string>
+				<key>spriteSize</key>
+				<string>{14,14}</string>
+				<key>textureRect</key>
+				<string>{{43,1258},{14,14}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5714285714285714,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51720.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{11,10}</string>
+				<key>spriteSize</key>
+				<string>{11,10}</string>
+				<key>textureRect</key>
+				<string>{{58,1258},{11,10}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5454545454545454,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51721.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{8,8}</string>
+				<key>spriteSize</key>
+				<string>{8,8}</string>
+				<key>textureRect</key>
+				<string>{{70,1258},{8,8}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51722.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{414,275}</string>
+				<key>spriteSize</key>
+				<string>{414,275}</string>
+				<key>textureRect</key>
+				<string>{{79,1258},{414,275}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5024154589371981,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51723.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{23,24}</string>
+				<key>spriteSize</key>
+				<string>{23,24}</string>
+				<key>textureRect</key>
+				<string>{{494,1258},{23,24}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5217391304347826,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51724.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{19,24}</string>
+				<key>spriteSize</key>
+				<string>{19,24}</string>
+				<key>textureRect</key>
+				<string>{{518,1258},{19,24}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5263157894736842,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51725.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{16,16}</string>
+				<key>spriteSize</key>
+				<string>{16,16}</string>
+				<key>textureRect</key>
+				<string>{{538,1258},{16,16}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51726.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{10,10}</string>
+				<key>spriteSize</key>
+				<string>{10,10}</string>
+				<key>textureRect</key>
+				<string>{{555,1258},{10,10}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.6,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51727.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{18,17}</string>
+				<key>spriteSize</key>
+				<string>{18,17}</string>
+				<key>textureRect</key>
+				<string>{{566,1258},{18,17}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5555555555555556,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51728.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{19,19}</string>
+				<key>spriteSize</key>
+				<string>{19,19}</string>
+				<key>textureRect</key>
+				<string>{{585,1258},{19,19}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5263157894736842,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51729.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{230,259}</string>
+				<key>spriteSize</key>
+				<string>{230,259}</string>
+				<key>textureRect</key>
+				<string>{{605,1258},{230,259}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5043478260869565,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51730.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{11,12}</string>
+				<key>spriteSize</key>
+				<string>{11,12}</string>
+				<key>textureRect</key>
+				<string>{{836,1258},{11,12}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5454545454545454,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51731.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{13,13}</string>
+				<key>spriteSize</key>
+				<string>{13,13}</string>
+				<key>textureRect</key>
+				<string>{{848,1258},{13,13}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.46153846153846156,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51732.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{15,15}</string>
+				<key>spriteSize</key>
+				<string>{15,15}</string>
+				<key>textureRect</key>
+				<string>{{862,1258},{15,15}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5333333333333333,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51733.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{9,8}</string>
+				<key>spriteSize</key>
+				<string>{9,8}</string>
+				<key>textureRect</key>
+				<string>{{878,1258},{9,8}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.4444444444444444,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51734.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{223,225}</string>
+				<key>spriteSize</key>
+				<string>{223,225}</string>
+				<key>textureRect</key>
+				<string>{{888,1258},{223,225}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5022421524663677,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51735.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{11,11}</string>
+				<key>spriteSize</key>
+				<string>{11,11}</string>
+				<key>textureRect</key>
+				<string>{{1112,1258},{11,11}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5454545454545454,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51736.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{17,16}</string>
+				<key>spriteSize</key>
+				<string>{17,16}</string>
+				<key>textureRect</key>
+				<string>{{1124,1258},{17,16}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.47058823529411764,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51737.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{11,11}</string>
+				<key>spriteSize</key>
+				<string>{11,11}</string>
+				<key>textureRect</key>
+				<string>{{1142,1258},{11,11}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5454545454545454,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51738.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{8,9}</string>
+				<key>spriteSize</key>
+				<string>{8,9}</string>
+				<key>textureRect</key>
+				<string>{{1154,1258},{8,9}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51739.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{8,8}</string>
+				<key>spriteSize</key>
+				<string>{8,8}</string>
+				<key>textureRect</key>
+				<string>{{1163,1258},{8,8}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51740.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{64,43}</string>
+				<key>spriteSize</key>
+				<string>{64,43}</string>
+				<key>textureRect</key>
+				<string>{{1172,1258},{64,43}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51741.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{45,29}</string>
+				<key>spriteSize</key>
+				<string>{45,29}</string>
+				<key>textureRect</key>
+				<string>{{1237,1258},{45,29}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.4888888888888889,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51742.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{31,17}</string>
+				<key>spriteSize</key>
+				<string>{31,17}</string>
+				<key>textureRect</key>
+				<string>{{1283,1258},{31,17}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5161290322580645,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51743.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{233,234}</string>
+				<key>spriteSize</key>
+				<string>{233,234}</string>
+				<key>textureRect</key>
+				<string>{{1315,1258},{233,234}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.4978540772532189,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51744.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{243,243}</string>
+				<key>spriteSize</key>
+				<string>{243,243}</string>
+				<key>textureRect</key>
+				<string>{{1549,1258},{243,243}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5020576131687243,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51745.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{253,254}</string>
+				<key>spriteSize</key>
+				<string>{253,254}</string>
+				<key>textureRect</key>
+				<string>{{1793,1258},{253,254}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.4980237154150198,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51746.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{263,263}</string>
+				<key>spriteSize</key>
+				<string>{263,263}</string>
+				<key>textureRect</key>
+				<string>{{0,1534},{263,263}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5019011406844106,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51747.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{271,272}</string>
+				<key>spriteSize</key>
+				<string>{271,272}</string>
+				<key>textureRect</key>
+				<string>{{264,1534},{271,272}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5018450184501845,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51748.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{280,281}</string>
+				<key>spriteSize</key>
+				<string>{280,281}</string>
+				<key>textureRect</key>
+				<string>{{536,1534},{280,281}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51749.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{288,289}</string>
+				<key>spriteSize</key>
+				<string>{288,289}</string>
+				<key>textureRect</key>
+				<string>{{817,1534},{288,289}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51750.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{296,298}</string>
+				<key>spriteSize</key>
+				<string>{296,298}</string>
+				<key>textureRect</key>
+				<string>{{1106,1534},{296,298}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Effect_Explosion_1_517x51751.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{305,305}</string>
+				<key>spriteSize</key>
+				<string>{305,305}</string>
+				<key>textureRect</key>
+				<string>{{1403,1534},{305,305}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.49836065573770494,0}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>3</integer>
+			<key>realTextureFileName</key>
+			<string>Effect_Explosion_1_517x517.png</string>
+			<key>textureFileName</key>
+			<string>Effect_Explosion_1_517x517.png</string>
+			<key>size</key>
+			<string>{2046,1840}</string>
+		</dict>
+	</dict>
+</plist>

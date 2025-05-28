@@ -650,7 +650,7 @@
     "skillDash": {
       "__id__": 10
     },
-    "hp": 200,
+    "hp": 10000,
     "moveSpeed": 100,
     "hpBar": {
       "__id__": 17

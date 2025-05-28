@@ -17,12 +17,12 @@ cc.Class({
     this.updateHpBar();
 
     // Tự tìm player (Player, PlayerStage2 hoặc PlayerStage3)
-    this.player = cc.find("Canvas").getComponentInChildren("PlayerStage3");
+    this.player = cc.find("Canvas").getComponentInChildren("PlayerController");
 
     if (this.player) {
       this.player = this.player.node;
     } else {
-      cc.warn("Không tìm thấy PlayerStage3!");
+      cc.warn("Không tìm thấy PlayerController");
     }
   },
 
@@ -62,7 +62,7 @@ cc.Class({
       this.node.setPosition(newPos);
     } else {
       // Gây sát thương khi chạm
-      const playerScript = this.player.getComponent("PlayerStage3");
+      const playerScript = this.player.getComponent("PlayerController");
 
       if (playerScript && playerScript.takeDamage) {
         playerScript.takeDamage(this.damage || 10);
