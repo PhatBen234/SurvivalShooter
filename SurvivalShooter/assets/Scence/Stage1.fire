@@ -7069,11 +7069,11 @@
       "__id__": 123
     },
     "_enabled": true,
-    "_maxHp": 10000,
+    "_maxHp": 100,
     "_currentHp": 100,
     "_speed": 200,
-    "_baseAttack": 10000,
-    "_criticalRate": 0.1,
+    "_baseAttack": 45,
+    "_criticalRate": 0.5,
     "_meleeAttackRange": 100,
     "_rangedAttackRange": 300,
     "_meleeToRangedThreshold": 120,
@@ -7083,7 +7083,7 @@
     "_expPickupRange": 100,
     "_skillCooldown": 4,
     "_attackInterval": 2,
-    "_skillDamage": 10,
+    "_skillDamage": 50,
     "_hasUltimateSkill": false,
     "_ultimateCooldown": 1,
     "_canUseUltimate": true,
@@ -7091,7 +7091,7 @@
     "_currentAttackType": null,
     "_canUseSkill": true,
     "_lastDirection": null,
-    "_id": "05WF7k9tdEFqUNEsUjJ9pn"
+    "_id": "0ecWch5XZCM5t/yypTyok2"
   },
   {
     "__type__": "cc.PrefabInfo",

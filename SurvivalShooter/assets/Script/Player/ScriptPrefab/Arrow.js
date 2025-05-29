@@ -5,11 +5,13 @@ cc.Class({
     speed: 600,
     target: null,
     damage: 0,
+    isCritical: false, // Thêm property để track critical
   },
 
-  init(target, damage) {
+  init(target, damage, isCritical = false) {
     this.target = target;
     this.damage = damage;
+    this.isCritical = isCritical;
   },
 
   update(dt) {
@@ -24,8 +26,14 @@ cc.Class({
     if (this.node.position.sub(this.target.position).mag() < 20) {
       const enemyScript =
         this.target.getComponent("BaseEnemy") ||
+        this.target.getComponent("EnemyLevel2") ||
         this.target.getComponent("BossEnemy");
-      if (enemyScript?.takeDamage) enemyScript.takeDamage(this.damage);
+
+      // Truyền cả damage và isCritical vào takeDamage
+      if (enemyScript?.takeDamage) {
+        enemyScript.takeDamage(this.damage, this.isCritical);
+      }
+
       this.node.destroy();
     }
   },
