@@ -808,6 +808,9 @@
     "enemyManager": {
       "__id__": 154
     },
+    "player": {
+      "__id__": 56
+    },
     "_id": "f4VFej4cNHuaOOoJbk1fSv"
   },
   {
@@ -6696,31 +6699,8 @@
     "_enabled": true,
     "spawnInterval": 3,
     "enemiesPerWave": 10,
-    "enemyLv1Prefabs": [
-      {
-        "__uuid__": "a578b5a2-b9e2-441f-8dc0-7d5eecde3caf"
-      },
-      {
-        "__uuid__": "e93e6c18-a21c-48f7-9466-c792a2947649"
-      },
-      {
-        "__uuid__": "d4019bb1-35dc-4b3d-94f1-d8272f1bb2b3"
-      }
-    ],
-    "enemyLv2Prefabs": [
-      {
-        "__uuid__": "06962274-e441-4eee-9fd2-d2e49427a690"
-      },
-      {
-        "__uuid__": "4574ee7d-ac1b-4c65-bd56-ace69f15a05f"
-      },
-      {
-        "__uuid__": "8ea13462-34e3-4b67-8cd3-bbd13fb0eaa8"
-      },
-      {
-        "__uuid__": "794dc64d-816c-428f-8e57-305afc94fcdf"
-      }
-    ],
+    "enemyLv1Prefabs": [],
+    "enemyLv2Prefabs": [],
     "bossEnemyPrefab": {
       "__uuid__": "f3412291-da3f-4080-9203-0ef5fc0b4cbb"
     },
