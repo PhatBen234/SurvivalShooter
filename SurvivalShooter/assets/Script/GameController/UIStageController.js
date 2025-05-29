@@ -11,6 +11,7 @@ cc.Class({
         resultMenu: cc.Node,
         resultLabel: cc.Label,
         nextStageBtn: cc.Node,
+        finalScoreLabel: cc.Label,
 
         // Game UI Elements
         scoreLabel: cc.Label,
@@ -28,6 +29,9 @@ cc.Class({
 
         // Setup volume slider
         this.setupVolumeSlider();
+
+        //Setp max round
+        this.maxRound = 3; // Assuming 3 rounds in total
     },
 
     setupVolumeSlider() {
@@ -67,7 +71,7 @@ cc.Class({
         
         // Initialize round
         if (this.roundLabel) {
-            this.roundLabel.string = "Round: 1";
+            this.roundLabel.string = 'Round: 1/${this.maxRound}';
         }
         
         // Initialize timer
@@ -85,7 +89,7 @@ cc.Class({
 
     updateRound(round) {
         if (this.roundLabel) {
-            this.roundLabel.string = `Round: ${round}`;
+            this.roundLabel.string = `Round: ${round}/${this.maxRound}`;
         }
     },
 
@@ -93,7 +97,7 @@ cc.Class({
         if (this.timerLabel) {
             if (timeLeft < 0) {
                 // Round 3 - no time limit
-                this.timerLabel.string = "Time: ∞";
+                this.timerLabel.string = "No Time Limit";
             } else {
                 // Format time as MM:SS
                 let minutes = Math.floor(timeLeft / 60);
@@ -152,12 +156,11 @@ cc.Class({
 
         if (this.resultLabel) {
             if (isWin) {
-                this.resultLabel.string = "🎉 VICTORY! 🎉";
-                this.resultLabel.node.color = cc.Color.GREEN;
+                this.resultLabel.string = "YOU WON ";
             } else {
-                this.resultLabel.string = "💀 GAME OVER 💀";
-                this.resultLabel.node.color = cc.Color.RED;
+                this.resultLabel.string = "GAME OVER";
             }
+            this.finalScoreLabel.string = `Final Score: ${this.scoreLabel.string.split(": ")[1]}`;
         }
 
         // Show/hide next stage button based on result
@@ -176,7 +179,7 @@ cc.Class({
 
     onClickNextStage() {
         const currentScene = cc.director.getScene().name;
-        cc.director.resume();
+
         
         // Resume audio before scene change
         if (window.AudioManager) {
@@ -192,17 +195,16 @@ cc.Class({
             // Boss stage completed, return to main menu
             cc.director.loadScene("MainMenu");
         }
+        cc.director.resume();
     },
 
     onResultHomeClick() {
-        cc.director.resume();
-        
         // Resume audio before scene change
         if (window.AudioManager) {
             window.AudioManager.resumeAll();
-        }
-        
+        }       
         cc.director.loadScene("MainMenu");
+        cc.director.resume();
     },
 
     // === UTILITY METHODS ===
