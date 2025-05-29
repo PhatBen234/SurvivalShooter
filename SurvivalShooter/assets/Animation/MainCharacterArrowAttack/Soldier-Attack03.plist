@@ -1,0 +1,173 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>frames</key>
+		<dict>
+			<key>Soldier-Attack030.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{19,18}</string>
+				<key>spriteSize</key>
+				<string>{19,18}</string>
+				<key>textureRect</key>
+				<string>{{0,0},{19,18}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5263157894736842,0}</string>
+			</dict>
+			<key>Soldier-Attack031.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{17,18}</string>
+				<key>spriteSize</key>
+				<string>{17,18}</string>
+				<key>textureRect</key>
+				<string>{{20,0},{17,18}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.47058823529411764,0}</string>
+			</dict>
+			<key>Soldier-Attack032.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{17,19}</string>
+				<key>spriteSize</key>
+				<string>{17,19}</string>
+				<key>textureRect</key>
+				<string>{{38,0},{17,19}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.47058823529411764,0}</string>
+			</dict>
+			<key>Soldier-Attack033.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{17,18}</string>
+				<key>spriteSize</key>
+				<string>{17,18}</string>
+				<key>textureRect</key>
+				<string>{{56,0},{17,18}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.47058823529411764,0}</string>
+			</dict>
+			<key>Soldier-Attack034.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{22,18}</string>
+				<key>spriteSize</key>
+				<string>{22,18}</string>
+				<key>textureRect</key>
+				<string>{{74,0},{22,18}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5454545454545454,0}</string>
+			</dict>
+			<key>Soldier-Attack035.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{21,17}</string>
+				<key>spriteSize</key>
+				<string>{21,17}</string>
+				<key>textureRect</key>
+				<string>{{97,0},{21,17}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.47619047619047616,0}</string>
+			</dict>
+			<key>Soldier-Attack036.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{20,17}</string>
+				<key>spriteSize</key>
+				<string>{20,17}</string>
+				<key>textureRect</key>
+				<string>{{119,0},{20,17}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Soldier-Attack037.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{36,18}</string>
+				<key>spriteSize</key>
+				<string>{36,18}</string>
+				<key>textureRect</key>
+				<string>{{140,0},{36,18}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.5,0}</string>
+			</dict>
+			<key>Soldier-Attack038.png</key>
+			<dict>
+				<key>aliases</key>
+				<array />
+				<key>spriteOffset</key>
+				<string>{0,0}</string>
+				<key>spriteSourceSize</key>
+				<string>{21,19}</string>
+				<key>spriteSize</key>
+				<string>{21,19}</string>
+				<key>textureRect</key>
+				<string>{{177,0},{21,19}}</string>
+				<key>textureRotated</key>
+				<false />
+				<key>anchor</key>
+				<string>{0.47619047619047616,0}</string>
+			</dict>
+		</dict>
+		<key>metadata</key>
+		<dict>
+			<key>format</key>
+			<integer>3</integer>
+			<key>realTextureFileName</key>
+			<string>Soldier-Attack03.png</string>
+			<key>textureFileName</key>
+			<string>Soldier-Attack03.png</string>
+			<key>size</key>
+			<string>{198,20}</string>
+		</dict>
+	</dict>
+</plist>
