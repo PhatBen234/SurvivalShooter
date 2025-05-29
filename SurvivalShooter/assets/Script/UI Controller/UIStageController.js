@@ -1,10 +1,11 @@
-// UIStageController.js - Refactored
+// UIStageController.js - Updated with Volume Control
 cc.Class({
     extends: cc.Component,
 
     properties: {
         // Pause Menu
         pauseMenu: cc.Node,
+        volumeSlider: cc.Slider, // Added volume slider for pause menu
 
         // Result Menu
         resultMenu: cc.Node,
@@ -24,6 +25,38 @@ cc.Class({
         
         // Initialize UI labels
         this.initializeUI();
+
+        // Setup volume slider
+        this.setupVolumeSlider();
+    },
+
+    setupVolumeSlider() {
+        if (this.volumeSlider && window.AudioManager) {
+            // Set slider value to current master volume
+            const currentVolume = window.AudioManager.getMasterVolume();
+            this.volumeSlider.progress = currentVolume;
+
+            // Listen for slide events
+            this.volumeSlider.node.on("slide", this.onVolumeChanged, this);
+            console.log("Stage volume slider setup complete, current volume:", currentVolume);
+        } else {
+            if (!this.volumeSlider) {
+                console.warn("Volume slider not assigned in UIStageController!");
+            }
+            if (!window.AudioManager) {
+                console.warn("AudioManager not found in UIStageController!");
+            }
+        }
+    },
+
+    onVolumeChanged() {
+        if (!this.volumeSlider || !window.AudioManager) return;
+
+        const volume = this.volumeSlider.progress;
+        console.log("Stage volume changed to:", volume);
+
+        // Update master volume through AudioManager
+        window.AudioManager.setMasterVolume(volume);
     },
 
     initializeUI() {
@@ -75,11 +108,21 @@ cc.Class({
     onPauseClick() {
         this.pauseMenu.active = true;
         cc.director.pause();
+        
+        // Pause audio
+        if (window.AudioManager) {
+            window.AudioManager.pauseAll();
+        }
     },
 
     onResumeClick() {
         this.pauseMenu.active = false;
         cc.director.resume();
+        
+        // Resume audio
+        if (window.AudioManager) {
+            window.AudioManager.resumeAll();
+        }
     },
 
     onRestartClick() {
@@ -88,6 +131,12 @@ cc.Class({
         const currentScene = cc.director.getScene().name;
 
         cc.director.resume();
+        
+        // Resume audio before scene change
+        if (window.AudioManager) {
+            window.AudioManager.resumeAll();
+        }
+        
         cc.director.loadScene(currentScene);
     },
 
@@ -95,6 +144,11 @@ cc.Class({
     showResultPanel(isWin) {
         this.resultMenu.active = true;
         cc.director.pause();
+        
+        // Pause audio
+        if (window.AudioManager) {
+            window.AudioManager.pauseAll();
+        }
 
         if (this.resultLabel) {
             if (isWin) {
@@ -123,6 +177,11 @@ cc.Class({
     onClickNextStage() {
         const currentScene = cc.director.getScene().name;
         cc.director.resume();
+        
+        // Resume audio before scene change
+        if (window.AudioManager) {
+            window.AudioManager.resumeAll();
+        }
 
         // Navigate to next stage
         if (currentScene === "Stage1") {
@@ -137,6 +196,12 @@ cc.Class({
 
     onResultHomeClick() {
         cc.director.resume();
+        
+        // Resume audio before scene change
+        if (window.AudioManager) {
+            window.AudioManager.resumeAll();
+        }
+        
         cc.director.loadScene("MainMenu");
     },
 

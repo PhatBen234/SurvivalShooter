@@ -5,6 +5,24 @@ cc.Class({
     uiStageController: cc.Node,
     enemyManager: cc.Node,
     player: cc.Node,
+
+    // Audio clips for current stage
+    stageMusic: {
+      default: null,
+      type: cc.AudioClip,
+    },
+    bossMusicStage1: {
+      default: null,
+      type: cc.AudioClip,
+    },
+    bossMusicStage2: {
+      default: null,
+      type: cc.AudioClip,
+    },
+    bossMusicStage3: {
+      default: null,
+      type: cc.AudioClip,
+    },
   },
 
   onLoad() {
@@ -23,6 +41,44 @@ cc.Class({
 
     // Register global reference
     cc.game.gameManager = this;
+
+    // Setup audio for current stage
+    this.setupStageAudio();
+  },
+
+  setupStageAudio() {
+    if (!window.AudioManager) {
+      console.warn("AudioManager not found in GameManager");
+      return;
+    }
+
+    const currentScene = cc.director.getScene().name;
+    
+    // Setup audio clips based on current scene
+    const audioClips = {};
+    
+    switch (currentScene) {
+      case 'Stage1':
+        if (this.stageMusic) audioClips.stage1 = this.stageMusic;
+        if (this.bossMusicStage1) audioClips.bossStage1 = this.bossMusicStage1;
+        break;
+      case 'Stage2':
+        if (this.stageMusic) audioClips.stage2 = this.stageMusic;
+        if (this.bossMusicStage2) audioClips.bossStage2 = this.bossMusicStage2;
+        break;
+      case 'BossStage':
+        if (this.stageMusic) audioClips.stage3 = this.stageMusic;
+        if (this.bossMusicStage3) audioClips.bossStage3 = this.bossMusicStage3;
+        break;
+    }
+
+    // Update AudioManager with stage-specific clips
+    if (Object.keys(audioClips).length > 0) {
+      window.AudioManager.setAudioClips(audioClips);
+    }
+
+    // Start stage music
+    window.AudioManager.onSceneStart(currentScene);
   },
 
   start() {
@@ -90,6 +146,13 @@ cc.Class({
     if (this.enemyManagerComponent) {
       this.enemyManagerComponent.forceBossSpawn();
     }
+
+    // Trigger boss music through AudioManager
+    if (window.AudioManager) {
+      window.AudioManager.onBossSpawn();
+    }
+
+    console.log("Boss spawned and boss music started");
   },
 
   checkPlayerDeath() {
@@ -182,6 +245,14 @@ cc.Class({
 
     this.bossDefeated = true;
     this.totalScore += 1000; // Bonus score for defeating boss
+    
+    // Stop boss music and restore stage music
+    if (window.AudioManager) {
+      window.AudioManager.onBossDefeated();
+    }
+
+    console.log("Boss defeated, music restored");
+    
     this.onStageComplete();
   },
 
@@ -251,5 +322,11 @@ cc.Class({
 
   isBossDefeated() {
     return this.bossDefeated;
+  },
+
+  // Cleanup
+  onDestroy() {
+    // AudioManager will handle cleanup automatically
+    console.log("GameManager destroyed");
   },
 });
