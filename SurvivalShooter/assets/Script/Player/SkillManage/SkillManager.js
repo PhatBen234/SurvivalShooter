@@ -6,9 +6,9 @@ cc.Class({
 
   properties: {
     player: cc.Node,
+    skillSelect: cc.Node,
     skillPanel: cc.Node,
     skillOptionPrefab: cc.Prefab,
-    ownedSkillsLabel: cc.Label,
 
     maxSkillsToShow: 3,
   },
@@ -51,14 +51,14 @@ cc.Class({
   },
 
   showSkillPanel(skills) {
-    this.skillPanel.removeAllChildren();
-    this.skillPanel.active = true;
+    this.skillSelect.removeAllChildren();
+    this.skillPanel.active = true;//Hiện Panel
 
     skills.forEach((skill) => {
       const node = cc.instantiate(this.skillOptionPrefab);
       const skillComp = node.getComponent("SkillOption");
       skillComp.init(skill, () => this.selectSkill(skill));
-      this.skillPanel.addChild(node);
+      this.skillSelect.addChild(node);
     });
 
     // Pause Game
@@ -89,7 +89,6 @@ cc.Class({
 
     // Đóng skill panel và cập nhật UI
     this.skillPanel.active = false;
-    this.updateOwnedSkillsLabel();
 
     // Resume Game
     cc.director.resume();
@@ -118,19 +117,6 @@ cc.Class({
     this.playerController.applySkillBuff(skillId, effect.amount);
 
     cc.log(`[SkillManager] Applied ${effect.name}: +${effect.amount}`);
-  },
-
-  updateOwnedSkillsLabel() {
-    if (!this.ownedSkillsLabel) return;
-
-    const text = Object.entries(this.playerSkills)
-      .map(([id, level]) => {
-        const skill = defaultSkills.find((s) => s.id === Number(id));
-        return skill ? `${skill.name} Lv${level}` : `Unknown Skill Lv${level}`;
-      })
-      .join("\n");
-
-    this.ownedSkillsLabel.string = "Skills Owned:\n" + (text || "None");
   },
 
   // === ULTIMATE SKILL METHODS ===
