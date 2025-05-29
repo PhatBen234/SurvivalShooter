@@ -9,14 +9,13 @@ cc.Class({
 
     // UI Labels
     hpLabel: cc.Label,
+    hpBar: cc.ProgressBar,
     attackLabel: cc.Label,
     critLabel: cc.Label,
-    expRangeLabel: cc.Label,
-    attackRangeLabel: cc.Label,
-    skillDamageLabel: cc.Label,
-    ultimateLabel: cc.Label,
+    ultimateSprite: cc.Node,
     expBar: cc.ProgressBar,
     levelLabel: cc.Label,
+
 
     // References
     playerModel: null,
@@ -158,45 +157,41 @@ cc.Class({
 
   updateHpUI() {
     if (this.hpLabel && this.playerModel) {
-      this.hpLabel.string = `HP: ${this.playerModel.getCurrentHp()}`;
+      this.hpLabel.string = `HP: ${this.playerModel.getCurrentHp()}/${this.playerModel.getMaxHp()}`;
     }
+    const progress =
+      this.playerModel.getCurrentHp() / this.playerModel.getMaxHp();
+    if (this.hpBar) this.hpBar.progress = progress;
   },
 
   updateStatsUI() {
     if (!this.playerModel) return;
 
     this.attackLabel.string = `Atk: ${this.playerModel.getBaseAttack()}`;
-    this.skillDamageLabel.string = `Skill: ${this.playerModel.getSkillDamage()}`;
     this.critLabel.string = `Crit: ${Math.floor(
       this.playerModel.getCriticalRate() * 100
     )}%`;
-    this.expRangeLabel.string = `EXP Range: ${this.playerModel.getExpPickupRange()}`;
-    this.attackRangeLabel.string = `Melee: ${this.playerModel.getMeleeAttackRange()} | Archer: ${this.playerModel.getRangedAttackRange()}`;
-
     this.updateUltimateUI();
   },
 
   updateUltimateUI() {
-    if (!this.ultimateLabel || !this.playerModel) return;
+    if (!this.ultimateSprite || !this.playerModel) return;
 
-    const label = this.ultimateLabel;
+    this.ultimateSprite.active = true;
     const hasUltimate = this.playerModel.hasUltimateSkill();
 
     if (!hasUltimate) {
-      label.string = "Ultimate: LOCKED";
-      label.node.color = cc.Color.GRAY;
+      this.ultimateSprite.active = false;
       return;
     }
 
     const handler = this.node.getComponent("UltimateSkillHandler");
 
     if (this.playerModel.canUseUltimate() && !handler?.isUltimateOnCooldown) {
-      label.string = "Ultimate: READY";
-      label.node.color = cc.Color.GREEN;
+// ĐỔi thành sprite frame của ultimate skill
     } else {
       const cooldown = handler?.getRemainingCooldown() || 0;
-      label.string = `Ultimate: COOLDOWN (${Math.ceil(cooldown)}s)`;
-      label.node.color = cc.Color.YELLOW;
+//Đổi thành sprite frame của ultimate skill cooldown
     }
   },
 
