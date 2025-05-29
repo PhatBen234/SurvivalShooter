@@ -35,8 +35,8 @@ cc.Class({
     this.bossDefeated = false;
 
     // Round settings
-    this.ROUND_1_TIME = 1;
-    this.ROUND_2_TIME = 1;
+    this.ROUND_1_TIME = 60;
+    this.ROUND_2_TIME = 20;
     this.ROUND_3_TIME = -1;
 
     // Register global reference
@@ -53,20 +53,20 @@ cc.Class({
     }
 
     const currentScene = cc.director.getScene().name;
-    
+
     // Setup audio clips based on current scene
     const audioClips = {};
-    
+
     switch (currentScene) {
-      case 'Stage1':
+      case "Stage1":
         if (this.stageMusic) audioClips.stage1 = this.stageMusic;
         if (this.bossMusicStage1) audioClips.bossStage1 = this.bossMusicStage1;
         break;
-      case 'Stage2':
+      case "Stage2":
         if (this.stageMusic) audioClips.stage2 = this.stageMusic;
         if (this.bossMusicStage2) audioClips.bossStage2 = this.bossMusicStage2;
         break;
-      case 'BossStage':
+      case "BossStage":
         if (this.stageMusic) audioClips.stage3 = this.stageMusic;
         if (this.bossMusicStage3) audioClips.bossStage3 = this.bossMusicStage3;
         break;
@@ -245,14 +245,14 @@ cc.Class({
 
     this.bossDefeated = true;
     this.totalScore += 1000; // Bonus score for defeating boss
-    
+
     // Stop boss music and restore stage music
     if (window.AudioManager) {
       window.AudioManager.onBossDefeated();
     }
 
     console.log("Boss defeated, music restored");
-    
+
     this.onStageComplete();
   },
 

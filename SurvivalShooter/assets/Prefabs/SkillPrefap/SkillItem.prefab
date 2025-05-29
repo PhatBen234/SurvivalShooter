@@ -177,9 +177,9 @@
     "_opacity": 255,
     "_color": {
       "__type__": "cc.Color",
-      "r": 0,
-      "g": 0,
-      "b": 0,
+      "r": 240,
+      "g": 2,
+      "b": 78,
       "a": 255
     },
     "_contentSize": {
@@ -241,8 +241,10 @@
     "_fontSize": 20,
     "_lineHeight": 40,
     "_enableWrapText": false,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "704d2636-fbfb-4eb9-9a2f-cea2f960e2d9"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 1,
@@ -293,7 +295,7 @@
     "_contentSize": {
       "__type__": "cc.Size",
       "width": 150,
-      "height": 170
+      "height": 90.39999999999999
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -304,7 +306,7 @@
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -62,
+        -57.362,
         47,
         0,
         0,
@@ -344,13 +346,15 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_string": "",
-    "_N$string": "",
+    "_string": "Base Attack + 10",
+    "_N$string": "Base Attack + 10",
     "_fontSize": 30,
     "_lineHeight": 40,
     "_enableWrapText": false,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
+    "_N$file": {
+      "__uuid__": "d09c0248-4448-4165-bcd7-978733568d17"
+    },
+    "_isSystemFontUsed": false,
     "_spacingX": 0,
     "_batchAsBitmap": false,
     "_styleFlags": 1,

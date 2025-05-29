@@ -3,13 +3,13 @@ cc.Class({
 
   properties: {
     // HP & Movement
-    _maxHp: 10000,
+    _maxHp: 100,
     _currentHp: 100,
     _speed: 200,
 
     // Attack stats
-    _baseAttack: 100,
-    _criticalRate: 0.5,
+    _baseAttack: 45,
+    _criticalRate: 0.1,
     _meleeAttackRange: 100,
     _rangedAttackRange: 300,
     _meleeToRangedThreshold: 120,
@@ -23,7 +23,7 @@ cc.Class({
     // Skill
     _skillCooldown: 4,
     _attackInterval: 2,
-    _skillDamage: 10, // Thêm skill damage base
+    _skillDamage: 50, // Thêm skill damage base
 
     // Ultimate Skill Properties
     _hasUltimateSkill: false,
