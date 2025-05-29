@@ -1895,14 +1895,12 @@
     "player": {
       "__id__": 40
     },
+    "skillSelect": null,
     "skillPanel": {
       "__id__": 77
     },
     "skillOptionPrefab": {
       "__uuid__": "cd953381-d578-4641-af6c-e384022ca8ec"
-    },
-    "ownedSkillsLabel": {
-      "__id__": 34
     },
     "maxSkillsToShow": 3,
     "_id": "97As9tY2dJwr+G5VuQUqdy"
@@ -2886,24 +2884,14 @@
     "hpLabel": {
       "__id__": 9
     },
+    "hpBar": null,
     "attackLabel": {
       "__id__": 11
     },
     "critLabel": {
       "__id__": 15
     },
-    "expRangeLabel": {
-      "__id__": 19
-    },
-    "attackRangeLabel": {
-      "__id__": 17
-    },
-    "skillDamageLabel": {
-      "__id__": 13
-    },
-    "ultimateLabel": {
-      "__id__": 21
-    },
+    "ultimateSprite": null,
     "expBar": {
       "__id__": 27
     },

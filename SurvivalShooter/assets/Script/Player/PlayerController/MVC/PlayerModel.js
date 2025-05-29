@@ -8,7 +8,7 @@ cc.Class({
     _speed: 200,
 
     // Attack stats
-    _baseAttack: 45,
+    _baseAttack: 30,
     _criticalRate: 0.1,
     _meleeAttackRange: 100,
     _rangedAttackRange: 300,

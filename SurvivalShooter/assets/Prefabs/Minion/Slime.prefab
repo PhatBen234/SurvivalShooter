@@ -241,7 +241,7 @@
     },
     "_enabled": true,
     "hp": 200,
-    "damage": 15,
+    "damage": 50,
     "speed": 70,
     "score": 10,
     "target": null,

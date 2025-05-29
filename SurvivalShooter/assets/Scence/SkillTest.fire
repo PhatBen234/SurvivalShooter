@@ -81,7 +81,7 @@
         "__id__": 15
       },
       {
-        "__id__": 19
+        "__id__": 18
       },
       {
         "__id__": 20
@@ -698,14 +698,12 @@
     },
     "_enabled": true,
     "player": null,
+    "skillSelect": null,
     "skillPanel": {
       "__id__": 15
     },
     "skillOptionPrefab": {
       "__uuid__": "cd953381-d578-4641-af6c-e384022ca8ec"
-    },
-    "ownedSkillsLabel": {
-      "__id__": 18
     },
     "maxSkillsToShow": 3,
     "_id": "baopEAVA1MLIG96OknTVHZ"
@@ -840,39 +838,6 @@
     "_id": "78rtDtF0VOKIlojt6YYu5s"
   },
   {
-    "__type__": "cc.Label",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 19
-    },
-    "_enabled": true,
-    "_materials": [
-      {
-        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
-      }
-    ],
-    "_srcBlendFactor": 770,
-    "_dstBlendFactor": 771,
-    "_string": "Label",
-    "_N$string": "Label",
-    "_fontSize": 40,
-    "_lineHeight": 40,
-    "_enableWrapText": true,
-    "_N$file": null,
-    "_isSystemFontUsed": true,
-    "_spacingX": 0,
-    "_batchAsBitmap": false,
-    "_styleFlags": 0,
-    "_underlineHeight": 0,
-    "_N$horizontalAlign": 1,
-    "_N$verticalAlign": 1,
-    "_N$fontFamily": "Arial",
-    "_N$overflow": 0,
-    "_N$cacheMode": 0,
-    "_id": "9cObiIvPtP1ZneyxR1Y3Dm"
-  },
-  {
     "__type__": "cc.Node",
     "_name": "Skill Owned",
     "_objFlags": 0,
@@ -883,7 +848,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 18
+        "__id__": 19
       }
     ],
     "_prefab": null,
@@ -933,6 +898,39 @@
     "_groupIndex": 0,
     "groupIndex": 0,
     "_id": "fbCXY61nRDHagg59geSSAy"
+  },
+  {
+    "__type__": "cc.Label",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 18
+    },
+    "_enabled": true,
+    "_materials": [
+      {
+        "__uuid__": "eca5d2f2-8ef6-41c2-bbe6-f9c79d09c432"
+      }
+    ],
+    "_srcBlendFactor": 770,
+    "_dstBlendFactor": 771,
+    "_string": "Label",
+    "_N$string": "Label",
+    "_fontSize": 40,
+    "_lineHeight": 40,
+    "_enableWrapText": true,
+    "_N$file": null,
+    "_isSystemFontUsed": true,
+    "_spacingX": 0,
+    "_batchAsBitmap": false,
+    "_styleFlags": 0,
+    "_underlineHeight": 0,
+    "_N$horizontalAlign": 1,
+    "_N$verticalAlign": 1,
+    "_N$fontFamily": "Arial",
+    "_N$overflow": 0,
+    "_N$cacheMode": 0,
+    "_id": "9cObiIvPtP1ZneyxR1Y3Dm"
   },
   {
     "__type__": "cc.Node",

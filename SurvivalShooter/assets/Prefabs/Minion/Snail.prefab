@@ -240,8 +240,8 @@
       "__id__": 1
     },
     "_enabled": true,
-    "hp": 400,
-    "damage": 15,
+    "hp": 600,
+    "damage": 40,
     "speed": 40,
     "score": 10,
     "target": null,
