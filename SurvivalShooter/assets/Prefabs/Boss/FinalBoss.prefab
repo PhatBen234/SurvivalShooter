@@ -495,19 +495,19 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 30,
+      "width": 300,
       "height": 15
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0,
+      "x": 0.5,
       "y": 0.5
     },
     "_trs": {
       "__type__": "TypedArray",
       "ctor": "Float64Array",
       "array": [
-        -150,
+        0,
         0,
         0,
         0,
@@ -620,7 +620,7 @@
       "__id__": 14
     },
     "_N$mode": 0,
-    "_N$progress": 0.1,
+    "_N$progress": 1,
     "_N$reverse": false,
     "_id": ""
   },
@@ -652,7 +652,7 @@
       "__uuid__": "56ac74e3-33fa-4c25-8944-62ab173d95b3"
     },
     "expPrefab": null,
-    "expAmount": 0,
+    "expAmount": 20,
     "flipOnMove": true,
     "originalFacingLeft": false,
     "damageInterval": 1,
@@ -665,6 +665,9 @@
       }
     ],
     "skillInterval": 5,
+    "hpBar": {
+      "__id__": 17
+    },
     "_id": ""
   },
   {
