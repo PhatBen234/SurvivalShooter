@@ -3,13 +3,15 @@ cc.Class({
 
     properties: {
         // Label hiển thị tên kỹ năng trong prefab
-        label: cc.Label,
+        skillName: cc.Label,
+        detailSkill: cc.Label,
     },
 
     // Hàm khởi tạo dữ liệu kỹ năng và callback khi chọn
     init(skillData, callback) {
         this.skillData = skillData;     // Lưu thông tin kỹ năng
-        this.label.string = skillData.name;  // Hiển thị tên kỹ năng lên Label
+        this.skillName.string = skillData.name;  // Hiển thị tên kỹ năng lên Label
+        this.detailSkill.string = skillData.description; // Hiển thị mô tả kỹ năng lên Label
         this.callback = callback;       // Lưu callback để gọi khi người chơi chọn kỹ năng
 
         cc.log("[SkillOption] init - Gán dữ liệu:", skillData.name);
