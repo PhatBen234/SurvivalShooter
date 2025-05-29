@@ -900,8 +900,8 @@
     "_dstBlendFactor": 771,
     "_string": "Round",
     "_N$string": "Round",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 30,
+    "_lineHeight": 30,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "ae754101-ad68-4559-860b-f91dccb85ca4"
@@ -997,8 +997,8 @@
     "_dstBlendFactor": 771,
     "_string": "Time",
     "_N$string": "Time",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 30,
+    "_lineHeight": 30,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "ae754101-ad68-4559-860b-f91dccb85ca4"
@@ -1094,8 +1094,8 @@
     "_dstBlendFactor": 771,
     "_string": "Score\n",
     "_N$string": "Score\n",
-    "_fontSize": 40,
-    "_lineHeight": 40,
+    "_fontSize": 30,
+    "_lineHeight": 30,
     "_enableWrapText": true,
     "_N$file": {
       "__uuid__": "ae754101-ad68-4559-860b-f91dccb85ca4"
