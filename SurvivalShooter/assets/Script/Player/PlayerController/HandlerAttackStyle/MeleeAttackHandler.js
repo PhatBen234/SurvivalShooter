@@ -18,19 +18,21 @@ cc.Class({
   // Tính damage cho melee attack
   calculateMeleeDamage() {
     let damage = this.playerModel.getBaseAttack();
-    if (Math.random() < this.playerModel.getCriticalRate()) {
+    let isCritical = Math.random() < this.playerModel.getCriticalRate();
+    if (isCritical) {
       damage *= 2;
     }
-    return damage;
+    return { damage, isCritical };
   },
 
   // Tính damage cho melee skill
   calculateMeleeSkillDamage() {
     let damage = this.playerModel.getSkillDamage();
-    if (Math.random() < this.playerModel.getCriticalRate()) {
+    let isCritical = Math.random() < this.playerModel.getCriticalRate();
+    if (isCritical) {
       damage *= 2;
     }
-    return damage;
+    return { damage, isCritical };
   },
 
   performAttack(onFinishCallback) {
@@ -45,14 +47,14 @@ cc.Class({
   executeMeleeDamage() {
     if (!this.canvasNode) return;
 
-    const damage = this.calculateMeleeDamage();
+    const damageInfo = this.calculateMeleeDamage();
     this.findEnemiesInRange(this.playerModel.getMeleeAttackRange()).forEach(
       (enemy) => {
         const enemyScript =
           enemy.getComponent("BaseEnemy") ||
           enemy.getComponent("EnemyLevel2") ||
           enemy.getComponent("BossEnemy");
-        enemyScript?.takeDamage?.(damage);
+        enemyScript?.takeDamage?.(damageInfo.damage, damageInfo.isCritical);
       }
     );
   },
@@ -67,15 +69,16 @@ cc.Class({
   },
 
   executeMeleeSkillDamage() {
-    // if (!this.canvasNode) return;
+    if (!this.canvasNode) return;
 
-    const skillDamage = this.calculateMeleeSkillDamage() * 3;
+    const damageInfo = this.calculateMeleeSkillDamage();
+    const skillDamage = damageInfo.damage * 3;
     this.findEnemiesInRange(200).forEach((enemy) => {
       const enemyScript =
         enemy.getComponent("BaseEnemy") ||
         enemy.getComponent("EnemyLevel2") ||
         enemy.getComponent("BossEnemy");
-      enemyScript?.takeDamage?.(skillDamage);
+      enemyScript?.takeDamage?.(skillDamage, damageInfo.isCritical);
     });
 
     this.showMeleeSkillEffect();

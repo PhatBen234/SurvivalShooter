@@ -160,42 +160,52 @@ cc.Class({
     }
   },
 
-  takeDamage(amount) {
+  takeDamage(amount, isCritical = false) {
     this.hp -= amount;
-    this.showDamage(amount);
+    this.showDamage(amount, isCritical);
 
     if (this.hp <= 0) {
       this.onDie();
     }
   },
 
-  showDamage(amount) {
+  showDamage(amount, isCritical = false) {
     if (!this.damageLabelPrefab) return;
 
     let label = cc.instantiate(this.damageLabelPrefab);
     if (!label) return;
 
-    let labelComponent = label.getComponent(cc.Label);
-    if (labelComponent) {
-      labelComponent.string = `-${amount}`;
+    // Get DamageLabel component and call showDamage with critical info
+    let damageScript = label.getComponent("DamageLabel");
+    if (damageScript && damageScript.showDamage) {
+      damageScript.showDamage(amount, isCritical);
+    } else {
+      // Fallback to old method if DamageLabel script not found
+      let labelComponent = label.getComponent(cc.Label);
+      if (labelComponent) {
+        labelComponent.string = `-${amount}`;
+        // Set color based on critical
+        label.color = isCritical ? cc.Color.RED : cc.Color.WHITE;
+      }
+
+      // Animate damage label
+      cc.tween(label)
+        .by(0.5, {
+          position: cc.v2(0, 50),
+          opacity: -255,
+        })
+        .call(() => {
+          if (label && label.isValid) {
+            label.destroy();
+          }
+        })
+        .start();
     }
 
     label.setPosition(this.node.position);
     this.node.parent.addChild(label);
-
-    // Animate damage label
-    cc.tween(label)
-      .by(0.5, {
-        position: cc.v2(0, 50),
-        opacity: -255,
-      })
-      .call(() => {
-        if (label && label.isValid) {
-          label.destroy();
-        }
-      })
-      .start();
   },
+
   onDie() {
     // Show experience effect
     if (this.expPrefab) {
@@ -304,10 +314,4 @@ cc.Class({
       this.collidingPlayers.clear();
     }
   },
-  // fireEnemyDestroyedEvent() {
-  //   // ✅ QUAN TRỌNG: Truyền cả this.node để GameManager có thể detect boss
-  //   if (cc.game.gameManager) {
-  //     cc.game.gameManager.onEnemyDestroyed(this.score, this.node);
-  //   }
-  // },
 });

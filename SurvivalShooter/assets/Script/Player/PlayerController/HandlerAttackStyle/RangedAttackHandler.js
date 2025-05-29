@@ -20,19 +20,21 @@ cc.Class({
   // Tính damage cho ranged attack
   calculateRangedDamage() {
     let damage = this.playerModel.getBaseAttack();
-    if (Math.random() < this.playerModel.getCriticalRate()) {
+    let isCritical = Math.random() < this.playerModel.getCriticalRate();
+    if (isCritical) {
       damage *= 2;
     }
-    return damage;
+    return { damage, isCritical };
   },
 
   // Tính damage cho ranged skill
   calculateRangedSkillDamage() {
     let damage = this.playerModel.getSkillDamage();
-    if (Math.random() < this.playerModel.getCriticalRate()) {
+    let isCritical = Math.random() < this.playerModel.getCriticalRate();
+    if (isCritical) {
       damage *= 2;
     }
-    return damage;
+    return { damage, isCritical };
   },
 
   performAttack(target, onFinishCallback) {
@@ -51,9 +53,10 @@ cc.Class({
     arrow.setPosition(this.node.position);
     this.canvasNode.addChild(arrow);
 
+    const damageInfo = this.calculateRangedDamage();
     const arrowScript = arrow.getComponent("Arrow");
     if (arrowScript?.init) {
-      arrowScript.init(target, this.calculateRangedDamage());
+      arrowScript.init(target, damageInfo.damage, damageInfo.isCritical);
     }
   },
 
@@ -69,18 +72,19 @@ cc.Class({
   executeRangedSkillDamage() {
     if (!this.playerModel || !this.canvasNode) return;
 
-    const skillDamage = this.calculateRangedSkillDamage() * 2;
-    this.executeHorizontalLineAttack(skillDamage);
+    const damageInfo = this.calculateRangedSkillDamage();
+    const skillDamage = damageInfo.damage * 2;
+    this.executeHorizontalLineAttack(skillDamage, damageInfo.isCritical);
     this.showRangedSkillEffect();
   },
 
-  executeHorizontalLineAttack(damage) {
+  executeHorizontalLineAttack(damage, isCritical) {
     this.getEnemiesInHorizontalLine().forEach((enemy) => {
       const script =
         enemy.getComponent("BaseEnemy") ||
         enemy.getComponent("EnemyLevel2") ||
         enemy.getComponent("BossEnemy");
-      script?.takeDamage?.(damage);
+      script?.takeDamage?.(damage, isCritical);
     });
   },
 
@@ -110,10 +114,11 @@ cc.Class({
   executeSkillArrowAttack() {
     if (!this.canvasNode) return;
 
-    const skillDamage = this.calculateRangedSkillDamage() * 2;
+    const damageInfo = this.calculateRangedSkillDamage();
+    const skillDamage = damageInfo.damage * 2;
     this.findEnemiesInSkillRange().forEach((enemy, index) => {
       this.scheduleOnce(
-        () => this.spawnSkillArrowToTarget(enemy, skillDamage),
+        () => this.spawnSkillArrowToTarget(enemy, skillDamage, damageInfo.isCritical),
         index * 0.1
       );
     });
@@ -135,7 +140,7 @@ cc.Class({
     });
   },
 
-  spawnSkillArrowToTarget(target, damage) {
+  spawnSkillArrowToTarget(target, damage, isCritical) {
     if (!this.arrowPrefab || !target || !this.canvasNode) return;
 
     const arrow = cc.instantiate(this.arrowPrefab);
@@ -144,7 +149,7 @@ cc.Class({
 
     const arrowScript = arrow.getComponent("Arrow");
     if (arrowScript?.init) {
-      arrowScript.init(target, damage);
+      arrowScript.init(target, damage, isCritical);
     }
   },
 });

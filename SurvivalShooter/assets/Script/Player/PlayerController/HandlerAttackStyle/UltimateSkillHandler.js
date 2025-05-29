@@ -19,10 +19,11 @@ cc.Class({
 
   calculateUltimateDamage() {
     let damage = this.playerModel.getSkillDamage() * 4;
-    if (Math.random() < this.playerModel.getCriticalRate()) {
+    let isCritical = Math.random() < this.playerModel.getCriticalRate();
+    if (isCritical) {
       damage *= 2;
     }
-    return damage;
+    return { damage, isCritical };
   },
 
   update(dt) {
@@ -84,7 +85,7 @@ cc.Class({
   },
 
   executeUltimateDamage() {
-    const damage = this.calculateUltimateDamage();
+    const damageInfo = this.calculateUltimateDamage();
     const enemies = this.findEnemiesInRange(500);
 
     enemies.forEach((enemy) => {
@@ -92,7 +93,7 @@ cc.Class({
         enemy.getComponent("BaseEnemy") ||
         enemy.getComponent("EnemyLevel2") ||
         enemy.getComponent("BossEnemy");
-      enemyScript?.takeDamage?.(damage);
+      enemyScript?.takeDamage?.(damageInfo.damage, damageInfo.isCritical);
     });
   },
 
