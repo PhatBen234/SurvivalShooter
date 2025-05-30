@@ -351,16 +351,16 @@
         "__id__": 10
       },
       {
-        "__id__": 169
-      },
-      {
-        "__id__": 163
-      },
-      {
-        "__id__": 167
+        "__id__": 151
       },
       {
         "__id__": 165
+      },
+      {
+        "__id__": 169
+      },
+      {
+        "__id__": 167
       }
     ],
     "_active": true,
@@ -493,13 +493,13 @@
       "__id__": 125
     },
     "gameStateManager": {
-      "__id__": 163
-    },
-    "scoreManager": {
       "__id__": 165
     },
-    "audioController": {
+    "scoreManager": {
       "__id__": 167
+    },
+    "audioController": {
+      "__id__": 169
     },
     "_id": "45kCvvT8tPbaWUnMrzyHoj"
   },
@@ -6068,12 +6068,6 @@
         "__id__": 150
       },
       {
-        "__id__": 151
-      },
-      {
-        "__id__": 152
-      },
-      {
         "__id__": 153
       },
       {
@@ -6099,10 +6093,16 @@
       },
       {
         "__id__": 161
+      },
+      {
+        "__id__": 162
+      },
+      {
+        "__id__": 163
       }
     ],
     "_prefab": {
-      "__id__": 162
+      "__id__": 164
     },
     "_opacity": 255,
     "_color": {
@@ -6951,7 +6951,9 @@
     "arrowPrefab": {
       "__uuid__": "6ebe1d79-90a9-4d75-9e05-0045abec863d"
     },
-    "skillManager": null,
+    "skillManager": {
+      "__id__": 151
+    },
     "meleeSkillNode": {
       "__id__": 138
     },
@@ -6962,6 +6964,91 @@
       "__id__": 146
     },
     "_id": "00qoRjncZBg6DmaIQJEJOT"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "SkillManager",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 7
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 152
+      }
+    ],
+    "_prefab": null,
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": "0bWFSk8DtDlYp+i6wEAOoK"
+  },
+  {
+    "__type__": "c88e9n6P8JPMbw2NLs2qPZX",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 151
+    },
+    "_enabled": true,
+    "player": {
+      "__id__": 125
+    },
+    "skillSelect": {
+      "__id__": 87
+    },
+    "skillPanel": {
+      "__id__": 84
+    },
+    "skillOptionPrefab": {
+      "__uuid__": "cd953381-d578-4641-af6c-e384022ca8ec"
+    },
+    "maxSkillsToShow": 3,
+    "_id": "b5zUGtulhFtqtp1E/zrFNk"
   },
   {
     "__type__": "6cc77IrB0tLurAdmg7bziUO",
@@ -7182,7 +7269,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 164
+        "__id__": 166
       }
     ],
     "_prefab": null,
@@ -7238,7 +7325,7 @@
     "_name": "",
     "_objFlags": 0,
     "node": {
-      "__id__": 163
+      "__id__": 165
     },
     "_enabled": true,
     "_id": "4dJRREhI5Jq5vncUtsHPVt"
@@ -7246,78 +7333,6 @@
   {
     "__type__": "cc.Node",
     "_name": "ScoreManager",
-    "_objFlags": 0,
-    "_parent": {
-      "__id__": 7
-    },
-    "_children": [],
-    "_active": true,
-    "_components": [
-      {
-        "__id__": 166
-      }
-    ],
-    "_prefab": null,
-    "_opacity": 255,
-    "_color": {
-      "__type__": "cc.Color",
-      "r": 255,
-      "g": 255,
-      "b": 255,
-      "a": 255
-    },
-    "_contentSize": {
-      "__type__": "cc.Size",
-      "width": 0,
-      "height": 0
-    },
-    "_anchorPoint": {
-      "__type__": "cc.Vec2",
-      "x": 0.5,
-      "y": 0.5
-    },
-    "_trs": {
-      "__type__": "TypedArray",
-      "ctor": "Float64Array",
-      "array": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1
-      ]
-    },
-    "_eulerAngles": {
-      "__type__": "cc.Vec3",
-      "x": 0,
-      "y": 0,
-      "z": 0
-    },
-    "_skewX": 0,
-    "_skewY": 0,
-    "_is3DNode": false,
-    "_groupIndex": 0,
-    "groupIndex": 0,
-    "_id": "4eN0e387JKpb3bSjH2S9UX"
-  },
-  {
-    "__type__": "03a226ATjJK1L1aWL8kt7Nk",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 165
-    },
-    "_enabled": true,
-    "_id": "1da9chNZBEsIakr6MVecte"
-  },
-  {
-    "__type__": "cc.Node",
-    "_name": "AudioController",
     "_objFlags": 0,
     "_parent": {
       "__id__": 7
@@ -7375,33 +7390,21 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
-    "_id": "6f3k7K325FhK89bDHv6krE"
+    "_id": "4eN0e387JKpb3bSjH2S9UX"
   },
   {
-    "__type__": "28431UWcRFEobIkt6dQvFo6",
+    "__type__": "03a226ATjJK1L1aWL8kt7Nk",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 167
     },
     "_enabled": true,
-    "stageMusic": {
-      "__uuid__": "b112ff0e-56f7-40a9-9ca5-bac0b195baca"
-    },
-    "bossMusicStage1": {
-      "__uuid__": "71ec1c0d-e824-4b80-b459-af47551c481e"
-    },
-    "bossMusicStage2": {
-      "__uuid__": "f9a31239-9228-4a26-b95d-c87a03a60477"
-    },
-    "bossMusicStage3": {
-      "__uuid__": "4a8320c8-7e3d-4654-a8c3-4b5d3046995c"
-    },
-    "_id": "3fD/Ykx3ZDgL4yeiNMvqQE"
+    "_id": "1da9chNZBEsIakr6MVecte"
   },
   {
     "__type__": "cc.Node",
-    "_name": "SkillManager",
+    "_name": "AudioController",
     "_objFlags": 0,
     "_parent": {
       "__id__": 7
@@ -7459,30 +7462,29 @@
     "_is3DNode": false,
     "_groupIndex": 0,
     "groupIndex": 0,
-    "_id": "0bWFSk8DtDlYp+i6wEAOoK"
+    "_id": "6f3k7K325FhK89bDHv6krE"
   },
   {
-    "__type__": "c88e9n6P8JPMbw2NLs2qPZX",
+    "__type__": "28431UWcRFEobIkt6dQvFo6",
     "_name": "",
     "_objFlags": 0,
     "node": {
       "__id__": 169
     },
     "_enabled": true,
-    "player": {
-      "__id__": 125
+    "stageMusic": {
+      "__uuid__": "b112ff0e-56f7-40a9-9ca5-bac0b195baca"
     },
-    "skillSelect": {
-      "__id__": 87
+    "bossMusicStage1": {
+      "__uuid__": "71ec1c0d-e824-4b80-b459-af47551c481e"
     },
-    "skillPanel": {
-      "__id__": 84
+    "bossMusicStage2": {
+      "__uuid__": "f9a31239-9228-4a26-b95d-c87a03a60477"
     },
-    "skillOptionPrefab": {
-      "__uuid__": "cd953381-d578-4641-af6c-e384022ca8ec"
+    "bossMusicStage3": {
+      "__uuid__": "4a8320c8-7e3d-4654-a8c3-4b5d3046995c"
     },
-    "maxSkillsToShow": 3,
-    "_id": "b5zUGtulhFtqtp1E/zrFNk"
+    "_id": "3fD/Ykx3ZDgL4yeiNMvqQE"
   },
   {
     "__type__": "cc.Canvas",
