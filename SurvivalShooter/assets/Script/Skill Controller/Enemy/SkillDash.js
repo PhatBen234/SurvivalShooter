@@ -118,7 +118,7 @@
 // });
 
 cc.Class({
-  extends: require('BaseSkill'),
+  extends: require("BaseSkill"),
 
   properties: {
     duration: 0.3, // thời gian lướt
@@ -172,9 +172,10 @@ cc.Class({
       cc.tween(boss)
         .to(this.duration, { position: target })
         .call(() => {
-
           // Tìm lại players (có thể đã thay đổi)
-          let currentPlayers = canvas.children.filter((n) => n.group === "player");
+          let currentPlayers = canvas.children.filter(
+            (n) => n.group === "player"
+          );
 
           currentPlayers.forEach((p) => {
             if (!p || !p.isValid) return;
@@ -193,9 +194,9 @@ cc.Class({
   },
 
   hitPlayer(player, distance) {
-    let playerScript = player.getComponent("PlayerStage3");
+    let playerScript = player.getComponent("PlayerController");
     if (playerScript?.takeDamage) {
       playerScript.takeDamage(this.damage); // Sử dụng damage từ BaseSkill
     }
-  }
+  },
 });
