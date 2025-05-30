@@ -22,21 +22,9 @@ cc.Class({
     let fadeOut = cc.fadeOut(1.0);
     let moveUp = cc.moveBy(1.0, cc.v2(0, 50));
     let spawn = cc.spawn(fadeOut, moveUp);
-    let callback = cc.callFunc(() => {
-      this.returnToPool();
-    });
+    let callback = cc.callFunc(() => {});
 
     let sequence = cc.sequence(spawn, callback);
     this.node.runAction(sequence);
-  },
-
-  returnToPool() {
-    // Reset properties before returning to pool
-    this.label.node.color = cc.Color.WHITE;
-    this.label.fontSize = this.label.fontSize / 1.2; // Reset font size
-
-    if (this.node && this.node.isValid) {
-      this.node.destroy();
-    }
   },
 });
