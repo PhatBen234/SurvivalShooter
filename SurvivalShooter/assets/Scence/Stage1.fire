@@ -7069,6 +7069,9 @@
     "levelLabel": {
       "__id__": 48
     },
+    "playerSortLayer": 1000,
+    "dynamicSorting": true,
+    "sortOffset": 0,
     "playerModel": null,
     "meleeSkillNode": null,
     "rangedSkillNode": null,
@@ -7109,21 +7112,6 @@
     "canvasNode": null,
     "meleeSkillNode": null,
     "_id": "b9UPzl8uxCc4icq4NU6sr7"
-  },
-  {
-    "__type__": "8a2661ausVBKo4gOeQNdhTn",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 125
-    },
-    "_enabled": true,
-    "playerModel": null,
-    "playerView": null,
-    "canvasNode": null,
-    "arrowPrefab": null,
-    "rangedSkillNode": null,
-    "_id": "e6uLupBKhPbIzVVwc/d+Kx"
   },
   {
     "__type__": "241f1lBV6NBxLelcimUAUT8",
@@ -7224,6 +7212,21 @@
     "_canUseSkill": true,
     "_lastDirection": null,
     "_id": "0ecWch5XZCM5t/yypTyok2"
+  },
+  {
+    "__type__": "8a2661ausVBKo4gOeQNdhTn",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 125
+    },
+    "_enabled": true,
+    "playerModel": null,
+    "playerView": null,
+    "canvasNode": null,
+    "arrowPrefab": null,
+    "rangedSkillNode": null,
+    "_id": "4e0BpAGrNLWpOEyzgY3UZM"
   },
   {
     "__type__": "cc.PrefabInfo",

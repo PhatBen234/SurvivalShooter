@@ -16,6 +16,19 @@ cc.Class({
     expBar: cc.ProgressBar,
     levelLabel: cc.Label,
 
+    // Sort Layer settings
+    playerSortLayer: {
+      default: 1000,
+      tooltip: "Sort layer cho player (càng cao càng đè lên trên)",
+    },
+    dynamicSorting: {
+      default: true,
+      tooltip: "Tự động điều chỉnh sort order theo vị trí Y",
+    },
+    sortOffset: {
+      default: 0,
+      tooltip: "Offset thêm cho sort order",
+    },
 
     // References
     playerModel: null,
@@ -30,6 +43,98 @@ cc.Class({
     this.setAnimationActive(this.rangedAttackAnim, false);
 
     this.deactivateSkillNodes();
+
+    // Thiết lập sort layer ban đầu
+    this.initializeSortLayer();
+  },
+
+  start() {
+    // Cập nhật sort layer liên tục nếu bật dynamic sorting
+    if (this.dynamicSorting) {
+      this.schedule(this.updateSortLayer, 0.1); // Cập nhật mỗi 0.1 giây
+    }
+  },
+
+  // === SORT LAYER METHODS ===
+  initializeSortLayer() {
+    // Thiết lập zIndex cho node chính
+    this.node.zIndex = this.playerSortLayer;
+
+    // Thiết lập cho các animation nodes
+    if (this.walkAnim && this.walkAnim.node) {
+      this.walkAnim.node.zIndex = this.playerSortLayer + 1;
+    }
+    if (this.meleeAttackAnim && this.meleeAttackAnim.node) {
+      this.meleeAttackAnim.node.zIndex = this.playerSortLayer + 1;
+    }
+    if (this.rangedAttackAnim && this.rangedAttackAnim.node) {
+      this.rangedAttackAnim.node.zIndex = this.playerSortLayer + 1;
+    }
+
+    // Thiết lập cho skill nodes
+    this.updateSkillNodesSortLayer();
+  },
+
+  updateSortLayer() {
+    if (!this.dynamicSorting) return;
+
+    // Tính toán sort order dựa trên vị trí Y (càng thấp càng gần camera)
+    // Công thức: baseLayer - positionY + offset
+    const baseOrder =
+      this.playerSortLayer - Math.floor(this.node.y) + this.sortOffset;
+
+    this.node.zIndex = baseOrder;
+
+    // Cập nhật cho các animation nodes
+    if (this.walkAnim && this.walkAnim.node) {
+      this.walkAnim.node.zIndex = baseOrder + 1;
+    }
+    if (this.meleeAttackAnim && this.meleeAttackAnim.node) {
+      this.meleeAttackAnim.node.zIndex = baseOrder + 1;
+    }
+    if (this.rangedAttackAnim && this.rangedAttackAnim.node) {
+      this.rangedAttackAnim.node.zIndex = baseOrder + 1;
+    }
+
+    // Cập nhật skill effects luôn ở trên cùng
+    this.updateSkillNodesSortLayer(baseOrder + 10);
+  },
+
+  updateSkillNodesSortLayer(baseOrder = null) {
+    const order = baseOrder || this.playerSortLayer + 10;
+
+    if (this.meleeSkillNode) {
+      this.meleeSkillNode.zIndex = order + 1;
+    }
+    if (this.rangedSkillNode) {
+      this.rangedSkillNode.zIndex = order + 1;
+    }
+    if (this.ultimateSkillNode) {
+      this.ultimateSkillNode.zIndex = order + 2; // Ultimate effect ở trên cùng
+    }
+  },
+
+  setSortLayer(newLayer) {
+    this.playerSortLayer = newLayer;
+    this.initializeSortLayer();
+  },
+
+  setDynamicSorting(enabled) {
+    this.dynamicSorting = enabled;
+
+    if (enabled) {
+      this.schedule(this.updateSortLayer, 0.1);
+    } else {
+      this.unschedule(this.updateSortLayer);
+      this.initializeSortLayer(); // Reset về sort layer cố định
+    }
+  },
+
+  // Force update sort layer (gọi khi player di chuyển)
+  forceUpdateSortLayer() {
+    if (this.dynamicSorting) {
+      this.updateSortLayer();
+    }
   },
 
   // === ANIMATION METHODS ===
@@ -76,6 +181,9 @@ cc.Class({
     );
     skillNode.active = true;
 
+    // Đảm bảo skill effect luôn ở trên
+    this.updateSkillNodesSortLayer();
+
     const anim = skillNode.getComponent(cc.Animation);
     const animState = anim?.getAnimationState(animName);
 
@@ -97,6 +205,9 @@ cc.Class({
     this.ultimateSkillNode.setPosition(cc.v2(0, 0));
     this.ultimateSkillNode.setScale(1.5, 1.5);
     this.ultimateSkillNode.active = true;
+
+    // Ultimate effect luôn ở trên cùng
+    this.updateSkillNodesSortLayer();
 
     const anim = this.ultimateSkillNode.getComponent(cc.Animation);
     const animState = anim?.getAnimationState("Ultimate");
@@ -152,7 +263,11 @@ cc.Class({
   },
 
   updatePlayerScale(direction) {
-    if (direction.x !== 0) this.node.scaleX = direction.x > 0 ? 1 : -1;
+    if (direction.x !== 0) {
+      this.node.scaleX = direction.x > 0 ? 1 : -1;
+      // Cập nhật sort layer khi thay đổi hướng
+      this.forceUpdateSortLayer();
+    }
   },
 
   updateHpUI() {
@@ -188,10 +303,10 @@ cc.Class({
     const handler = this.node.getComponent("UltimateSkillHandler");
 
     if (this.playerModel.canUseUltimate() && !handler?.isUltimateOnCooldown) {
-// ĐỔi thành sprite frame của ultimate skill
+      // Đổi thành sprite frame của ultimate skill
     } else {
       const cooldown = handler?.getRemainingCooldown() || 0;
-//Đổi thành sprite frame của ultimate skill cooldown
+      // Đổi thành sprite frame của ultimate skill cooldown
     }
   },
 
@@ -222,11 +337,17 @@ cc.Class({
     this.rangedSkillNode = ranged;
     this.ultimateSkillNode = ultimate;
     this.deactivateSkillNodes();
+    this.updateSkillNodesSortLayer();
   },
 
   deactivateSkillNodes() {
     if (this.meleeSkillNode) this.meleeSkillNode.active = false;
     if (this.rangedSkillNode) this.rangedSkillNode.active = false;
     if (this.ultimateSkillNode) this.ultimateSkillNode.active = false;
+  },
+
+  onDestroy() {
+    // Dọn dẹp schedule khi component bị destroy
+    this.unschedule(this.updateSortLayer);
   },
 });
