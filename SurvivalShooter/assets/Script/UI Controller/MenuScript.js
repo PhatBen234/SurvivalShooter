@@ -155,7 +155,5 @@ cc.Class({
 
   // === CLEANUP ===
   onDestroy() {
-    console.log("MenuScript destroyed");
-    // AudioManager will handle music transitions automatically
   },
 });

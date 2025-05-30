@@ -35,8 +35,8 @@ cc.Class({
     this.bossDefeated = false;
 
     // Round settings
-    this.ROUND_1_TIME = 60;
-    this.ROUND_2_TIME = 60;
+    this.ROUND_1_TIME = 1;
+    this.ROUND_2_TIME = 1;
     this.ROUND_3_TIME = -1;
 
     // Register global reference
@@ -228,11 +228,10 @@ cc.Class({
 
       if (isBoss) {
         this.onBossDefeated();
-        return; // Don't update normal score UI
+        return; 
       }
     }
 
-    // Normal enemy - update score UI
     if (this.uiController) {
       this.uiController.updateScore(this.totalScore);
     }
@@ -240,18 +239,16 @@ cc.Class({
 
   onBossDefeated() {
     if (this.bossDefeated) {
-      return; // Prevent multiple calls
+      return;
     }
 
     this.bossDefeated = true;
-    this.totalScore += 1000; // Bonus score for defeating boss
+    this.totalScore += 1000;
 
-    // Stop boss music and restore stage music
+    //Dừng nhạc boss
     if (window.AudioManager) {
       window.AudioManager.onBossDefeated();
     }
-
-    console.log("Boss defeated, music restored");
 
     this.onStageComplete();
   },
@@ -260,25 +257,25 @@ cc.Class({
     this.isGameActive = false;
 
     if (this.uiController) {
-      this.uiController.showResultPanel(false); // Game over
+      this.uiController.showResultPanel(false);
     }
   },
 
   onStageComplete() {
     this.isGameActive = false;
 
-    // Stop enemy spawning
+    //Sinh quái
     if (this.enemyManagerComponent) {
       this.enemyManagerComponent.stopSpawning();
     }
 
-    // Show victory
+    //Hiện victory UI
     if (this.uiController) {
-      this.uiController.showResultPanel(true); // Victory
+      this.uiController.showResultPanel(true);
     }
   },
 
-  // UI Update methods
+  //UI Update
   updateUI() {
     this.updateRoundUI();
     this.updateTimerUI();
@@ -326,7 +323,5 @@ cc.Class({
 
   // Cleanup
   onDestroy() {
-    // AudioManager will handle cleanup automatically
-    console.log("GameManager destroyed");
   },
 });

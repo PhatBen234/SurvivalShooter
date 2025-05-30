@@ -13,8 +13,6 @@ cc.Class({
     },
 
     execute() {
-        // Override trong các subclass để thực hiện skill
-        cc.warn("BaseSkill: execute() should be overridden in subclass");
     },
 
     destroySkill() {
@@ -27,7 +25,6 @@ cc.Class({
     },
 
     onDestroy() {
-        // Cleanup khi skill bị hủy
         this.unscheduleAllCallbacks();
     }
 });

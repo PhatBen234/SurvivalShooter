@@ -112,11 +112,6 @@ cc.Class({
     onPauseClick() {
         this.pauseMenu.active = true;
         cc.director.pause();
-        
-        // Pause audio
-        if (window.AudioManager) {
-            window.AudioManager.pauseAll();
-        }
     },
 
     onResumeClick() {
@@ -148,11 +143,6 @@ cc.Class({
     showResultPanel(isWin) {
         this.resultMenu.active = true;
         cc.director.pause();
-        
-        // Pause audio
-        if (window.AudioManager) {
-            window.AudioManager.pauseAll();
-        }
 
         if (this.resultLabel) {
             if (isWin) {
