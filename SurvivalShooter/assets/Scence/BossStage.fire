@@ -7260,10 +7260,18 @@
       "__id__": 156
     },
     "_enabled": true,
-    "stageMusic": null,
-    "bossMusicStage1": null,
-    "bossMusicStage2": null,
-    "bossMusicStage3": null,
+    "stageMusic": {
+      "__uuid__": "6f0aa41b-8cec-47d8-8af1-4f14a7566452"
+    },
+    "bossMusicStage1": {
+      "__uuid__": "71ec1c0d-e824-4b80-b459-af47551c481e"
+    },
+    "bossMusicStage2": {
+      "__uuid__": "f9a31239-9228-4a26-b95d-c87a03a60477"
+    },
+    "bossMusicStage3": {
+      "__uuid__": "4a8320c8-7e3d-4654-a8c3-4b5d3046995c"
+    },
     "_id": "8556jiWbpDLYrjVIRMYr/S"
   },
   {
