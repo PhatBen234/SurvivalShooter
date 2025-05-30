@@ -87,10 +87,10 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 165
+        "__id__": 171
       },
       {
-        "__id__": 166
+        "__id__": 172
       }
     ],
     "_prefab": null,
@@ -366,24 +366,6 @@
         "__id__": 32
       },
       {
-        "__id__": 153
-      },
-      {
-        "__id__": 154
-      },
-      {
-        "__id__": 155
-      },
-      {
-        "__id__": 156
-      },
-      {
-        "__id__": 157
-      },
-      {
-        "__id__": 158
-      },
-      {
         "__id__": 159
       },
       {
@@ -397,10 +379,28 @@
       },
       {
         "__id__": 163
+      },
+      {
+        "__id__": 164
+      },
+      {
+        "__id__": 165
+      },
+      {
+        "__id__": 166
+      },
+      {
+        "__id__": 167
+      },
+      {
+        "__id__": 168
+      },
+      {
+        "__id__": 169
       }
     ],
     "_prefab": {
-      "__id__": 164
+      "__id__": 170
     },
     "_opacity": 255,
     "_color": {
@@ -1274,7 +1274,7 @@
     "_active": true,
     "_components": [
       {
-        "__id__": 152
+        "__id__": 158
       }
     ],
     "_prefab": null,
@@ -1344,6 +1344,15 @@
       },
       {
         "__id__": 33
+      },
+      {
+        "__id__": 152
+      },
+      {
+        "__id__": 156
+      },
+      {
+        "__id__": 154
       }
     ],
     "_active": true,
@@ -1475,17 +1484,14 @@
     "player": {
       "__id__": 7
     },
-    "stageMusic": {
-      "__uuid__": "6f0aa41b-8cec-47d8-8af1-4f14a7566452"
+    "gameStateManager": {
+      "__id__": 152
     },
-    "bossMusicStage1": {
-      "__uuid__": "71ec1c0d-e824-4b80-b459-af47551c481e"
+    "scoreManager": {
+      "__id__": 154
     },
-    "bossMusicStage2": {
-      "__uuid__": "f9a31239-9228-4a26-b95d-c87a03a60477"
-    },
-    "bossMusicStage3": {
-      "__uuid__": "4a8320c8-7e3d-4654-a8c3-4b5d3046995c"
+    "audioController": {
+      "__id__": 156
     },
     "_id": "91lT2ek3pKK4tWmnXRMTDu"
   },
@@ -7039,6 +7045,226 @@
       "__id__": 2
     },
     "_id": "12j3F9koVCMJ116O/Pu0Zy"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "GameStateManager",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 34
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 153
+      }
+    ],
+    "_prefab": null,
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": "942fmunKtPFbyRRTIVWYfT"
+  },
+  {
+    "__type__": "182c5cHGINM1q3cZMEDQEmI",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 152
+    },
+    "_enabled": true,
+    "_id": "98dvyA1VpJOrCgaYbphthc"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "ScoreManager",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 34
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 155
+      }
+    ],
+    "_prefab": null,
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": "cc5CXninxKzYfwuDc+yv7J"
+  },
+  {
+    "__type__": "03a226ATjJK1L1aWL8kt7Nk",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 154
+    },
+    "_enabled": true,
+    "_id": "3fFjsJ0ZFK+o57+rQHqnk+"
+  },
+  {
+    "__type__": "cc.Node",
+    "_name": "AudioController",
+    "_objFlags": 0,
+    "_parent": {
+      "__id__": 34
+    },
+    "_children": [],
+    "_active": true,
+    "_components": [
+      {
+        "__id__": 157
+      }
+    ],
+    "_prefab": null,
+    "_opacity": 255,
+    "_color": {
+      "__type__": "cc.Color",
+      "r": 255,
+      "g": 255,
+      "b": 255,
+      "a": 255
+    },
+    "_contentSize": {
+      "__type__": "cc.Size",
+      "width": 0,
+      "height": 0
+    },
+    "_anchorPoint": {
+      "__type__": "cc.Vec2",
+      "x": 0.5,
+      "y": 0.5
+    },
+    "_trs": {
+      "__type__": "TypedArray",
+      "ctor": "Float64Array",
+      "array": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        1,
+        1
+      ]
+    },
+    "_eulerAngles": {
+      "__type__": "cc.Vec3",
+      "x": 0,
+      "y": 0,
+      "z": 0
+    },
+    "_skewX": 0,
+    "_skewY": 0,
+    "_is3DNode": false,
+    "_groupIndex": 0,
+    "groupIndex": 0,
+    "_id": "26vx+EDQpOMoHmTG2W46cU"
+  },
+  {
+    "__type__": "28431UWcRFEobIkt6dQvFo6",
+    "_name": "",
+    "_objFlags": 0,
+    "node": {
+      "__id__": 156
+    },
+    "_enabled": true,
+    "stageMusic": null,
+    "bossMusicStage1": null,
+    "bossMusicStage2": null,
+    "bossMusicStage3": null,
+    "_id": "8556jiWbpDLYrjVIRMYr/S"
   },
   {
     "__type__": "c88e9n6P8JPMbw2NLs2qPZX",
