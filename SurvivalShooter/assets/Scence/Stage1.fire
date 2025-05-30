@@ -264,8 +264,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1480,
-      "height": 720
+      "width": 3000,
+      "height": 2000
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -483,10 +483,18 @@
     "player": {
       "__id__": 125
     },
-    "stageMusic": null,
-    "bossMusicStage1": null,
-    "bossMusicStage2": null,
-    "bossMusicStage3": null,
+    "stageMusic": {
+      "__uuid__": "b112ff0e-56f7-40a9-9ca5-bac0b195baca"
+    },
+    "bossMusicStage1": {
+      "__uuid__": "71ec1c0d-e824-4b80-b459-af47551c481e"
+    },
+    "bossMusicStage2": {
+      "__uuid__": "f9a31239-9228-4a26-b95d-c87a03a60477"
+    },
+    "bossMusicStage3": {
+      "__uuid__": "4a8320c8-7e3d-4654-a8c3-4b5d3046995c"
+    },
     "_id": "f4VFej4cNHuaOOoJbk1fSv"
   },
   {
@@ -5985,6 +5993,15 @@
     "enemyLv1Prefabs": [
       {
         "__uuid__": "a578b5a2-b9e2-441f-8dc0-7d5eecde3caf"
+      },
+      {
+        "__uuid__": "e93e6c18-a21c-48f7-9466-c792a2947649"
+      },
+      {
+        "__uuid__": "d4019bb1-35dc-4b3d-94f1-d8272f1bb2b3"
+      },
+      {
+        "__uuid__": "c2b03ed6-6e3c-4b35-8e5e-e31e91ba7543"
       }
     ],
     "enemyLv2Prefabs": [],

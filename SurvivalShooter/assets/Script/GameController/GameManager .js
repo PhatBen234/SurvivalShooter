@@ -36,7 +36,7 @@ cc.Class({
 
     // Round settings
     this.ROUND_1_TIME = 60;
-    this.ROUND_2_TIME = 20;
+    this.ROUND_2_TIME = 60;
     this.ROUND_3_TIME = -1;
 
     // Register global reference

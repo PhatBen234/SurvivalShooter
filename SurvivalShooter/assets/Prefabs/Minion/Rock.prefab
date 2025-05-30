@@ -240,7 +240,7 @@
       "__id__": 1
     },
     "_enabled": true,
-    "hp": 400,
+    "hp": 1000,
     "damage": 15,
     "speed": 70,
     "score": 10,

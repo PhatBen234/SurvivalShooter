@@ -483,10 +483,18 @@
     "player": {
       "__id__": 125
     },
-    "stageMusic": null,
-    "bossMusicStage1": null,
-    "bossMusicStage2": null,
-    "bossMusicStage3": null,
+    "stageMusic": {
+      "__uuid__": "5e63be8f-7a13-4ec9-865d-7be2991cfd3f"
+    },
+    "bossMusicStage1": {
+      "__uuid__": "b112ff0e-56f7-40a9-9ca5-bac0b195baca"
+    },
+    "bossMusicStage2": {
+      "__uuid__": "f9a31239-9228-4a26-b95d-c87a03a60477"
+    },
+    "bossMusicStage3": {
+      "__uuid__": "4a8320c8-7e3d-4654-a8c3-4b5d3046995c"
+    },
     "_id": "10uJZfmadM9av+BMu4g8Em"
   },
   {
@@ -5990,7 +5998,7 @@
         "__uuid__": "64dbf7a3-5c8f-49d0-aa2e-0f4bf66b17d5"
       },
       {
-        "__uuid__": "0ef8b787-f692-4727-9394-5a3d35965265"
+        "__uuid__": "33c90a3b-10c3-46e7-a159-08a97a0d5568"
       }
     ],
     "enemyLv2Prefabs": [
@@ -6005,6 +6013,9 @@
       },
       {
         "__uuid__": "d1f1d409-bb56-4429-b539-eec927ff6009"
+      },
+      {
+        "__uuid__": "0ef8b787-f692-4727-9394-5a3d35965265"
       }
     ],
     "bossEnemyPrefab": {

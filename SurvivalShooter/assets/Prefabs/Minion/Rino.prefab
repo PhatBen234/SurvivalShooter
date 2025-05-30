@@ -240,8 +240,8 @@
       "__id__": 1
     },
     "_enabled": true,
-    "hp": 300,
-    "damage": 15,
+    "hp": 250,
+    "damage": 50,
     "speed": 140,
     "score": 10,
     "target": null,
@@ -255,7 +255,11 @@
     "flipOnMove": true,
     "originalFacingLeft": false,
     "damageInterval": 1,
-    "skillPrefabs": [],
+    "skillPrefabs": [
+      {
+        "__uuid__": "b5af0797-e562-4962-baa9-88737eb0691f"
+      }
+    ],
     "skillInterval": 5,
     "_id": ""
   },
