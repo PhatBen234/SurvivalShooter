@@ -22,7 +22,7 @@ cc.Class({
     let damage = this.playerModel.getBaseAttack();
     let isCritical = Math.random() < this.playerModel.getCriticalRate();
     if (isCritical) {
-      damage *= 2;
+      damage *= 2; //neu crit ba qua thi chinh o day, nhung cung chi target 1 muc tieu
     }
     return { damage, isCritical };
   },
@@ -118,7 +118,12 @@ cc.Class({
     const skillDamage = damageInfo.damage * 2;
     this.findEnemiesInSkillRange().forEach((enemy, index) => {
       this.scheduleOnce(
-        () => this.spawnSkillArrowToTarget(enemy, skillDamage, damageInfo.isCritical),
+        () =>
+          this.spawnSkillArrowToTarget(
+            enemy,
+            skillDamage,
+            damageInfo.isCritical
+          ),
         index * 0.1
       );
     });
