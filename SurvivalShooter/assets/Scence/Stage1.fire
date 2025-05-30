@@ -702,8 +702,12 @@
     "bossEnemyPrefab": {
       "__uuid__": "f3412291-da3f-4080-9203-0ef5fc0b4cbb"
     },
-    "player": null,
-    "canvas": null,
+    "player": {
+      "__id__": 14
+    },
+    "canvas": {
+      "__id__": 2
+    },
     "_id": "2f0YJbv7pGnrY0frY/wy/v"
   },
   {
@@ -7440,7 +7444,9 @@
       "__id__": 169
     },
     "_enabled": true,
-    "player": null,
+    "player": {
+      "__id__": 14
+    },
     "skillSelect": null,
     "skillPanel": null,
     "skillOptionPrefab": {
